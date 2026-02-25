@@ -166,7 +166,7 @@ The agent design follows a strict separation of concerns: the LLM reasons and or
 | 3000–3099 | Blueprint | Asset not found, invalid pin type, node creation failed |
 | 4000–4099 | Compilation | Live Coding unavailable, compile failed, timeout |
 | 5000–5099 | File System | Permission denied, file not found, write conflict |
-| 6000–6099 | Safety | Approval required, operation blocked by SafetyGate |
+| 6000–6099 | Safety | 6000 = range start; 6001 = approval rejected by user or timeout |
 
 ---
 
@@ -438,10 +438,10 @@ Unreal Master/
 │   ├── tsconfig.json
 │   └── vitest.config.ts
 │
-├── UnrealMasterPlugin/      ← Layer 3: C++ UE Plugin (to be created)
-│   ├── UnrealMasterPlugin.uplugin
+├── ue-plugin/               ← Layer 3: C++ UE Plugin (to be created)
+│   ├── ue-plugin.uplugin
 │   ├── Source/
-│   │   └── UnrealMasterPlugin/
+│   │   └── UEMasterPlugin/
 │   │       ├── Public/
 │   │       └── Private/
 │   └── Resources/

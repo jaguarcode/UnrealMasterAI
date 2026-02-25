@@ -156,10 +156,10 @@ Unreal Master/
 │   ├── tsconfig.json
 │   └── vitest.config.ts
 │
-├── UnrealMasterPlugin/      Layer 3: C++ UE plugin (to be created in Phase 1)
-│   └── Source/UnrealMasterPlugin/
-│       ├── Public/          Header files
-│       └── Private/         Implementation files
+├── ue-plugin/               Layer 3: C++ UE plugin (implemented)
+│   └── Source/
+│       ├── UnrealMasterAgent/        Main module (14 handlers registered)
+│       └── UnrealMasterAgentTests/   Automation test module
 │
 └── docs/
     └── schemas/
@@ -199,7 +199,7 @@ cd mcp-server && npm run typecheck
 cd mcp-server && npm run lint
 ```
 
-Test files live alongside source at `src/**/__tests__/*.test.ts`.
+Test files live at `tests/unit/**/*.test.ts` and `tests/integration/**/*.test.ts`.
 
 ### UE Plugin Testing
 
@@ -246,6 +246,19 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 | Phase 6 | Slate Generation | Template RAG, code generation, validation |
 | Phase 7 | Safety + Observability | Human-in-the-loop gate, LangSmith integration |
 | Phase 8 | Polish | Performance, caching, documentation |
+
+---
+
+## Deferred Features
+
+The following user stories are documented but not yet fully verified without a UE Editor.
+See `mcp-server/docs/DEFERRED-FEATURES-GUIDE.md` for the full implementation guide.
+
+| Story | Feature | Status |
+|-------|---------|--------|
+| US-021 | Human-in-the-Loop Safety (Slate approval dialog) | Code complete, needs UE testing |
+| US-022 | In-Editor Chat Panel (dockable SDockTab) | Code complete, needs UE testing |
+| US-023 | Documentation update | Complete |
 
 ---
 

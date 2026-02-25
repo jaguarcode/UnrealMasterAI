@@ -32,7 +32,10 @@ export async function fileWrite(
 
   // Safety classification and approval gate
   const classification = classifyOperation('file-write', { filePath: params.filePath });
-  const approved = await approvalGate.requestApproval(classification);
+  const approved = await approvalGate.requestApproval(classification, {
+    toolName: 'file-write',
+    filePath: params.filePath,
+  });
 
   if (!approved) {
     return {

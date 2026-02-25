@@ -13,9 +13,21 @@ export interface MockUEClientOptions {
 export class MockUEClient {
   private ws: WebSocket | null = null;
   private options: MockUEClientOptions;
+  private approvalResponse: boolean | null = null;
+  private _lastReceivedMethod: string | null = null;
 
   constructor(options: MockUEClientOptions = {}) {
     this.options = options;
+  }
+
+  /** Configure automatic approval response for safety.requestApproval messages. */
+  setApprovalResponse(approved: boolean): void {
+    this.approvalResponse = approved;
+  }
+
+  /** Return the last received method name (for assertions). */
+  lastReceivedMethod(): string | null {
+    return this._lastReceivedMethod;
   }
 
   /**
@@ -27,7 +39,20 @@ export class MockUEClient {
       this.ws.on('open', () => {
         // Auto-respond to incoming messages (simulate UE plugin)
         this.ws!.on('message', (data) => {
-          const message = JSON.parse(data.toString());
+          const parsed = JSON.parse(data.toString());
+          this._lastReceivedMethod = parsed.method ?? null;
+
+          // Handle safety.requestApproval messages with configured response
+          if (parsed.method === 'safety.requestApproval' && this.approvalResponse !== null) {
+            const response = {
+              id: parsed.id,
+              result: { approved: this.approvalResponse },
+              duration_ms: 1,
+            };
+            this.ws?.send(JSON.stringify(response));
+            return;
+          }
+
           const delay = this.options.responseDelay ?? 0;
 
           setTimeout(() => {
@@ -38,8 +63,8 @@ export class MockUEClient {
 
             // Echo back a proper response
             const response = {
-              id: message.id,
-              result: { method: message.method, echo: true },
+              id: parsed.id,
+              result: { method: parsed.method, echo: true },
               duration_ms: delay,
             };
             this.ws?.send(JSON.stringify(response));

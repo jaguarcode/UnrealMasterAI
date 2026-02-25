@@ -81,6 +81,17 @@ void FUMAWebSocketClient::SendResponse(const FUMAWSResponse& Response)
     WebSocket->Send(JsonString);
 }
 
+void FUMAWebSocketClient::SendRawMessage(const FUMAWSMessage& Message)
+{
+    if (!IsConnected())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[UMA] Cannot send message: not connected"));
+        return;
+    }
+    const FString JsonString = Message.ToJson();
+    WebSocket->Send(JsonString);
+}
+
 void FUMAWebSocketClient::OnRawMessageReceived(const FString& Message)
 {
     // CRITICAL: Dispatch to GameThread for safe UE API access

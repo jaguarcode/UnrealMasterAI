@@ -8,6 +8,8 @@
 #include "Compilation/UMALiveCodingController.h"
 #include "Compilation/UMACompileLogParser.h"
 #include "Editor/UMAEditorQueries.h"
+#include "Editor/UMAEditorSubsystem.h"
+#include "Safety/UMAApprovalGate.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
 #include "Serialization/JsonReader.h"
@@ -15,9 +17,10 @@
 
 #define LOCTEXT_NAMESPACE "FUnrealMasterAgentModule"
 
-static TUniquePtr<FUMAWebSocketClient> GWebSocketClient;
+TUniquePtr<FUMAWebSocketClient> GWebSocketClient;
 static TUniquePtr<FUMAMessageHandler> GMessageHandler;
 static TUniquePtr<FUMALiveCodingController> GLiveCodingController;
+static TUniquePtr<FUMAApprovalGate> GApprovalGate;
 
 // ---------------------------------------------------------------------------
 // Helper: Build an error FUMAWSResponse
@@ -510,6 +513,45 @@ void FUnrealMasterAgentModule::StartupModule()
             return Response;
         }));
 
+    // Initialize approval gate and register safety handler
+    GApprovalGate = MakeUnique<FUMAApprovalGate>();
+
+    GMessageHandler->RegisterHandler(TEXT("safety.requestApproval"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            if (!GApprovalGate.IsValid())
+            {
+                return MakeErrorResponse(Message.Id, 6000, TEXT("ApprovalGate not initialized"));
+            }
+
+            FString OperationId, ToolName, Reason, FilePath;
+            if (!Message.Params.IsValid()
+                || !Message.Params->TryGetStringField(TEXT("operationId"), OperationId)
+                || !Message.Params->TryGetStringField(TEXT("toolName"), ToolName)
+                || !Message.Params->TryGetStringField(TEXT("reason"), Reason))
+            {
+                return MakeErrorResponse(Message.Id, 3001, TEXT("Missing required approval params"));
+            }
+            Message.Params->TryGetStringField(TEXT("filePath"), FilePath);
+
+            FUMAApprovalRequest Request;
+            Request.OperationId = OperationId;
+            Request.ToolName    = ToolName;
+            Request.Reason      = Reason;
+            Request.FilePath    = FilePath;
+
+            bool bApproved = false;
+            GApprovalGate->ShowApprovalDialog(Request,
+                [&bApproved](bool bResult) { bApproved = bResult; });
+
+            FUMAWSResponse Response;
+            Response.Id = Message.Id;
+            TSharedPtr<FJsonObject> ResultObj = MakeShared<FJsonObject>();
+            ResultObj->SetBoolField(TEXT("approved"), bApproved);
+            Response.Result = ResultObj;
+            return Response;
+        }));
+
     // Initialize WebSocket client
     GWebSocketClient = MakeUnique<FUMAWebSocketClient>();
     GWebSocketClient->OnMessageReceived.BindLambda([](const FUMAWSMessage& Message)
@@ -531,6 +573,49 @@ void FUnrealMasterAgentModule::StartupModule()
 
     UE_LOG(LogTemp, Log, TEXT("[UMA] Connecting to MCP Bridge Server at %s"), *Url);
     GWebSocketClient->Connect(Url);
+
+    // Register chat.receiveResponse handler
+    GMessageHandler->RegisterHandler(TEXT("chat.receiveResponse"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            check(IsInGameThread());
+
+            FString ResponseText;
+            if (!Message.Params.IsValid()
+                || !Message.Params->TryGetStringField(TEXT("responseText"), ResponseText))
+            {
+                return MakeErrorResponse(Message.Id, 3001, TEXT("Missing responseText param"));
+            }
+
+            if (GEditor)
+            {
+                UUMAEditorSubsystem* Subsystem =
+                    GEditor->GetEditorSubsystem<UUMAEditorSubsystem>();
+                if (Subsystem)
+                {
+                    Subsystem->AddChatMessage(ResponseText, false /* bIsFromUser */);
+                }
+            }
+
+            FUMAWSResponse Response;
+            Response.Id = Message.Id;
+            TSharedPtr<FJsonObject> ResultObj = MakeShared<FJsonObject>();
+            ResultObj->SetBoolField(TEXT("received"), true);
+            Response.Result = ResultObj;
+            return Response;
+        }));
+
+    // Initialize editor subsystem chat tab
+    if (GEditor)
+    {
+        UUMAEditorSubsystem* Subsystem =
+            GEditor->GetEditorSubsystem<UUMAEditorSubsystem>();
+        if (Subsystem)
+        {
+            Subsystem->RegisterChatTab();
+            UE_LOG(LogTemp, Log, TEXT("[UMA] Chat panel registered"));
+        }
+    }
 }
 
 void FUnrealMasterAgentModule::ShutdownModule()
@@ -544,6 +629,7 @@ void FUnrealMasterAgentModule::ShutdownModule()
     }
 
     GLiveCodingController.Reset();
+    GApprovalGate.Reset();
     GMessageHandler.Reset();
 }
 

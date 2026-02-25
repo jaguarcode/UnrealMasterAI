@@ -36,6 +36,9 @@ public:
     /** Send a response back to the bridge server */
     void SendResponse(const FUMAWSResponse& Response);
 
+    /** Send a raw message (outbound, no response correlation needed). */
+    void SendRawMessage(const FUMAWSMessage& Message);
+
     /** Delegate: called when a message is received (already on GameThread) */
     FOnUMAMessageReceived OnMessageReceived;
 

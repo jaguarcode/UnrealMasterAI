@@ -1,64 +1,91 @@
-<!-- Generated: 2026-02-25 | Updated: 2026-02-25 -->
+<!-- Generated: 2026-02-25 | Updated: 2026-02-26 -->
 
-# Unreal Master
+# Unreal Master — Root
 
 ## Purpose
-Autonomous AI agent development project for Unreal Engine. Builds a "virtual development partner" combining Claude Code and Model Context Protocol (MCP) to bidirectionally communicate with UE's internal API — autonomously handling Blueprint logic generation, C++ Slate UI coding, and Live Coding compilation cycles.
 
-## Key Files
+Autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine
+internals. 4-layer architecture: Claude Code → MCP Bridge Server (Node.js/TS) →
+UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 
-| File | Description |
-|------|-------------|
-| `PRD.md` | Product Requirements Document (Korean) — defines project scope, 4-layer architecture, technical stack, feature requirements, and 4-phase implementation roadmap |
+## Repository Layout
 
-## Planned Architecture (4 Layers)
+| Path | Layer | Description |
+|------|-------|-------------|
+| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (227 tests passing) |
+| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin |
+| `docs/` | — | Schemas, Slate RAG templates, API reference |
+| `README.md` | — | Setup instructions and development workflow |
+| `PRD.md` | — | Product Requirements Document (Korean) |
 
-| Layer | Technology | Role |
-|-------|-----------|------|
-| MCP Host | Claude Code (Claude 3.5 Sonnet) | Reasoning engine — interprets queries, decides tool call sequences |
-| MCP Client | Built into Claude Code | JSON-RPC communication mediator with external servers |
-| MCP Bridge Server | Node.js / TypeScript | stdio-based bridge between Claude Code and UE plugin via WebSockets |
-| UE Agent Plugin | C++ (UE 5.x) + Python | Engine-internal state control, Blueprint manipulation, Live Coding triggers |
+## Key Technical Constraints
 
-## Planned Subdirectories
+1. **GameThread-only UE APIs.** Every UE editor API call MUST be dispatched via
+   `AsyncTask(ENamedThreads::GameThread, ...)`. WebSocket callbacks run on a
+   background thread. Violating this rule causes crashes and data corruption.
 
-As the project develops, expect these directories to emerge:
+2. **stdout is sacred.** The MCP server communicates with Claude Code over stdout
+   via JSON-RPC. `console.log()` in server code corrupts the stream. All logging
+   goes to `stderr`.
 
-| Directory | Purpose |
-|-----------|---------|
-| `mcp-server/` | Node.js/TypeScript MCP bridge server |
-| `ue-plugin/` | Unreal Engine C++ plugin (Blueprint serialization, Slate UI, Live Coding) |
-| `docs/` | RAG knowledge base — Slate UI templates, coding conventions, API references |
+3. **TryCreateConnection, never MakeLinkTo.** For Blueprint pin connection, always
+   use `UEdGraphSchema_K2::TryCreateConnection()`. `MakeLinkTo` bypasses schema
+   validation and corrupts Blueprint graphs.
+
+4. **UE is the WebSocket CLIENT.** Node.js listens; UE connects. This uses UE's
+   stable `FWebSocketsModule` client.
 
 ## For AI Agents
 
-### Working In This Directory
-- This project is in early planning stage — only PRD.md exists currently
-- PRD is written in Korean; all technical terms use English
-- The project follows a 4-phase roadmap (see PRD.md §4)
-- Phase 1 focuses on: MCP server setup, UE WebSocket plugin, E2E communication verification
+### TDD Workflow
 
-### Key Technical Concepts
-- **MCP (Model Context Protocol):** Protocol for LLM ↔ tool communication via JSON-RPC
-- **Blueprint AST serialization:** Converting UE Blueprints to JSON for LLM consumption
-- **UEdGraphPin:** Low-level C++ API for programmatic Blueprint node/pin manipulation
-- **Slate UI:** UE's C++ declarative UI framework (not UMG/Widget Blueprints)
-- **Live Coding:** UE's hot-reload compilation via `ILiveCodingModule::Compile()`
-- **Self-healing loop:** Auto-detect compile errors → parse logs → LLM fixes code → recompile
+All code changes start with failing tests.
 
-### Development Phases
-1. **Phase 1:** Communication infrastructure — MCP server (stdio), UE WebSocket plugin, E2E verification
-2. **Phase 2:** Blueprint engine — JSON serialization, C++ node spawning/pin linking
-3. **Phase 3:** Slate UI + Live Coding — RAG for Slate templates, compile automation
-4. **Phase 4:** Autonomy — self-healing loops, micro-tools, in-editor chat panel
+- **TS tests:** `cd mcp-server && npm test` (Vitest)
+- **C++ tests:** UE Automation Framework via `-ExecCmds="Automation RunTests ..."`
+- **Commit format:** `feat: [description] (TDD)`
 
-### Dependencies
+### Error Code Taxonomy
 
-#### External (Planned)
-- `@modelcontextprotocol/sdk` — MCP server SDK for Node.js
-- Unreal Engine 5.x — Target engine version
-- Claude Code / Claude 3.5 Sonnet — LLM inference
-- WebSockets — UE ↔ Bridge server communication
-- LangSmith / Langfuse — Observability platform for agent tracing
+| Range | Category |
+|-------|---------|
+| 1000–1099 | Connection / WebSocket |
+| 2000–2099 | Handler routing (unknown method = 2001) |
+| 3000–3099 | Parameter validation |
+| 4000–4099 | Blueprint operations |
+| 5000–5099 | Internal / serialization |
+| 6000–6099 | Safety gate |
+
+### WS Message Envelope
+
+Request (MCP → UE):
+```json
+{ "id": "<uuid>", "method": "blueprint.serialize",
+  "params": { "blueprintPath": "/Game/BP_Test" }, "timestamp": 1740441600000 }
+```
+
+Response (UE → MCP):
+```json
+{ "id": "<uuid>", "result": { ... }, "duration_ms": 42 }
+```
+
+### MCP Tools (20 registered)
+
+| Domain | Tools |
+|--------|-------|
+| Editor | `editor-ping`, `editor-getLevelInfo`, `editor-listActors`, `editor-getAssetInfo` |
+| Blueprint | `blueprint-serialize`, `blueprint-createNode`, `blueprint-connectPins`, `blueprint-modifyProperty`, `blueprint-deleteNode` |
+| Compilation | `compilation-trigger`, `compilation-getStatus`, `compilation-getErrors`, `compilation-selfHeal` |
+| File | `file-read`, `file-write`, `file-search` |
+| Slate | `slate-validate`, `slate-generate`, `slate-listTemplates` |
+| Chat | `chat-sendMessage` |
+
+### Subdirectory AGENTS.md
+
+| File | Purpose |
+|------|---------|
+| `mcp-server/AGENTS.md` | MCP Bridge Server docs |
+| `ue-plugin/AGENTS.md` | UE Plugin docs |
+| `docs/AGENTS.md` | RAG knowledge base docs |
 
 <!-- MANUAL: Custom project notes can be added below -->

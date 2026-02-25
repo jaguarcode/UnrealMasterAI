@@ -31,6 +31,7 @@ import { generateWidgetContext } from './tools/slate/generate-widget.js';
 import { listTemplates } from './tools/slate/list-templates.js';
 import { EmbeddingStore } from './rag/embedding-store.js';
 import { SlateTemplateLoader } from './rag/slate-templates.js';
+import { chatSendMessage } from './tools/chat/send-message.js';
 
 /**
  * Create and configure the MCP server with all tools registered.
@@ -47,7 +48,7 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
 
   const session = new SessionManager(3);
 
-  const approvalGate = new ApprovalGate();
+  const approvalGate = new ApprovalGate(60000, bridge);
   const allowedRoots = ['/Game/', '/Engine/'];
 
   // Initialize RAG store for Slate templates
@@ -178,7 +179,7 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
     },
     async (params) => {
       logger.info('blueprint.deleteNode called');
-      return blueprintDeleteNode(bridge, params);
+      return blueprintDeleteNode(bridge, params, approvalGate);
     }
   );
 
@@ -311,7 +312,20 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
     }
   );
 
-  logger.info('MCP tools registered: editor-ping, editor-getLevelInfo, editor-listActors, editor-getAssetInfo, blueprint-serialize, blueprint-createNode, blueprint-connectPins, blueprint-modifyProperty, blueprint-deleteNode, compilation-trigger, compilation-getStatus, compilation-getErrors, compilation-selfHeal, file-read, file-write, file-search, slate-validate, slate-generate, slate-listTemplates');
+  // Chat tools
+  server.tool(
+    'chat-sendMessage',
+    'Send a message through the in-editor chat panel.',
+    {
+      text: z.string().describe('Message text to send'),
+    },
+    async (params) => {
+      logger.info('chat.sendMessage called');
+      return chatSendMessage(bridge, params);
+    }
+  );
+
+  logger.info('MCP tools registered: editor-ping, editor-getLevelInfo, editor-listActors, editor-getAssetInfo, blueprint-serialize, blueprint-createNode, blueprint-connectPins, blueprint-modifyProperty, blueprint-deleteNode, compilation-trigger, compilation-getStatus, compilation-getErrors, compilation-selfHeal, file-read, file-write, file-search, slate-validate, slate-generate, slate-listTemplates, chat-sendMessage');
 
   return server;
 }

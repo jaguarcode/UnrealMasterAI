@@ -7,6 +7,7 @@ import { blueprintCreateNode } from '../../../src/tools/blueprint/create-node.js
 import { blueprintConnectPins } from '../../../src/tools/blueprint/connect-pins.js';
 import { blueprintModifyProperty } from '../../../src/tools/blueprint/modify-property.js';
 import { blueprintDeleteNode } from '../../../src/tools/blueprint/delete-node.js';
+import { ApprovalGate } from '../../../src/state/safety.js';
 
 describe('BlueprintToolHandlers', () => {
   let bridge: WebSocketBridge;
@@ -152,10 +153,12 @@ describe('BlueprintToolHandlers', () => {
 
   describe('blueprint.deleteNode', () => {
     it('sends WS message with nodeId', async () => {
+      const approvalGate = new ApprovalGate(1000, null);
+      approvalGate.setAutoResponse('approve');
       const result = await blueprintDeleteNode(bridge, {
         blueprintCacheKey: 'bp:/Game/BP_Test',
         nodeId: 'node-456',
-      });
+      }, approvalGate);
 
       expect(result).toHaveProperty('content');
       expect(result.content).toHaveLength(1);
@@ -244,12 +247,14 @@ describe('BlueprintToolHandlers', () => {
     it('blueprint.deleteNode handles bridge not connected gracefully', async () => {
       const disconnectedBridge = new WebSocketBridge({ port: 0, requestTimeoutMs: 1000 });
       await disconnectedBridge.start();
+      const approvalGate = new ApprovalGate(1000, null);
+      approvalGate.setAutoResponse('approve');
 
       try {
         await blueprintDeleteNode(disconnectedBridge, {
           blueprintCacheKey: 'bp:/Game/BP_Test',
           nodeId: 'node-1',
-        });
+        }, approvalGate);
         expect.fail('Should have thrown');
       } catch (err) {
         expect((err as Error).message).toMatch(/not connected/i);

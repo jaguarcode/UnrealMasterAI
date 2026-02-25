@@ -98,42 +98,105 @@ export function isPathSafe(filePath: string, allowedRoots: string[]): boolean {
   return allowedRoots.some((root) => normalized.startsWith(root.replace(/\\/g, '/')));
 }
 
+export interface ApprovalRequestContext {
+  toolName: string;
+  filePath?: string;
+}
+
 /**
  * Approval gate for dangerous operations.
- * In production, sends approval request via WebSocket to UE editor dialog.
- * In test mode, can be configured to auto-approve or auto-reject.
+ *
+ * Production mode: sends a 'safety.requestApproval' WS message to the UE editor
+ * and waits for the developer to approve or reject via the Slate dialog.
+ * Defaults to reject after timeoutMs (60 seconds).
+ *
+ * Test mode: setAutoResponse('approve' | 'reject') bypasses the WS round-trip.
  */
 export class ApprovalGate {
   private autoResponse: 'approve' | 'reject' | null = null;
   private timeoutMs: number;
+  private bridge: import('../transport/websocket-bridge.js').WebSocketBridge | null;
 
-  constructor(timeoutMs = 60000) {
+  /**
+   * @param timeoutMs - How long to wait for UE response before auto-rejecting
+   * @param bridge    - WebSocketBridge instance. When null, falls back to timeout-reject.
+   */
+  constructor(
+    timeoutMs = 60000,
+    bridge: import('../transport/websocket-bridge.js').WebSocketBridge | null = null,
+  ) {
     this.timeoutMs = timeoutMs;
+    this.bridge = bridge;
   }
 
-  /** For testing: set automatic response mode. Pass null to restore timeout behavior. */
+  /** For testing: set automatic response mode. Pass null to restore live behavior. */
   setAutoResponse(response: 'approve' | 'reject' | null): void {
     this.autoResponse = response;
   }
 
   /**
    * Request approval for a dangerous operation.
-   * Returns true if approved, false if rejected or timed out.
-   * Non-dangerous operations (requiresApproval === false) are auto-approved.
+   *
+   * - Non-dangerous operations (requiresApproval === false) return true immediately.
+   * - In auto-response mode (test), returns based on setAutoResponse value.
+   * - In production mode, sends 'safety.requestApproval' via WS and awaits response.
+   * - Falls back to timeout-reject if no bridge is configured.
    */
-  async requestApproval(classification: SafetyClassification): Promise<boolean> {
+  async requestApproval(
+    classification: SafetyClassification,
+    context: ApprovalRequestContext = { toolName: 'unknown' },
+  ): Promise<boolean> {
     if (!classification.requiresApproval) return true;
 
     if (this.autoResponse !== null) {
       return this.autoResponse === 'approve';
     }
 
-    // In production, this would send an approval request via WS to UE editor.
-    // Default: timeout = reject.
+    if (this.bridge && this.bridge.hasActiveConnection()) {
+      return this.sendApprovalRequest(classification, context);
+    }
+
+    // No bridge or no active connection — timeout-reject (original behavior)
     return new Promise<boolean>((resolve) => {
       const timer = setTimeout(() => resolve(false), this.timeoutMs);
-      // Allow Node.js process to exit even if timer is pending (for tests/graceful shutdown)
       timer.unref?.();
     });
+  }
+
+  private async sendApprovalRequest(
+    classification: SafetyClassification,
+    context: ApprovalRequestContext,
+  ): Promise<boolean> {
+    const { v4: uuidv4 } = await import('uuid');
+    const operationId = uuidv4();
+
+    const msg = {
+      id: operationId,
+      method: 'safety.requestApproval',
+      params: {
+        operationId,
+        toolName: context.toolName,
+        reason: classification.reason,
+        ...(context.filePath ? { filePath: context.filePath } : {}),
+      },
+      timestamp: Date.now(),
+    };
+
+    try {
+      const response = await Promise.race([
+        this.bridge!.sendRequest(msg),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Approval timeout')), this.timeoutMs),
+        ),
+      ]);
+
+      if (response.error) return false;
+
+      const result = response.result as Record<string, unknown> | undefined;
+      return result?.approved === true;
+    } catch {
+      // Timeout or WS error — default to reject
+      return false;
+    }
   }
 }
