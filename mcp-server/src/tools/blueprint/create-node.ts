@@ -1,0 +1,54 @@
+/**
+ * blueprint.createNode tool handler.
+ * Creates a new node in a Blueprint graph via WebSocket bridge.
+ */
+import { v4 as uuidv4 } from 'uuid';
+import type { WebSocketBridge } from '../../transport/websocket-bridge.js';
+
+export interface CreateNodeParams {
+  blueprintCacheKey: string;
+  graphName: string;
+  nodeClass: string;
+  posX?: number;
+  posY?: number;
+}
+
+export async function blueprintCreateNode(
+  bridge: WebSocketBridge,
+  params: CreateNodeParams,
+) {
+  const msg = {
+    id: uuidv4(),
+    method: 'blueprint.createNode',
+    params: {
+      blueprintCacheKey: params.blueprintCacheKey,
+      graphName: params.graphName,
+      nodeClass: params.nodeClass,
+      ...(params.posX !== undefined && { posX: params.posX }),
+      ...(params.posY !== undefined && { posY: params.posY }),
+    },
+    timestamp: Date.now(),
+  };
+
+  const response = await bridge.sendRequest(msg);
+
+  if (response.error) {
+    return {
+      content: [
+        {
+          type: 'text' as const,
+          text: JSON.stringify({ status: 'error', error: response.error }),
+        },
+      ],
+    };
+  }
+
+  return {
+    content: [
+      {
+        type: 'text' as const,
+        text: JSON.stringify(response.result),
+      },
+    ],
+  };
+}

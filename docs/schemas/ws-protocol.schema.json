@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WebSocket Protocol Schema",
+  "description": "Message envelope schema for MCP Bridge Server <-> UE Plugin communication",
+  "definitions": {
+    "WSMessage": {
+      "type": "object",
+      "description": "Request message from MCP Bridge Server to UE Plugin",
+      "required": ["id", "method", "params", "timestamp"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique request ID for response correlation"
+        },
+        "method": {
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-zA-Z]+$",
+          "description": "Dot-notation command (e.g., 'blueprint.serialize', 'editor.ping')"
+        },
+        "params": {
+          "type": "object",
+          "description": "Command-specific parameters"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp in milliseconds"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WSResponse": {
+      "type": "object",
+      "description": "Response message from UE Plugin to MCP Bridge Server",
+      "required": ["id", "duration_ms"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Correlates to request WSMessage.id"
+        },
+        "result": {
+          "description": "Success payload (null or absent on error)"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 6099,
+              "description": "Error code per taxonomy (1000-6099)"
+            },
+            "message": {
+              "type": "string",
+              "description": "Human-readable error description"
+            },
+            "data": {
+              "description": "Optional structured error context"
+            }
+          },
+          "required": ["code", "message"]
+        },
+        "duration_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Server-side processing time in milliseconds"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://unreal-master.dev/schemas/blueprint-ast.schema.json",
+  "title": "Blueprint AST",
+  "description": "Serialized representation of an Unreal Engine Blueprint graph for the MCP server.",
+  "type": "object",
+  "required": ["blueprintPath", "blueprintClass", "parentClass", "graphs"],
+  "additionalProperties": false,
+  "properties": {
+    "blueprintPath": {
+      "type": "string",
+      "description": "Unreal content path to the Blueprint asset (e.g. /Game/Blueprints/BP_TestActor)."
+    },
+    "blueprintClass": {
+      "type": "string",
+      "description": "Blueprint class type (e.g. Blueprint, AnimBlueprint)."
+    },
+    "parentClass": {
+      "type": "string",
+      "description": "Parent class the Blueprint inherits from (e.g. Actor, Pawn)."
+    },
+    "graphs": {
+      "type": "array",
+      "description": "Blueprint graphs. Must contain at least one graph.",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/BlueprintGraph" }
+    }
+  },
+  "definitions": {
+    "BlueprintGraph": {
+      "type": "object",
+      "required": ["graphName", "graphType", "nodes"],
+      "additionalProperties": false,
+      "properties": {
+        "graphName": {
+          "type": "string",
+          "description": "Display name of the graph."
+        },
+        "graphType": {
+          "type": "string",
+          "enum": ["EventGraph", "FunctionGraph", "MacroGraph", "AnimGraph"],
+          "description": "The type of Blueprint graph."
+        },
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/BlueprintNode" }
+        }
+      }
+    },
+    "BlueprintNode": {
+      "type": "object",
+      "required": ["nodeId", "nodeClass", "nodeTitle", "posX", "posY", "pins"],
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the node."
+        },
+        "nodeClass": {
+          "type": "string",
+          "description": "Unreal node class (e.g. K2Node_Event, K2Node_CallFunction)."
+        },
+        "nodeTitle": {
+          "type": "string",
+          "description": "Human-readable title shown in the graph editor."
+        },
+        "posX": {
+          "type": "integer",
+          "description": "Horizontal position in the graph canvas."
+        },
+        "posY": {
+          "type": "integer",
+          "description": "Vertical position in the graph canvas."
+        },
+        "comment": {
+          "type": "string",
+          "default": "",
+          "description": "Optional comment attached to the node."
+        },
+        "pins": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/BlueprintPin" }
+        }
+      }
+    },
+    "BlueprintPin": {
+      "type": "object",
+      "required": ["pinId", "pinName", "direction", "category", "isExec", "linkedTo"],
+      "additionalProperties": false,
+      "properties": {
+        "pinId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the pin."
+        },
+        "pinName": {
+          "type": "string",
+          "description": "Display name of the pin."
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["Input", "Output"],
+          "description": "Whether this pin is an input or output."
+        },
+        "category": {
+          "type": "string",
+          "description": "Pin type category (e.g. exec, bool, int, float, string, object:ClassName, delegate)."
+        },
+        "subCategory": {
+          "type": "string",
+          "default": "",
+          "description": "Optional sub-category for the pin type."
+        },
+        "isExec": {
+          "type": "boolean",
+          "description": "Whether this is an execution flow pin."
+        },
+        "defaultValue": {
+          "type": "string",
+          "default": "",
+          "description": "Default value as a string representation."
+        },
+        "linkedTo": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/BlueprintPinLink" },
+          "description": "Pins this pin is connected to."
+        }
+      }
+    },
+    "BlueprintPinLink": {
+      "type": "object",
+      "required": ["nodeId", "pinId"],
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the linked node."
+        },
+        "pinId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the linked pin on the target node."
+        }
+      }
+    }
+  }
+}

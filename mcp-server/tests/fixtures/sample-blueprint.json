@@ -1,0 +1,263 @@
+{
+  "blueprintPath": "/Game/Blueprints/BP_TestActor",
+  "blueprintClass": "Blueprint",
+  "parentClass": "Actor",
+  "graphs": [
+    {
+      "graphName": "EventGraph",
+      "graphType": "EventGraph",
+      "nodes": [
+        {
+          "nodeId": "550e8400-e29b-41d4-a716-446655440001",
+          "nodeClass": "K2Node_Event",
+          "nodeTitle": "Event BeginPlay",
+          "posX": -200,
+          "posY": 0,
+          "comment": "",
+          "pins": [
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440010",
+              "pinName": "then",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440002",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440020"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440011",
+              "pinName": "OutputDelegate",
+              "direction": "Output",
+              "category": "delegate",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "",
+              "linkedTo": []
+            }
+          ]
+        },
+        {
+          "nodeId": "550e8400-e29b-41d4-a716-446655440002",
+          "nodeClass": "K2Node_CallFunction",
+          "nodeTitle": "Print String",
+          "posX": 200,
+          "posY": 0,
+          "comment": "Debug output",
+          "pins": [
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440020",
+              "pinName": "execute",
+              "direction": "Input",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440001",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440010"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440021",
+              "pinName": "then",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440003",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440030"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440022",
+              "pinName": "InString",
+              "direction": "Input",
+              "category": "string",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "Hello World",
+              "linkedTo": []
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440023",
+              "pinName": "bPrintToScreen",
+              "direction": "Input",
+              "category": "bool",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "true",
+              "linkedTo": []
+            }
+          ]
+        },
+        {
+          "nodeId": "550e8400-e29b-41d4-a716-446655440003",
+          "nodeClass": "K2Node_IfThenElse",
+          "nodeTitle": "Branch",
+          "posX": 600,
+          "posY": 0,
+          "comment": "",
+          "pins": [
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440030",
+              "pinName": "execute",
+              "direction": "Input",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440002",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440021"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440031",
+              "pinName": "Condition",
+              "direction": "Input",
+              "category": "bool",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "true",
+              "linkedTo": []
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440032",
+              "pinName": "True",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440004",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440040"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440033",
+              "pinName": "False",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440005",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440050"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeId": "550e8400-e29b-41d4-a716-446655440004",
+          "nodeClass": "K2Node_VariableSet",
+          "nodeTitle": "Set bIsActive",
+          "posX": 1000,
+          "posY": -100,
+          "comment": "Enable actor",
+          "pins": [
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440040",
+              "pinName": "execute",
+              "direction": "Input",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440003",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440032"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440041",
+              "pinName": "then",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": []
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440042",
+              "pinName": "bIsActive",
+              "direction": "Input",
+              "category": "bool",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "true",
+              "linkedTo": []
+            }
+          ]
+        },
+        {
+          "nodeId": "550e8400-e29b-41d4-a716-446655440005",
+          "nodeClass": "K2Node_CallFunction",
+          "nodeTitle": "Delay",
+          "posX": 1000,
+          "posY": 100,
+          "comment": "Wait before retrying",
+          "pins": [
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440050",
+              "pinName": "execute",
+              "direction": "Input",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": [
+                {
+                  "nodeId": "550e8400-e29b-41d4-a716-446655440003",
+                  "pinId": "550e8400-e29b-41d4-a716-446655440033"
+                }
+              ]
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440051",
+              "pinName": "Completed",
+              "direction": "Output",
+              "category": "exec",
+              "subCategory": "",
+              "isExec": true,
+              "defaultValue": "",
+              "linkedTo": []
+            },
+            {
+              "pinId": "550e8400-e29b-41d4-a716-446655440052",
+              "pinName": "Duration",
+              "direction": "Input",
+              "category": "float",
+              "subCategory": "",
+              "isExec": false,
+              "defaultValue": "2.0",
+              "linkedTo": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

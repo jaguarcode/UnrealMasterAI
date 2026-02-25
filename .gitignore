@@ -1,0 +1,30 @@
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# UE
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+.vs/
+*.uasset
+*.umap
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+*.log
+*.bak
+
+# Environment
+.env
+.env.local

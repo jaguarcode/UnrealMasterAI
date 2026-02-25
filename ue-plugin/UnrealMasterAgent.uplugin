@@ -1,0 +1,23 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "Unreal Master Agent",
+  "Description": "AI agent plugin enabling Claude Code to manipulate UE internals via MCP",
+  "Category": "AI",
+  "CreatedBy": "Unreal Master Team",
+  "EnabledByDefault": true,
+  "CanContainContent": true,
+  "Modules": [
+    {
+      "Name": "UnrealMasterAgent",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "UnrealMasterAgentTests",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}

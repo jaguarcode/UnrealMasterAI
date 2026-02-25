@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Blueprint AST Schema",
+  "description": "JSON schema for serialized Unreal Engine Blueprint abstract syntax tree",
+  "type": "object",
+  "required": ["blueprintPath", "blueprintClass", "parentClass", "graphs"],
+  "properties": {
+    "blueprintPath": {
+      "type": "string",
+      "description": "UE asset path (e.g., '/Game/BP_TestActor')"
+    },
+    "blueprintClass": {
+      "type": "string",
+      "description": "Blueprint class name"
+    },
+    "parentClass": {
+      "type": "string",
+      "description": "Parent class (e.g., 'Actor', 'Character')"
+    },
+    "graphs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["graphName", "graphType", "nodes"],
+        "properties": {
+          "graphName": { "type": "string" },
+          "graphType": {
+            "type": "string",
+            "enum": ["EventGraph", "FunctionGraph", "MacroGraph", "AnimGraph"]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["nodeId", "nodeClass", "nodeTitle", "posX", "posY", "pins"],
+              "properties": {
+                "nodeId": { "type": "string", "format": "uuid" },
+                "nodeClass": { "type": "string" },
+                "nodeTitle": { "type": "string" },
+                "posX": { "type": "integer" },
+                "posY": { "type": "integer" },
+                "comment": { "type": "string" },
+                "pins": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["pinId", "pinName", "direction", "pinType", "isExec"],
+                    "properties": {
+                      "pinId": { "type": "string", "format": "uuid" },
+                      "pinName": { "type": "string" },
+                      "direction": { "type": "string", "enum": ["Input", "Output"] },
+                      "pinType": {
+                        "type": "string",
+                        "description": "Short type string: int, float, bool, string, exec, object:ClassName, struct:StructName"
+                      },
+                      "isExec": { "type": "boolean" },
+                      "defaultValue": { "type": "string" },
+                      "linkedTo": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["nodeId", "pinId"],
+                          "properties": {
+                            "nodeId": { "type": "string" },
+                            "pinId": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
