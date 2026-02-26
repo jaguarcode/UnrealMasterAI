@@ -41,7 +41,7 @@ export async function blueprintSerialize(
     id: uuidv4(),
     method: 'blueprint.serialize',
     params: {
-      assetPath: params.assetPath,
+      blueprintPath: params.assetPath,
       ...(params.graphName && { graphName: params.graphName }),
     },
     timestamp: Date.now(),

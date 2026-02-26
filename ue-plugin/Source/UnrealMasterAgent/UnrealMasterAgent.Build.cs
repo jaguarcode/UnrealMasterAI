@@ -25,7 +25,8 @@ public class UnrealMasterAgent : ModuleRules
             "SlateCore",
             "EditorSubsystem",
             "Networking",
-            "Sockets"
+            "Sockets",
+            "WorkspaceMenuStructure"
         });
     }
 }

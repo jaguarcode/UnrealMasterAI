@@ -18,7 +18,7 @@ export async function blueprintDeleteNode(
   approvalGate: ApprovalGate,
 ) {
   // Safety classification and approval gate
-  const classification = classifyOperation('blueprint-deleteNode', params);
+  const classification = classifyOperation('blueprint-deleteNode', { ...params });
   const approved = await approvalGate.requestApproval(classification, {
     toolName: 'blueprint-deleteNode',
   });
@@ -41,7 +41,7 @@ export async function blueprintDeleteNode(
     id: uuidv4(),
     method: 'blueprint.deleteNode',
     params: {
-      blueprintCacheKey: params.blueprintCacheKey,
+      blueprintPath: params.blueprintCacheKey.replace(/^bp:/, ''),
       nodeId: params.nodeId,
     },
     timestamp: Date.now(),

@@ -20,7 +20,7 @@ export async function blueprintModifyProperty(
     id: uuidv4(),
     method: 'blueprint.modifyProperty',
     params: {
-      blueprintCacheKey: params.blueprintCacheKey,
+      blueprintPath: params.blueprintCacheKey.replace(/^bp:/, ''),
       nodeId: params.nodeId,
       propertyName: params.propertyName,
       propertyValue: params.propertyValue,

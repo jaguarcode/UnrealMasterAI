@@ -10,6 +10,7 @@
 #include "Editor/UMAEditorQueries.h"
 #include "Editor/UMAEditorSubsystem.h"
 #include "Safety/UMAApprovalGate.h"
+#include "FileOps/UMAFileOperations.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
 #include "Serialization/JsonReader.h"
@@ -510,6 +511,107 @@ void FUnrealMasterAgentModule::StartupModule()
                 return MakeErrorResponse(Message.Id, 5000, TEXT("Internal serialization error"));
             }
 
+            return Response;
+        }));
+
+    // Register file operation handlers
+    GMessageHandler->RegisterHandler(TEXT("file.read"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            FString FilePath;
+            FUMAWSResponse ErrorResp;
+            if (!GetStringParam(Message, TEXT("filePath"), FilePath, ErrorResp))
+            {
+                return ErrorResp;
+            }
+
+            int32 Offset = 0, Limit = -1;
+            if (Message.Params.IsValid())
+            {
+                double TempOffset = 0, TempLimit = -1;
+                if (Message.Params->TryGetNumberField(TEXT("offset"), TempOffset))
+                {
+                    Offset = static_cast<int32>(TempOffset);
+                }
+                if (Message.Params->TryGetNumberField(TEXT("limit"), TempLimit))
+                {
+                    Limit = static_cast<int32>(TempLimit);
+                }
+            }
+
+            FString ResultJson = FUMAFileOperations::ReadFile(FilePath, Offset, Limit);
+
+            FUMAWSResponse Response;
+            Response.Id = Message.Id;
+            TSharedPtr<FJsonObject> ResultObj;
+            TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResultJson);
+            if (FJsonSerializer::Deserialize(Reader, ResultObj) && ResultObj.IsValid())
+            {
+                Response.Result = ResultObj;
+            }
+            else
+            {
+                return MakeErrorResponse(Message.Id, 5000, TEXT("Internal serialization error"));
+            }
+            return Response;
+        }));
+
+    GMessageHandler->RegisterHandler(TEXT("file.write"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            FString FilePath, Content;
+            FUMAWSResponse ErrorResp;
+            if (!GetStringParam(Message, TEXT("filePath"), FilePath, ErrorResp)) return ErrorResp;
+            if (!GetStringParam(Message, TEXT("content"), Content, ErrorResp)) return ErrorResp;
+
+            FString ResultJson = FUMAFileOperations::WriteFile(FilePath, Content);
+
+            FUMAWSResponse Response;
+            Response.Id = Message.Id;
+            TSharedPtr<FJsonObject> ResultObj;
+            TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResultJson);
+            if (FJsonSerializer::Deserialize(Reader, ResultObj) && ResultObj.IsValid())
+            {
+                Response.Result = ResultObj;
+            }
+            else
+            {
+                return MakeErrorResponse(Message.Id, 5000, TEXT("Internal serialization error"));
+            }
+            return Response;
+        }));
+
+    GMessageHandler->RegisterHandler(TEXT("file.search"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            FString Pattern;
+            FUMAWSResponse ErrorResp;
+            if (!GetStringParam(Message, TEXT("pattern"), Pattern, ErrorResp))
+            {
+                return ErrorResp;
+            }
+
+            FString Directory, Glob;
+            if (Message.Params.IsValid())
+            {
+                Message.Params->TryGetStringField(TEXT("directory"), Directory);
+                Message.Params->TryGetStringField(TEXT("glob"), Glob);
+            }
+
+            FString ResultJson = FUMAFileOperations::SearchFiles(Pattern, Directory, Glob);
+
+            FUMAWSResponse Response;
+            Response.Id = Message.Id;
+            TSharedPtr<FJsonObject> ResultObj;
+            TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(ResultJson);
+            if (FJsonSerializer::Deserialize(Reader, ResultObj) && ResultObj.IsValid())
+            {
+                Response.Result = ResultObj;
+            }
+            else
+            {
+                return MakeErrorResponse(Message.Id, 5000, TEXT("Internal serialization error"));
+            }
             return Response;
         }));
 

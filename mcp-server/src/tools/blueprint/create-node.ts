@@ -21,7 +21,7 @@ export async function blueprintCreateNode(
     id: uuidv4(),
     method: 'blueprint.createNode',
     params: {
-      blueprintCacheKey: params.blueprintCacheKey,
+      blueprintPath: params.blueprintCacheKey.replace(/^bp:/, ''),
       graphName: params.graphName,
       nodeClass: params.nodeClass,
       ...(params.posX !== undefined && { posX: params.posX }),

@@ -19,7 +19,7 @@ export async function blueprintConnectPins(
     id: uuidv4(),
     method: 'blueprint.connectPins',
     params: {
-      blueprintCacheKey: params.blueprintCacheKey,
+      blueprintPath: params.blueprintCacheKey.replace(/^bp:/, ''),
       sourcePinId: params.sourcePinId,
       targetPinId: params.targetPinId,
     },
