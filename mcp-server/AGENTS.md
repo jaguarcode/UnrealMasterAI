@@ -40,6 +40,14 @@ npm run typecheck           # TypeScript type check only
 Test files live at `tests/unit/<domain>/<file>.test.ts`
 and `tests/integration/<file>.test.ts`.
 
+### Development Guides (`docs/`)
+
+| File | Description |
+|------|-------------|
+| `docs/DEFERRED-FEATURES-GUIDE.md` | Implementation guide for US-021, US-022, US-023 with status tracking |
+| `docs/TEST-VERIFICATION-GUIDE.md` | Step-by-step TypeScript test verification walkthrough |
+| `docs/UE-EDITOR-VERIFICATION-GUIDE.md` | UE Editor manual testing guide for C++ compilation and visual verification |
+
 ## For AI Agents
 
 ### stdout / stderr Rule

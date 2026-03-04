@@ -144,21 +144,30 @@ Unreal Master/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
 │   │   ├── server.ts        McpServer configuration
 │   │   ├── tools/           MCP tool definitions
-│   │   │   ├── registry.ts  Tool registration
 │   │   │   ├── editor/      Editor query tools (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint manipulation tools
+│   │   │   ├── compilation/ Compile trigger and status tools
+│   │   │   ├── file/        File operation tools
 │   │   │   ├── slate/       Slate UI generation tools
-│   │   │   └── compilation/ Compile trigger and status tools
+│   │   │   └── chat/        In-editor chat tools
 │   │   ├── transport/       WebSocket bridge and codec
 │   │   ├── state/           Cache store and safety gate
 │   │   └── observability/   Tracing (LangSmith/Langfuse)
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── vitest.config.ts
+│   ├── vitest.config.ts
+│   ├── tests/             Test suites
+│   └── docs/              Development guides
+│       ├── DEFERRED-FEATURES-GUIDE.md
+│       ├── TEST-VERIFICATION-GUIDE.md
+│       └── UE-EDITOR-VERIFICATION-GUIDE.md
 │
 ├── ue-plugin/               Layer 3: C++ UE plugin (implemented)
 │   └── Source/
-│       ├── UnrealMasterAgent/        Main module (14 handlers registered)
+│       ├── UnrealMasterAgent/        Main module (17 handlers registered)
+│       │   ├── Safety/               UMAApprovalGate
+│       │   ├── FileOps/              UMAFileOperations
+│       │   └── Editor/               UMAEditorSubsystem, SUMAChatPanel
 │       └── UnrealMasterAgentTests/   Automation test module
 │
 └── docs/

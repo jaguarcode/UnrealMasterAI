@@ -39,7 +39,7 @@ Engine APIs: UEdGraph, Slate, ILiveCodingModule (Layer 4)
 - File operations handler
 - Safety: `FUMAApprovalGate` with Slate modal dialog, countdown timer
 - Chat: `UUMAEditorSubsystem` with dockable `SUMAChatPanel`
-- 14 handlers registered in `UnrealMasterAgent.cpp::StartupModule()`
+- 17 handlers registered in `UnrealMasterAgent.cpp::StartupModule()`
 
 **Deferred files — now fully implemented:**
 

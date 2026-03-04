@@ -162,11 +162,11 @@ The agent design follows a strict separation of concerns: the LLM reasons and or
 | Code Range | Category | Examples |
 |------------|----------|---------|
 | 1000–1099 | Connection | WS disconnect, handshake failure, timeout |
-| 2000–2099 | Validation | Invalid params, unknown method, schema mismatch |
-| 3000–3099 | Blueprint | Asset not found, invalid pin type, node creation failed |
-| 4000–4099 | Compilation | Live Coding unavailable, compile failed, timeout |
-| 5000–5099 | File System | Permission denied, file not found, write conflict |
-| 6000–6099 | Safety | 6000 = range start; 6001 = approval rejected by user or timeout |
+| 2000–2099 | Handler routing | Unknown method (2001) |
+| 3000–3099 | Parameter validation | Missing required parameter (3001) |
+| 4000–4099 | Blueprint operations | Node spawn failed (4001), pin connection failed (4002), delete failed (4003), property modify failed (4004) |
+| 5000–5099 | Internal / compilation | Serialization error (5000), Live Coding not initialized (5001), not available (5002), not enabled (5003), already compiling (5004) |
+| 6000–6099 | Safety gate | ApprovalGate not initialized (6000), approval rejected or timeout (6001) |
 
 ---
 
@@ -350,7 +350,7 @@ The 60-second approval timeout prevents the agent from hanging indefinitely if t
 | Integration | Full tool call through mock WebSocket | Mock UE plugin responder |
 | Contract | WSMessage / WSResponse schema conformance | `ws-protocol.schema.json` |
 
-Test file convention: `src/**/__tests__/*.test.ts`
+Test file convention: `tests/unit/<domain>/<file>.test.ts` and `tests/integration/<file>.test.ts`
 
 ### UE Plugin (UE Automation Framework)
 
@@ -438,13 +438,22 @@ Unreal Master/
 │   ├── tsconfig.json
 │   └── vitest.config.ts
 │
-├── ue-plugin/               ← Layer 3: C++ UE Plugin (to be created)
-│   ├── ue-plugin.uplugin
-│   ├── Source/
-│   │   └── UEMasterPlugin/
-│   │       ├── Public/
-│   │       └── Private/
-│   └── Resources/
+├── ue-plugin/               ← Layer 3: C++ UE Plugin
+│   ├── UnrealMasterAgent.uplugin
+│   └── Source/
+│       ├── UnrealMasterAgent/      Main module (17 handlers)
+│       │   ├── UnrealMasterAgent.Build.cs
+│       │   ├── Public/
+│       │   │   ├── WebSocket/     WS client + message types
+│       │   │   ├── Blueprint/     Serializer + manipulator
+│       │   │   ├── Compilation/   Live Coding controller + log parser
+│       │   │   ├── Editor/        EditorSubsystem + ChatPanel
+│       │   │   ├── FileOps/       File read/write/search
+│       │   │   └── Safety/        ApprovalGate + Slate dialog
+│       │   └── Private/           Implementations (.cpp)
+│       └── UnrealMasterAgentTests/ Test module (9 test files)
+│           ├── UnrealMasterAgentTests.Build.cs
+│           └── Private/
 │
 └── docs/
     └── schemas/

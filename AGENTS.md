@@ -47,14 +47,14 @@ All code changes start with failing tests.
 
 ### Error Code Taxonomy
 
-| Range | Category |
-|-------|---------|
-| 1000–1099 | Connection / WebSocket |
-| 2000–2099 | Handler routing (unknown method = 2001) |
-| 3000–3099 | Parameter validation |
-| 4000–4099 | Blueprint operations |
-| 5000–5099 | Internal / serialization |
-| 6000–6099 | Safety gate |
+| Range | Category | Key Codes |
+|-------|---------|-----------|
+| 1000–1099 | Connection / WebSocket | Disconnect, handshake failure, timeout |
+| 2000–2099 | Handler routing | Unknown method (2001) |
+| 3000–3099 | Parameter validation | Missing required parameter (3001) |
+| 4000–4099 | Blueprint operations | Spawn failed (4001), connect failed (4002), delete failed (4003), modify failed (4004) |
+| 5000–5099 | Internal / compilation | Serialization error (5000), Live Coding init (5001–5004) |
+| 6000–6099 | Safety gate | Not initialized (6000), rejected/timeout (6001) |
 
 ### WS Message Envelope
 

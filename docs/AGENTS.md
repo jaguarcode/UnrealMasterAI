@@ -18,10 +18,12 @@ templates used by the RAG-based code generation system.
 | `slate-templates/base-widget.md` | Base SCompoundWidget template |
 | `slate-templates/list-view.md` | SListView with item row generation |
 | `slate-templates/tree-view.md` | STreeView with expansion |
-| `slate-templates/details-panel.md` | Details/properties panel layout |
-| `slate-templates/toolbar.md` | Toolbar with FToolBarBuilder |
-| `slate-templates/dialog.md` | Modal dialog with SWindow + GEditor->EditorAddModalWindow() |
+| `slate-templates/dialog-window.md` | Modal dialog with SWindow |
+| `slate-templates/input-field.md` | Text input field widget |
 | `slate-templates/tab-widget.md` | Dockable SDockTab via FGlobalTabmanager |
+| `slate-templates/progress-bar.md` | Progress bar widget |
+
+> **Note:** The MCP server loads templates from `mcp-server/docs/slate-templates/` (a separate directory with its own set of templates including `details-panel.md`, `toolbar.md`, `dialog.md`). The `docs/slate-templates/` directory here serves as the RAG knowledge base source.
 
 ## For AI Agents
 
