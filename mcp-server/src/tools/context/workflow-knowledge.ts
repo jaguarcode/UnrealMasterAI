@@ -671,10 +671,30 @@ const BUILTIN_WORKFLOWS: Workflow[] = [
   },
 ];
 
-// Runtime-learned workflows (can be added via the learnWorkflow tool)
+// Runtime-learned workflows — initialized from persistent store, then kept in sync
+import {
+  loadLearnedWorkflows,
+  saveLearnedWorkflows,
+  appendLearnedWorkflow as persistWorkflow,
+  removeLearnedWorkflow as unpersistWorkflow,
+} from './workflow-store.js';
+
 let learnedWorkflows: Workflow[] = [];
+let initialized = false;
+
+function ensureLoaded(): void {
+  if (!initialized) {
+    try {
+      learnedWorkflows = loadLearnedWorkflows();
+    } catch {
+      learnedWorkflows = [];
+    }
+    initialized = true;
+  }
+}
 
 export function getAllWorkflows(): Workflow[] {
+  ensureLoaded();
   return [...BUILTIN_WORKFLOWS, ...learnedWorkflows];
 }
 
@@ -691,17 +711,31 @@ export function getWorkflowsByTag(tag: string): Workflow[] {
 }
 
 export function addLearnedWorkflow(workflow: Workflow): void {
+  ensureLoaded();
   // Replace if same id exists
   learnedWorkflows = learnedWorkflows.filter((w) => w.id !== workflow.id);
   learnedWorkflows.push(workflow);
+  // Persist to disk
+  persistWorkflow(workflow);
+}
+
+export function removeWorkflow(id: string): boolean {
+  ensureLoaded();
+  const before = learnedWorkflows.length;
+  learnedWorkflows = learnedWorkflows.filter((w) => w.id !== id);
+  if (learnedWorkflows.length === before) return false;
+  unpersistWorkflow(id);
+  return true;
 }
 
 export function getLearnedWorkflows(): Workflow[] {
+  ensureLoaded();
   return [...learnedWorkflows];
 }
 
 export function clearLearnedWorkflows(): void {
   learnedWorkflows = [];
+  saveLearnedWorkflows([]);
 }
 
 export function getBuiltinWorkflowCount(): number {

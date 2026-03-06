@@ -2,7 +2,7 @@
 
 **Version:** 0.2.0
 **Date:** 2026-02-25 (Updated: 2026-03-06)
-**Status:** Implementation Complete (Phase 0-14 done, 173 MCP tools across 37 domains)
+**Status:** Implementation Complete (Phase 0-15 done, 183 MCP tools across 37 domains)
 
 ---
 
@@ -417,7 +417,7 @@ Unreal Master/
 ├── mcp-server/              ← Layer 2: Node.js/TypeScript bridge
 │   ├── src/
 │   │   ├── index.ts         (McpServerBootstrap)
-│   │   ├── server.ts        (173 tools registered across 37 domains)
+│   │   ├── server.ts        (183 tools registered across 37 domains)
 │   │   ├── tools/           Tool handlers by domain
 │   │   │   ├── editor/      Editor queries (ping, list-actors, level-info)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
@@ -494,7 +494,7 @@ Unreal Master/
 │
 └── docs/
     ├── api-reference/
-    │   └── mcp-tools.md              MCP tool API reference (173 tools)
+    │   └── mcp-tools.md              MCP tool API reference (183 tools)
     ├── coding-conventions/
     │   └── README.md                 TypeScript + C++ coding conventions
     ├── slate-templates/              7 Slate UI RAG templates

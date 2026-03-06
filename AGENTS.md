@@ -12,7 +12,7 @@ UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 
 | Path | Layer | Description |
 |------|-------|-------------|
-| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (173 tools, 765 tests) |
+| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (183 tools, 826 tests) |
 | `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin + 130+ Python automation scripts |
 | `TestProject/` | — | UE5 test project with gameplay classes (PatrollingActor, etc.) |
 | `docs/` | — | API reference, protocol spec, schemas, Slate RAG templates, guides |
@@ -74,7 +74,7 @@ Response (UE → MCP):
 { "id": "<uuid>", "result": { ... }, "duration_ms": 42 }
 ```
 
-### MCP Tools (173 registered across 37 domains)
+### MCP Tools (183 registered across 37 domains)
 
 | Domain | Tools |
 |--------|-------|
@@ -114,7 +114,7 @@ Response (UE → MCP):
 | Workflow | `workflow-createCharacter`, `workflow-createUIScreen`, `workflow-setupLevel`, `workflow-createInteractable`, `workflow-createProjectile`, `workflow-setupMultiplayer`, `workflow-createInventorySystem`, `workflow-createDialogueSystem` |
 | Analyze | `analyze-blueprintComplexity`, `analyze-assetHealth`, `analyze-performanceHints`, `analyze-codeConventions` |
 | Refactor | `refactor-renameChain` |
-| Context | `context-autoGather`, `context-getManifest`, `context-getChains` |
+| Context | `context-autoGather`, `context-getManifest`, `context-getChains`, `context-learnWorkflow`, `context-matchIntent`, `context-getWorkflows`, `context-recordOutcome`, `context-learnFromDocs`, `context-getOutcomeStats`, `context-recordResolution`, `context-matchError`, `context-markResolutionReused`, `context-listResolutions` |
 
 ### Subdirectory AGENTS.md
 

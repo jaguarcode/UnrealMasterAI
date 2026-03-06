@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "updatedAt": 1772791587313,
+  "resolutions": [
+    {
+      "id": "res-1772791587312-w8rlyr",
+      "errorMessage": "Error X",
+      "errorType": "blueprint-error",
+      "sourceTool": "blueprint-connectPins",
+      "developerIntent": "Connect",
+      "attemptedFixes": [],
+      "successfulFix": {
+        "description": "Fix",
+        "toolSequence": [],
+        "steps": []
+      },
+      "rootCause": "Cause",
+      "tags": [],
+      "reuseCount": 0,
+      "createdAt": 1772791587312,
+      "lastUsedAt": 1772791587312
+    },
+    {
+      "id": "res-1772791587313-xb6i53",
+      "errorMessage": "Error Y",
+      "errorType": "material-error",
+      "sourceTool": "material-create",
+      "developerIntent": "Create",
+      "attemptedFixes": [],
+      "successfulFix": {
+        "description": "Fix",
+        "toolSequence": [],
+        "steps": []
+      },
+      "rootCause": "Cause",
+      "tags": [],
+      "reuseCount": 0,
+      "createdAt": 1772791587313,
+      "lastUsedAt": 1772791587313
+    }
+  ]
+}

@@ -325,6 +325,84 @@ img{max-width:100%;display:block}
 /* ============ PARTICLES ============ */
 .particles-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
 
+/* ============ STATUS ============ */
+.status-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
+.status-banner{
+  display:flex;align-items:center;gap:1rem;justify-content:center;
+  padding:1rem 2rem;border-radius:12px;margin-bottom:3rem;
+  background:linear-gradient(135deg,rgba(0,230,138,.08),rgba(0,212,255,.08));
+  border:1px solid rgba(0,230,138,.2);
+}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--ue-green);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(0,230,138,.4)}50%{box-shadow:0 0 0 8px rgba(0,230,138,0)}}
+.status-banner span{font-size:.95rem;font-weight:600;color:var(--ue-text-bright)}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.phase-card{
+  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:14px;
+  padding:1.5rem;position:relative;overflow:hidden;transition:all .3s;
+}
+.phase-card:hover{transform:translateY(-3px);border-color:rgba(13,125,255,.3)}
+.phase-card.completed{border-left:3px solid var(--ue-green)}
+.phase-card.in-progress{border-left:3px solid var(--ue-orange)}
+.phase-card.planned{border-left:3px solid var(--ue-border)}
+.phase-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.phase-card h4{font-size:.95rem;font-weight:700;color:var(--ue-text-bright)}
+.phase-card p{font-size:.8rem;color:var(--ue-text);line-height:1.6}
+.progress-bar{height:4px;border-radius:4px;background:rgba(255,255,255,.06);margin-top:1rem;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.pf-green{background:var(--ue-green)}.pf-orange{background:var(--ue-orange)}.pf-blue{background:var(--ue-blue)}
+
+/* ============ ROADMAP ============ */
+.roadmap-timeline{position:relative;max-width:800px;margin:0 auto}
+.roadmap-timeline::before{
+  content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--ue-green),var(--ue-blue),var(--ue-purple),var(--ue-border));
+}
+.roadmap-item{display:flex;gap:1.5rem;padding-bottom:2rem;position:relative}
+.roadmap-dot{
+  width:12px;height:12px;border-radius:50%;flex-shrink:0;
+  margin-top:.4rem;position:relative;left:19px;z-index:2;
+}
+.rd-green{background:var(--ue-green);box-shadow:0 0 12px rgba(0,230,138,.4)}
+.rd-orange{background:var(--ue-orange);box-shadow:0 0 12px rgba(255,107,53,.4)}
+.rd-blue{background:var(--ue-blue);box-shadow:0 0 12px rgba(13,125,255,.3)}
+.rd-gray{background:var(--ue-border)}
+.roadmap-content{flex:1;padding-left:1rem}
+.roadmap-content h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
+.roadmap-content p{font-size:.85rem;color:var(--ue-text);line-height:1.7}
+.roadmap-content .rm-date{font-size:.75rem;color:rgba(255,255,255,.35);font-family:var(--font-mono);margin-bottom:.3rem}
+
+/* ============ DOCS ============ */
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.doc-card{
+  display:flex;align-items:flex-start;gap:1rem;
+  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:12px;
+  padding:1.25rem;transition:all .3s;text-decoration:none;
+}
+.doc-card:hover{border-color:var(--ue-cyan);transform:translateY(-2px);background:var(--ue-card-hover)}
+.doc-icon{
+  width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1rem;
+}
+.doc-card h4{font-size:.9rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
+.doc-card p{font-size:.8rem;color:var(--ue-text);line-height:1.5}
+.di-blue{background:rgba(13,125,255,.12);color:var(--ue-blue)}
+.di-green{background:rgba(0,230,138,.12);color:var(--ue-green)}
+.di-purple{background:rgba(108,59,255,.12);color:var(--ue-purple)}
+.di-cyan{background:rgba(0,212,255,.12);color:var(--ue-cyan)}
+.di-orange{background:rgba(255,107,53,.12);color:var(--ue-orange)}
+
+/* ============ COMPAT ============ */
+.compat-row{
+  display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem;
+}
+.compat-badge{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.5rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;
+  background:var(--ue-card);border:1px solid var(--ue-border);color:var(--ue-text-bright);
+}
+.compat-badge svg{width:18px;height:18px}
+
 /* ============ RESPONSIVE ============ */
 @media(max-width:1024px){
   .features-grid{grid-template-columns:repeat(2,1fr)}
@@ -383,7 +461,9 @@ img{max-width:100%;display:block}
       <a href="#tools">Tools</a>
       <a href="#workflow">Workflow</a>
       <a href="#safety">Safety</a>
-      <a href="https://github.com" class="btn btn-primary">Get Started</a>
+      <a href="#docs">Docs</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="setup-guide.md" class="btn btn-primary">Get Started</a>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -402,15 +482,15 @@ img{max-width:100%;display:block}
         <span class="badge badge-blue">Open Source MCP Bridge</span>
       </div>
       <h1>AI-Powered<br><span class="text-gradient">Unreal Engine</span><br>Development</h1>
-      <p>Give Claude Code bidirectional control over Unreal Engine internals. Manipulate Blueprints, spawn actors, create materials, compile, and self-heal &mdash; all from natural language.</p>
+      <p>Give Claude Code bidirectional control over Unreal Engine internals. 183 tools across 37 domains &mdash; from Blueprints and materials to AI-powered workflow learning that gets smarter with every interaction.</p>
       <div class="hero-buttons">
-        <a href="#workflow" class="btn btn-primary">
+        <a href="setup-guide.md" class="btn btn-primary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          See It In Action
+          Get Started
         </a>
-        <a href="#architecture" class="btn btn-outline">
+        <a href="#roadmap" class="btn btn-outline">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          Explore Architecture
+          View Roadmap
         </a>
       </div>
       <div class="hero-visual">
@@ -435,20 +515,101 @@ img{max-width:100%;display:block}
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item reveal">
-        <h3 class="text-gradient"><span class="stat-num" data-target="73">0</span>+</h3>
+        <h3 class="text-gradient"><span class="stat-num" data-target="183">0</span>+</h3>
         <p>MCP Tools</p>
       </div>
       <div class="stat-item reveal reveal-delay-1">
-        <h3 class="text-gradient2"><span class="stat-num" data-target="21">0</span></h3>
+        <h3 class="text-gradient2"><span class="stat-num" data-target="37">0</span></h3>
         <p>Tool Domains</p>
       </div>
       <div class="stat-item reveal reveal-delay-2">
-        <h3 class="text-gradient3"><span class="stat-num" data-target="63">0</span></h3>
+        <h3 class="text-gradient3"><span class="stat-num" data-target="130">0</span></h3>
         <p>Python Scripts</p>
       </div>
       <div class="stat-item reveal reveal-delay-3">
-        <h3 class="text-gradient"><span class="stat-num" data-target="4">0</span></h3>
-        <p>Layer Architecture</p>
+        <h3 class="text-gradient"><span class="stat-num" data-target="826">0</span>+</h3>
+        <p>Passing Tests</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Project Status -->
+<section class="section status-section" id="status">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-green">Project Status</span>
+      <h2>Development <span class="text-gradient2">Progress</span></h2>
+      <p>All 15 phases complete. Production-ready with 183 tools, 826 tests, and AI-powered workflow intelligence.</p>
+    </div>
+    <div class="status-banner reveal">
+      <div class="status-dot"></div>
+      <span>Active Development &mdash; UE 5.4, 5.5, 5.6, 5.7 Supported</span>
+    </div>
+    <div class="phase-grid">
+      <div class="phase-card completed reveal">
+        <div class="phase-header">
+          <h4>Phase 0-2: Foundation</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>WebSocket bridge, message codec, connection manager, JSON-RPC 2.0 protocol, MCP SDK integration.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal reveal-delay-1">
+        <div class="phase-header">
+          <h4>Phase 3-4: Blueprint R/W</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>Blueprint serialization to JSON AST, node creation, pin connection via TryCreateConnection, property modification.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal reveal-delay-2">
+        <div class="phase-header">
+          <h4>Phase 5-6: Compilation</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>Live Coding trigger, MSVC/Clang/Linker error parsing, self-healing loop with max 3 retries, session tracking.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal">
+        <div class="phase-header">
+          <h4>Phase 7: Safety &amp; Slate</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>3-tier safety classification, approval gate with Slate dialog, RAG-assisted Slate UI generation, 7 widget templates.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal reveal-delay-1">
+        <div class="phase-header">
+          <h4>Python API Expansion</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>63 Python scripts across 15 domains: actors, assets, materials, levels, animation, meshes, gameplay, build, debug, and more.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal reveal-delay-2">
+        <div class="phase-header">
+          <h4>Phase 8: Polish &amp; Scale</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>Registry refactor, safety gate centralization, per-tool timeouts, tool discovery optimization, documentation refinement.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal">
+        <div class="phase-header">
+          <h4>Full UE API Coverage</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>112 new tools: Sequencer, AI/Nav, Widgets, Niagara, Audio, Landscape, Physics, World Partition, PCG, Workflows, Analysis, Context Intelligence.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="phase-card completed reveal reveal-delay-1">
+        <div class="phase-header">
+          <h4>Workflow &amp; Error Intelligence</h4>
+          <span class="badge badge-green">Complete</span>
+        </div>
+        <p>Persistent workflow learning from Epic docs, intent matching with UE synonym expansion, outcome tracking, error resolution learning, confidence-weighted recommendations.</p>
+        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
       </div>
     </div>
   </div>
@@ -503,7 +664,21 @@ img{max-width:100%;display:block}
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
         <h3>Python Script Bridge</h3>
-        <p>63 bundled Python scripts across 15+ domains. Extensible framework with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
+        <p>130+ bundled Python scripts across 37 domains. Extensible framework with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon fi-cyan">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <h3>Workflow Learning</h3>
+        <p>20 built-in workflows from Epic's official docs. Learn new workflows at runtime from documentation or experience. Intent matching with 60+ UE synonym groups and outcome-weighted confidence scoring.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Error Resolution Learning</h3>
+        <p>Captures troubleshooting outcomes including failed approaches. When similar errors occur, recommends proven fixes with confidence scores and warns against dead-end approaches.</p>
       </div>
     </div>
   </div>
@@ -569,29 +744,46 @@ img{max-width:100%;display:block}
   <div class="container">
     <div class="section-header reveal">
       <span class="badge badge-orange">Tool Ecosystem</span>
-      <h2><span class="text-gradient3">73+ Tools</span> Across 21 Domains</h2>
-      <p>Comprehensive coverage of UE editor operations, from Blueprints to build pipelines.</p>
+      <h2><span class="text-gradient3">183 Tools</span> Across 37 Domains</h2>
+      <p>Complete UE editor coverage: Blueprints, rendering, animation, level design, AI, VFX, audio, physics, and AI-powered workflow intelligence.</p>
     </div>
     <div class="domains-grid reveal">
-      <div class="domain-chip"><span class="count">5</span><span>Blueprint</span></div>
       <div class="domain-chip"><span class="count">9</span><span>Actors</span></div>
       <div class="domain-chip"><span class="count">8</span><span>Assets</span></div>
+      <div class="domain-chip"><span class="count">8</span><span>Workflow</span></div>
+      <div class="domain-chip"><span class="count">7</span><span>Sequencer</span></div>
       <div class="domain-chip"><span class="count">6</span><span>Materials</span></div>
       <div class="domain-chip"><span class="count">6</span><span>Project</span></div>
+      <div class="domain-chip"><span class="count">6</span><span>AI/Nav</span></div>
+      <div class="domain-chip"><span class="count">6</span><span>Widget</span></div>
+      <div class="domain-chip"><span class="count">6</span><span>Editor</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Blueprint</span></div>
       <div class="domain-chip"><span class="count">5</span><span>Levels</span></div>
       <div class="domain-chip"><span class="count">5</span><span>Animation</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Audio</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Landscape</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Texture</span></div>
       <div class="domain-chip"><span class="count">4</span><span>Content</span></div>
       <div class="domain-chip"><span class="count">4</span><span>Mesh</span></div>
       <div class="domain-chip"><span class="count">4</span><span>DataTables</span></div>
       <div class="domain-chip"><span class="count">4</span><span>Gameplay</span></div>
       <div class="domain-chip"><span class="count">4</span><span>Compilation</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Editor</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Niagara</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Physics</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>World Part.</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Foliage</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Analyze</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>PCG</span></div>
       <div class="domain-chip"><span class="count">3</span><span>Slate UI</span></div>
       <div class="domain-chip"><span class="count">3</span><span>File Ops</span></div>
       <div class="domain-chip"><span class="count">3</span><span>Source Ctrl</span></div>
       <div class="domain-chip"><span class="count">3</span><span>Build</span></div>
       <div class="domain-chip"><span class="count">3</span><span>Debug</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>Curve</span></div>
+      <div class="domain-chip"><span class="count">13</span><span>Context AI</span></div>
+      <div class="domain-chip"><span class="count">2</span><span>GeoScript</span></div>
       <div class="domain-chip"><span class="count">1</span><span>Python</span></div>
+      <div class="domain-chip"><span class="count">1</span><span>Refactor</span></div>
       <div class="domain-chip"><span class="count">1</span><span>Chat</span></div>
     </div>
   </div>
@@ -736,17 +928,197 @@ img{max-width:100%;display:block}
   </div>
 </section>
 
+<!-- Roadmap -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-purple">Roadmap</span>
+      <h2>The Path to <span class="text-gradient">Full Coverage</span></h2>
+      <p>183 tools with AI-powered learning. Every interaction makes the system smarter.</p>
+    </div>
+    <div class="roadmap-timeline reveal">
+      <div class="roadmap-item">
+        <div class="roadmap-dot rd-green"></div>
+        <div class="roadmap-content">
+          <div class="rm-date">Completed</div>
+          <h4>Foundation &amp; Core Tools (85 tools)</h4>
+          <p>Blueprint manipulation, self-healing compilation, asset pipeline, actor management, materials, levels, animation, meshes, DataTables, gameplay, source control, build pipeline, debug tools, Python bridge with 130+ scripts.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot rd-green"></div>
+        <div class="roadmap-content">
+          <div class="rm-date">Completed</div>
+          <h4>Full UE API Coverage (170 tools)</h4>
+          <p>Sequencer/Cinematics, AI/Navigation, UMG Widgets, Texture pipeline, Niagara VFX, Audio, Landscape, Physics, World Partition, Foliage, Curves, PCG, Geometry Script. Complete UE editor automation.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot rd-green"></div>
+        <div class="roadmap-content">
+          <div class="rm-date">Completed</div>
+          <h4>Workflow &amp; Analysis Intelligence (176 tools)</h4>
+          <p>8 workflow templates (character, UI, level, multiplayer, inventory, dialogue), Blueprint complexity analysis, asset health audits, performance hints, code conventions, refactoring tools, context intelligence engine.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot rd-green"></div>
+        <div class="roadmap-content">
+          <div class="rm-date">Completed &mdash; Latest</div>
+          <h4>AI-Powered Learning System (183 tools)</h4>
+          <p>Persistent workflow learning from Epic docs, intent matching with 60+ UE synonym groups, outcome tracking with confidence scoring, error resolution learning that captures troubleshooting journeys and replays fixes for similar errors. The system gets smarter with every interaction.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot rd-orange"></div>
+        <div class="roadmap-content">
+          <div class="rm-date">Coming Next</div>
+          <h4>Community &amp; Ecosystem</h4>
+          <p>Shared workflow marketplace, community-contributed error resolutions, UE version-specific workflow variants, plugin ecosystem for custom tool domains, and real-time editor event streaming.</p>
+        </div>
+      </div>
+    </div>
+    <div class="compat-row reveal">
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        UE 5.4
+      </div>
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        UE 5.5
+      </div>
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        UE 5.6
+      </div>
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        UE 5.7
+      </div>
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-cyan)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Node.js 20+
+      </div>
+      <div class="compat-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-purple)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+        TypeScript 5.5+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Documentation -->
+<section class="section" id="docs">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-blue">Documentation</span>
+      <h2>Comprehensive <span class="text-gradient">Guides &amp; References</span></h2>
+      <p>Everything you need to get started, extend, and understand the system.</p>
+    </div>
+    <div class="docs-grid">
+      <a href="setup-guide.md" class="doc-card reveal">
+        <div class="doc-icon di-green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div>
+          <h4>Setup Guide</h4>
+          <p>Installation, configuration, and first connection walkthrough for both the MCP server and UE plugin.</p>
+        </div>
+      </a>
+      <a href="api-reference/mcp-tools.md" class="doc-card reveal reveal-delay-1">
+        <div class="doc-icon di-blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div>
+          <h4>MCP Tools API Reference</h4>
+          <p>Complete reference for all 183 tools: parameters, return values, safety levels, and usage examples.</p>
+        </div>
+      </a>
+      <a href="../ARCHITECTURE.md" class="doc-card reveal reveal-delay-2">
+        <div class="doc-icon di-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <h4>Architecture Guide</h4>
+          <p>4-layer design, ADRs, threading model, caching strategy, error taxonomy, and data flow diagrams.</p>
+        </div>
+      </a>
+      <a href="websocket-protocol.md" class="doc-card reveal">
+        <div class="doc-icon di-cyan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <h4>WebSocket Protocol</h4>
+          <p>Message envelopes, request/response correlation, error codes (1000-6099), and connection lifecycle.</p>
+        </div>
+      </a>
+      <a href="safety-architecture.md" class="doc-card reveal reveal-delay-1">
+        <div class="doc-icon di-orange">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div>
+          <h4>Safety Architecture</h4>
+          <p>3-tier classification system, approval workflow, path sandboxing, and the human-in-the-loop gate.</p>
+        </div>
+      </a>
+      <a href="coding-conventions/README.md" class="doc-card reveal reveal-delay-2">
+        <div class="doc-icon di-green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div>
+          <h4>Coding Conventions</h4>
+          <p>TypeScript and C++ style guides, naming conventions, testing patterns, and contribution guidelines.</p>
+        </div>
+      </a>
+      <a href="IMPROVEMENT-PLAN.md" class="doc-card reveal">
+        <div class="doc-icon di-blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+        </div>
+        <div>
+          <h4>Improvement Plan</h4>
+          <p>Python API expansion roadmap: 60+ new tools across 14 categories with implementation timeline.</p>
+        </div>
+      </a>
+      <a href="PHASE2-IMPROVEMENT-PLAN.md" class="doc-card reveal reveal-delay-1">
+        <div class="doc-icon di-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <h4>Editor Integration Plan</h4>
+          <p>Context engine, Claude orchestrator, streaming UI, viewport/content browser context menus.</p>
+        </div>
+      </a>
+      <a href="FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md" class="doc-card reveal reveal-delay-2">
+        <div class="doc-icon di-cyan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div>
+          <h4>Full UE API Enhancement Plan</h4>
+          <p>Comprehensive plan to reach 158 tools with full UE Python API coverage. Consensus-approved via RALPLAN.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="section cta-section">
   <div class="container reveal">
     <h2>Ready to <span class="text-gradient">Transform</span> Your Workflow?</h2>
     <p>Stop clicking through menus. Start describing what you want. Let Claude and Unreal Engine handle the rest.</p>
     <div class="cta-buttons">
-      <a href="https://github.com" class="btn btn-primary">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        View on GitHub
+      <a href="setup-guide.md" class="btn btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Get Started
       </a>
-      <a href="#architecture" class="btn btn-outline">Read the Docs</a>
+      <a href="api-reference/mcp-tools.md" class="btn btn-outline">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        API Reference
+      </a>
+      <a href="../ARCHITECTURE.md" class="btn btn-outline">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Architecture
+      </a>
     </div>
   </div>
 </section>
@@ -755,13 +1127,15 @@ img{max-width:100%;display:block}
 <footer class="footer">
   <div class="container">
     <div class="footer-links">
+      <a href="#status">Status</a>
       <a href="#features">Features</a>
       <a href="#architecture">Architecture</a>
       <a href="#tools">Tools</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#docs">Docs</a>
       <a href="#safety">Safety</a>
-      <a href="https://github.com">GitHub</a>
     </div>
-    <p>Built with Claude Code &middot; Powered by Model Context Protocol &middot; Open Source</p>
+    <p>Unreal Master Agent &middot; Built with Claude Code &middot; Powered by Model Context Protocol &middot; UE 5.4 - 5.7 &middot; MIT License &middot; Open Source</p>
   </div>
 </footer>
 

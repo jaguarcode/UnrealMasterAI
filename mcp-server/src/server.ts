@@ -216,8 +216,9 @@ import { contextAutoGather } from './tools/context/auto-gather.js';
 import { generateManifest } from './tools/context/tool-manifest.js';
 import { listChains } from './tools/context/tool-chains.js';
 import { listRecoveryStrategies } from './tools/context/error-recovery.js';
-import { contextLearnWorkflow, contextMatchIntent } from './tools/context/learn-workflow.js';
+import { contextLearnWorkflow, contextMatchIntent, contextRecordOutcome, contextLearnFromDocs, contextGetOutcomeStats } from './tools/context/learn-workflow.js';
 import { getAllWorkflows } from './tools/context/workflow-knowledge.js';
+import { contextRecordResolution, contextMatchError, contextMarkResolutionReused, contextListResolutions } from './tools/context/error-learning.js';
 
 /**
  * Create and configure the MCP server with all tools registered.
@@ -1311,7 +1312,60 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
     return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', count: summary.length, workflows: summary }) }] };
   });
 
-  logger.info(`MCP tools registered: 176 tools across 37 domains`);
+  server.tool('context-recordOutcome', 'Record the outcome (success/failure) of a workflow execution. Builds outcome history for confidence-weighted recommendations.', {
+    workflowId: z.string().describe('ID of the workflow that was executed'),
+    success: z.boolean().describe('Whether the workflow completed successfully'),
+    toolsUsed: z.array(z.string()).optional().describe('List of tool names actually used during execution'),
+    durationMs: z.number().optional().describe('Total execution duration in milliseconds'),
+    notes: z.string().optional().describe('Additional notes about the outcome (errors, workarounds)'),
+  }, async (params) => { logger.info('context.recordOutcome called'); return contextRecordOutcome(params); });
+
+  server.tool('context-learnFromDocs', 'Extract and learn UE workflows from documentation content. Parses structured doc text into workflow definitions with tool sequences.', {
+    domain: z.string().describe('UE domain (blueprint, material, character, level, animation, etc.)'),
+    docContent: z.string().describe('Documentation text content with numbered/bulleted steps describing a workflow'),
+    docSource: z.string().optional().describe('Source identifier (default: "epic-docs")'),
+  }, async (params) => { logger.info('context.learnFromDocs called'); return contextLearnFromDocs(params); });
+
+  server.tool('context-getOutcomeStats', 'Get outcome statistics for all tracked workflows. Shows success rates, trends, and execution counts.', {
+  }, async () => { logger.info('context.getOutcomeStats called'); return contextGetOutcomeStats(); });
+
+  server.tool('context-recordResolution', 'Record a successful error resolution after troubleshooting. Captures the error, attempted fixes (including failures), the successful fix, and root cause. Future similar errors will receive this resolution as a recommendation.', {
+    errorMessage: z.string().describe('The error message that was encountered'),
+    errorType: z.string().optional().describe('Error category (compile-error, asset-not-found, pin-connection-failure, etc.). Auto-inferred if omitted.'),
+    sourceTool: z.string().describe('The MCP tool that produced the error (e.g., "blueprint-connectPins")'),
+    developerIntent: z.string().describe('What the developer was trying to accomplish when the error occurred'),
+    attemptedFixes: z.array(z.object({
+      action: z.string().describe('What was tried'),
+      toolUsed: z.string().optional().describe('Tool used for this attempt'),
+      result: z.enum(['success', 'failure', 'partial']).describe('Outcome of this attempt'),
+      notes: z.string().optional().describe('Additional context'),
+    })).describe('All fixes attempted, including failures (helps avoid dead ends in future)'),
+    successfulFix: z.object({
+      description: z.string().describe('Summary of what fixed the error'),
+      toolSequence: z.array(z.string()).describe('Ordered list of tools used in the fix'),
+      steps: z.array(z.string()).describe('Step-by-step instructions to reproduce the fix'),
+    }).describe('The fix that ultimately resolved the error'),
+    rootCause: z.string().describe('Root cause analysis of why the error occurred'),
+    tags: z.array(z.string()).optional().describe('Tags for searchability (e.g., ["mobility", "static-mesh"])'),
+  }, async (params) => { logger.info('context.recordResolution called'); return contextRecordResolution(params); });
+
+  server.tool('context-matchError', 'Find matching past resolutions for a current error. Combines builtin recovery strategies with learned resolutions. Returns ranked recommendations with confidence scores and actions to avoid.', {
+    errorMessage: z.string().describe('The error message to find resolutions for'),
+    sourceTool: z.string().describe('The tool that produced the error'),
+    errorType: z.string().optional().describe('Error category (auto-inferred if omitted)'),
+    maxResults: z.number().optional().describe('Maximum learned resolutions to return (default 5)'),
+  }, async (params) => { logger.info('context.matchError called'); return contextMatchError(params); });
+
+  server.tool('context-markResolutionReused', 'Mark a learned error resolution as successfully reused. Boosts its ranking for future similar errors.', {
+    resolutionId: z.string().describe('ID of the resolution that was successfully reused'),
+  }, async (params) => { logger.info('context.markResolutionReused called'); return contextMarkResolutionReused(params); });
+
+  server.tool('context-listResolutions', 'List all stored error resolutions. Optionally filter by error type or source tool.', {
+    errorType: z.string().optional().describe('Filter by error type'),
+    sourceTool: z.string().optional().describe('Filter by source tool'),
+  }, async (params) => { logger.info('context.listResolutions called'); return contextListResolutions(params); });
+
+  logger.info(`MCP tools registered: 183 tools across 37 domains`);
 
   return server;
 }

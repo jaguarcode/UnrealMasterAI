@@ -40,6 +40,9 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Workflow templates (character, UI, level, multiplayer, inventory, dialogue)
 - Analysis tools (Blueprint complexity, asset health, performance, conventions)
 - Context intelligence (auto-gather project context, tool manifest, workflow chains)
+- Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
+- Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
+- Outcome-weighted recommendations (proven workflows rank higher automatically)
 
 ---
 
@@ -159,8 +162,8 @@ Unreal Master/
 ├── mcp-server/              Layer 2: Node.js/TypeScript MCP bridge
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
-│   │   ├── server.ts        McpServer configuration (173 tools registered)
-│   │   ├── tools/           173 MCP tool handlers across 37 domains
+│   │   ├── server.ts        McpServer configuration (183 tools registered)
+│   │   ├── tools/           183 MCP tool handlers across 37 domains
 │   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
 │   │   │   ├── compilation/ Live Coding trigger and status
@@ -197,7 +200,7 @@ Unreal Master/
 │   │   │   ├── workflow/    Workflow templates (character, UI, level)
 │   │   │   ├── analyze/     Blueprint complexity, asset health, perf
 │   │   │   ├── refactor/    Rename chain with reference updates
-│   │   │   └── context/     Auto-gather, tool manifest, chains
+│   │   │   └── context/     Auto-gather, tool manifest, chains, workflow learning, error learning
 │   │   ├── transport/       WebSocket bridge and codec
 │   │   ├── state/           Cache store and safety gate
 │   │   └── observability/   Tracing (LangSmith/Langfuse)
@@ -318,6 +321,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 | Phase 12 | Physics, World Partition, Foliage, Curves, PCG, GeoScript (157 tools) | Complete |
 | Phase 13 | Workflow Orchestration, Analysis, Refactoring (170 tools) | Complete |
 | Phase 14 | Claude Intelligence — Context engine, tool manifest, workflow chains (173 tools) | Complete |
+| Phase 15 | Workflow & Error Learning — Persistent workflows, outcome tracking, error resolution learning, UE synonym expansion, docs integration (183 tools) | Complete |
 
 ---
 
@@ -325,7 +329,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 | Layer | Tests | Status |
 |-------|-------|--------|
-| MCP Server (TypeScript) | 765 tests across 52 files | All passing |
+| MCP Server (TypeScript) | 826 tests across 54 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
 | Python Scripts | 130+ scripts in `ue-plugin/Content/Python/uma/` | Verified live |
 
