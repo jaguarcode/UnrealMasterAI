@@ -1,5 +1,5 @@
 <!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-02-25 | Updated: 2026-02-26 -->
+<!-- Generated: 2026-02-25 | Updated: 2026-03-06 -->
 
 # UE Agent Plugin (Layer 3)
 
@@ -33,6 +33,8 @@ ue-plugin/Source/
 │   │   │   └── SUMAChatPanel.h        (US-022 — chat widget)
 │   │   ├── FileOps/
 │   │   │   └── UMAFileOperations.h
+│   │   ├── Python/
+│   │   │   └── UMAPythonBridge.h
 │   │   └── Safety/
 │   │       └── UMAApprovalGate.h      (US-021 — approval dialog)
 │   └── Private/                       Implementations (.cpp)
@@ -67,6 +69,8 @@ ue-plugin/Source/
 | `FUMAApprovalGate` | RAII class | Approval dialog lifecycle (US-021) |
 | `SUMAApprovalDialog` | `SCompoundWidget` | Modal Slate approval dialog (US-021) |
 | `SUMAChatPanel` | `SCompoundWidget` | Dockable chat panel widget (US-022) |
+| `FUMAFileOperations` | Static class | File read/write/search with path safety |
+| `FUMAPythonBridge` | Static class | Execute Python scripts from `Content/Python/uma/` |
 
 ## For AI Agents
 

@@ -22,6 +22,18 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Live Coding compilation trigger and compile log capture
 - Self-healing loop: parse compile errors → apply fix → retry (max 3 iterations)
 - Human-in-the-loop approval gate for destructive operations
+- Actor spawning, deletion, property editing, transform control
+- Material creation, parameter setting (scalar/vector), texture assignment
+- Level management (create, open, save, sublevels, world settings)
+- Asset pipeline (import, export, create, duplicate, rename, delete, references)
+- Animation tools (montages, blend spaces, skeleton info)
+- Mesh operations (LOD, materials, collision generation)
+- DataTable CRUD operations
+- Project introspection (structure, plugins, settings, class hierarchy, dependency graph)
+- Build pipeline (lightmaps, content cooking, map check)
+- Source control integration (status, checkout, diff)
+- Gameplay systems (input actions, game mode)
+- Python script execution bridge (63 scripts) for extensible UE automation
 
 ---
 
@@ -55,7 +67,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full architecture document incl
 - **Node.js** 20+
 - **npm** 10+
 - **TypeScript** 5.5+ (installed via devDependencies)
-- **Unreal Engine** 5.4
+- **Unreal Engine** 5.4 - 5.7
 - **Claude Code** (latest) with MCP support
 
 ---
@@ -96,12 +108,12 @@ npm run build
 
 ### 4. Enable the UE Plugin
 
-Copy or symlink `UnrealMasterPlugin/` into your Unreal Engine project's `Plugins/` directory, then enable it in the `.uproject` file:
+Copy or symlink `ue-plugin/` into your Unreal Engine project's `Plugins/` directory (renaming to `UnrealMasterAgent`), then enable it in the `.uproject` file:
 
 ```json
 {
   "Plugins": [
-    { "Name": "UnrealMasterPlugin", "Enabled": true }
+    { "Name": "UnrealMasterAgent", "Enabled": true }
   ]
 }
 ```
@@ -135,21 +147,34 @@ npm run dev
 Unreal Master/
 ├── ARCHITECTURE.md          Architecture decisions and system design
 ├── README.md                This file
-├── PRD.md                   Product requirements document
 ├── AGENTS.md                AI agent guidance for this codebase
 ├── package.json             Workspace root
 │
 ├── mcp-server/              Layer 2: Node.js/TypeScript MCP bridge
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
-│   │   ├── server.ts        McpServer configuration
-│   │   ├── tools/           MCP tool definitions
-│   │   │   ├── editor/      Editor query tools (ping, list-actors, etc.)
-│   │   │   ├── blueprint/   Blueprint manipulation tools
-│   │   │   ├── compilation/ Compile trigger and status tools
-│   │   │   ├── file/        File operation tools
-│   │   │   ├── slate/       Slate UI generation tools
-│   │   │   └── chat/        In-editor chat tools
+│   │   ├── server.ts        McpServer configuration (85 tools registered)
+│   │   ├── tools/           85 MCP tool handlers across 20 domains
+│   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
+│   │   │   ├── blueprint/   Blueprint graph manipulation
+│   │   │   ├── compilation/ Live Coding trigger and status
+│   │   │   ├── file/        File read/write/search
+│   │   │   ├── slate/       Slate UI generation
+│   │   │   ├── chat/        In-editor chat
+│   │   │   ├── actor/       Actor spawn, delete, properties, transform
+│   │   │   ├── material/    Material create, parameters, textures
+│   │   │   ├── mesh/        Mesh info, LOD, materials, collision
+│   │   │   ├── level/       Level create, open, save, sublevels
+│   │   │   ├── asset/       Asset import, export, create, duplicate
+│   │   │   ├── animation/   Montages, blend spaces, skeleton info
+│   │   │   ├── content/     Asset listing, search, details, validation
+│   │   │   ├── datatable/   DataTable CRUD operations
+│   │   │   ├── build/       Lightmaps, content cooking, map check
+│   │   │   ├── project/     Project structure, plugins, settings
+│   │   │   ├── gameplay/    Input actions, game mode
+│   │   │   ├── python/      Python script execution bridge
+│   │   │   ├── sourcecontrol/ Source control status, checkout, diff
+│   │   │   └── debug/       Console commands, logs, performance
 │   │   ├── transport/       WebSocket bridge and codec
 │   │   ├── state/           Cache store and safety gate
 │   │   └── observability/   Tracing (LangSmith/Langfuse)
@@ -158,23 +183,32 @@ Unreal Master/
 │   ├── vitest.config.ts
 │   ├── tests/             Test suites
 │   └── docs/              Development guides
-│       ├── DEFERRED-FEATURES-GUIDE.md
-│       ├── TEST-VERIFICATION-GUIDE.md
-│       └── UE-EDITOR-VERIFICATION-GUIDE.md
 │
-├── ue-plugin/               Layer 3: C++ UE plugin (implemented)
+├── ue-plugin/               Layer 3: C++ UE plugin
+│   ├── Content/Python/uma/  Python scripts for UE automation (63 scripts)
 │   └── Source/
-│       ├── UnrealMasterAgent/        Main module (17 handlers registered)
+│       ├── UnrealMasterAgent/        Main module
 │       │   ├── Safety/               UMAApprovalGate
 │       │   ├── FileOps/              UMAFileOperations
-│       │   └── Editor/               UMAEditorSubsystem, SUMAChatPanel
+│       │   ├── Editor/               UMAEditorSubsystem, SUMAChatPanel
+│       │   ├── Blueprint/            Serializer, Manipulator
+│       │   └── Python/               Python script execution bridge
 │       └── UnrealMasterAgentTests/   Automation test module
 │
+├── TestProject/             UE5 test project for development
+│   ├── Source/UMATestProject/  C++ gameplay classes (PatrollingActor, etc.)
+│   └── Plugins/UnrealMasterAgent/  Symlinked/copied plugin with Python scripts
+│
 └── docs/
-    └── schemas/
-        ├── ws-protocol.schema.json    WebSocket message envelope schema
-        ├── blueprint-ast.schema.json  Blueprint JSON AST schema
-        └── tool-manifest.schema.json  MCP tool manifest schema
+    ├── api-reference/
+    │   └── mcp-tools.md            Complete MCP tool API reference
+    ├── coding-conventions/
+    │   └── README.md               TypeScript + C++ coding conventions
+    ├── slate-templates/            Slate UI RAG templates (7 templates)
+    ├── setup-guide.md              Installation and configuration guide
+    ├── websocket-protocol.md       WebSocket protocol specification
+    ├── safety-architecture.md      Safety system and approval gate docs
+    └── AGENTS.md                   AI agent guidance for docs
 ```
 
 ---
@@ -244,30 +278,47 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 ## Phase Roadmap
 
-| Phase | Goal | Key Deliverables |
-|-------|------|-----------------|
-| Phase 0 | Foundation | Project scaffold, schemas, architecture docs |
-| Phase 1 | Core Communication | WS bridge, UE plugin skeleton, `editor.ping` |
-| Phase 2 | Blueprint Read | `blueprint.serialize` with full AST JSON |
-| Phase 3 | Blueprint Write | Node creation, pin connection, property mutation |
-| Phase 4 | Compilation | Live Coding trigger, compile log capture |
-| Phase 5 | Self-Healing | Error parse, fix apply, retry loop |
-| Phase 6 | Slate Generation | Template RAG, code generation, validation |
-| Phase 7 | Safety + Observability | Human-in-the-loop gate, LangSmith integration |
-| Phase 8 | Polish | Performance, caching, documentation |
+| Phase | Goal | Status |
+|-------|------|--------|
+| Phase 0 | Foundation — Project scaffold, schemas, architecture docs | Complete |
+| Phase 1 | Core Communication — WS bridge, UE plugin skeleton, `editor.ping` | Complete |
+| Phase 2 | Blueprint Read — `blueprint.serialize` with full AST JSON | Complete |
+| Phase 3 | Blueprint Write — Node creation, pin connection, property mutation | Complete |
+| Phase 4 | Compilation — Live Coding trigger, compile log capture | Complete |
+| Phase 5 | Self-Healing — Error parse, fix apply, retry loop | Complete |
+| Phase 6 | Slate Generation — Template RAG, code generation, validation | Complete |
+| Phase 7 | Safety + Observability — Human-in-the-loop gate, tracing | Complete |
+| Phase 8 | Polish — Performance, caching, documentation | Complete |
+| Phase 9 | Extended Tools — Actor, material, mesh, level, asset, animation, build, project, gameplay, datatable, source control, debug, Python bridge (85 total tools) | Complete |
 
 ---
 
-## Deferred Features
+## Implementation Status
 
-The following user stories are documented but not yet fully verified without a UE Editor.
-See `mcp-server/docs/DEFERRED-FEATURES-GUIDE.md` for the full implementation guide.
+All user stories are code-complete. The system has been verified with a live UE 5.4 TestProject.
 
 | Story | Feature | Status |
 |-------|---------|--------|
-| US-021 | Human-in-the-Loop Safety (Slate approval dialog) | Code complete, needs UE testing |
-| US-022 | In-Editor Chat Panel (dockable SDockTab) | Code complete, needs UE testing |
-| US-023 | Documentation update | Complete |
+| US-021 | Human-in-the-Loop Safety (Slate approval dialog, FUMAApprovalGate, 6 C++ tests) | Complete |
+| US-022 | In-Editor Chat Panel (SUMAChatPanel, UUMAEditorSubsystem, 4 C++ tests) | Complete |
+| US-023 | Documentation and AGENTS.md hierarchy | Complete |
+| Phase 9 | Extended MCP Tools — 85 tools across 20 domains with Python bridge | Complete |
+
+### Test Summary
+
+| Layer | Tests | Status |
+|-------|-------|--------|
+| MCP Server (TypeScript) | 461 tests across 34 files | All passing |
+| UE Plugin (C++) | 9 test files | Verified in UE Editor |
+| Python Scripts | 63 scripts in `ue-plugin/Content/Python/uma/` | Verified live |
+
+### Bug Fixes Applied
+
+| Fix | Description |
+|-----|-------------|
+| `material_set_param.py` | JSON string parsing for MCP values, `parameterValue` fallback, auto-detect vector type, base Material expression editing support |
+| `PatrollingActor.cpp` | Added `LinkedActors` TArray for moving grouped actors together |
+| `set_car_movable.py` | Utility to set StaticMeshActor mobility to Movable for runtime movement |
 
 ---
 

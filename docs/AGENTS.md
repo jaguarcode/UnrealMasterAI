@@ -1,20 +1,39 @@
 <!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-02-25 | Updated: 2026-02-26 -->
+<!-- Generated: 2026-02-25 | Updated: 2026-03-06 -->
 
 # Documentation and RAG Knowledge Base
 
 ## Purpose
 
-Schemas defining the WebSocket protocol and Blueprint AST format. Slate UI widget
-templates used by the RAG-based code generation system.
+Project documentation, JSON schemas, Slate UI templates for RAG, and reference
+guides covering the full Unreal Master Agent system.
 
 ## Key Files
+
+### Documentation
+
+| File | Description |
+|------|-------------|
+| `setup-guide.md` | Installation, configuration, and quickstart guide |
+| `websocket-protocol.md` | WebSocket protocol specification (message format, error codes, threading) |
+| `safety-architecture.md` | Safety system: operation classification, approval gate, self-healing |
+| `api-reference/mcp-tools.md` | Complete API reference for all 85 MCP tools across 20 domains |
+| `coding-conventions/README.md` | TypeScript + C++ coding conventions and style guide |
+| `AGENTS.md` | This file — AI agent guidance for documentation |
+| `FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md` | Python API enhancement plan (85 tools implemented) |
+
+### JSON Schemas
 
 | File | Description |
 |------|-------------|
 | `schemas/ws-protocol.schema.json` | WebSocket message/response envelope schema (JSON Schema draft-07) |
 | `schemas/blueprint-ast.schema.json` | Blueprint JSON AST schema |
 | `schemas/tool-manifest.schema.json` | MCP tool manifest schema |
+
+### Slate RAG Templates
+
+| File | Description |
+|------|-------------|
 | `slate-templates/base-widget.md` | Base SCompoundWidget template |
 | `slate-templates/list-view.md` | SListView with item row generation |
 | `slate-templates/tree-view.md` | STreeView with expansion |
@@ -51,5 +70,14 @@ slate-listTemplates    — list all template names
 slate-generate         — semantic search + return relevant templates
 slate-validate         — validate Slate C++ for common errors
 ```
+
+### Documentation Map
+
+For detailed information, refer to:
+- **API usage** → `api-reference/mcp-tools.md`
+- **Protocol details** → `websocket-protocol.md`
+- **Safety rules** → `safety-architecture.md`
+- **Code style** → `coding-conventions/README.md`
+- **Setup** → `setup-guide.md`
 
 <!-- MANUAL: -->

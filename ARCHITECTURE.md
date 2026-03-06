@@ -1,8 +1,8 @@
 # Unreal Master Agent — Architecture
 
-**Version:** 0.1.0
-**Date:** 2026-02-25
-**Status:** Implementation Ready
+**Version:** 0.2.0
+**Date:** 2026-02-25 (Updated: 2026-03-06)
+**Status:** Implementation Complete (Phase 0-9 done, 85 MCP tools across 20 domains)
 
 ---
 
@@ -281,15 +281,15 @@ Receive WS frame
 
 ---
 
-### Decision 5: Minimize Python
+### Decision 5: Python as Primary Automation Layer
 
-**Decision:** Prefer C++ for all UE-internal operations. Python usage is minimized.
+**Decision:** Use Python extensively for UE automation operations alongside C++ for core/low-level operations.
 
-**Rationale:** UE's Python API only exposes `UFUNCTION`-marked functions, which is insufficient for low-level Blueprint graph manipulation. Adding Python introduces a second runtime and communication channel with no compensating benefit.
+**Rationale:** UE's Python API (`unreal` module) provides comprehensive access to editor operations including asset management, material editing, actor manipulation, level operations, and more. Python scripts are faster to iterate on than C++ and don't require recompilation.
 
-**Exception:** UE Python may be used only for operations where the Python-exposed API is significantly simpler than the C++ equivalent AND does not require access to unexposed internals.
+**Architecture:** 63 Python scripts in `ue-plugin/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
 
-**Deviation from PRD:** The PRD lists Python as a scripting helper. This decision reduces its role based on architect analysis.
+**Updated from original:** The original decision to minimize Python was revised after discovering that UE's Python API is sufficient for the majority of editor automation tasks. C++ remains essential for Blueprint graph internals (UEdGraph, pin connections) and WebSocket transport.
 
 ---
 
@@ -411,20 +411,34 @@ Manual/scripted workflow:
 Unreal Master/
 ├── ARCHITECTURE.md          ← this document
 ├── README.md
-├── PRD.md
 ├── AGENTS.md
 ├── package.json             (workspace root)
 │
 ├── mcp-server/              ← Layer 2: Node.js/TypeScript bridge
 │   ├── src/
 │   │   ├── index.ts         (McpServerBootstrap)
-│   │   ├── server.ts
-│   │   ├── tools/
-│   │   │   ├── registry.ts
-│   │   │   ├── editor/
-│   │   │   ├── blueprint/
-│   │   │   ├── slate/
-│   │   │   └── compilation/
+│   │   ├── server.ts        (85 tools registered across 20 domains)
+│   │   ├── tools/           Tool handlers by domain
+│   │   │   ├── editor/      Editor queries (ping, list-actors, level-info)
+│   │   │   ├── blueprint/   Blueprint graph manipulation
+│   │   │   ├── compilation/ Live Coding trigger and status
+│   │   │   ├── slate/       Slate UI generation
+│   │   │   ├── file/        File read/write/search
+│   │   │   ├── chat/        In-editor chat
+│   │   │   ├── actor/       Actor CRUD and transforms
+│   │   │   ├── material/    Material creation and parameters
+│   │   │   ├── mesh/        Mesh info, LOD, collision
+│   │   │   ├── level/       Level management
+│   │   │   ├── asset/       Asset pipeline operations
+│   │   │   ├── animation/   Animation montages and blend spaces
+│   │   │   ├── content/     Asset listing and search
+│   │   │   ├── datatable/   DataTable CRUD
+│   │   │   ├── build/       Build pipeline
+│   │   │   ├── project/     Project introspection
+│   │   │   ├── gameplay/    Input actions and game mode
+│   │   │   ├── python/      Python script execution bridge
+│   │   │   ├── sourcecontrol/ Source control integration
+│   │   │   └── debug/       Console, logs, performance
 │   │   ├── transport/
 │   │   │   ├── websocket-bridge.ts
 │   │   │   ├── message-codec.ts
@@ -438,10 +452,11 @@ Unreal Master/
 │   ├── tsconfig.json
 │   └── vitest.config.ts
 │
-├── ue-plugin/               ← Layer 3: C++ UE Plugin
+├── ue-plugin/               ← Layer 3: C++ UE Plugin + Python automation
 │   ├── UnrealMasterAgent.uplugin
+│   ├── Content/Python/uma/  63 Python scripts (actor, material, level, etc.)
 │   └── Source/
-│       ├── UnrealMasterAgent/      Main module (17 handlers)
+│       ├── UnrealMasterAgent/      Main module
 │       │   ├── UnrealMasterAgent.Build.cs
 │       │   ├── Public/
 │       │   │   ├── WebSocket/     WS client + message types
@@ -449,15 +464,25 @@ Unreal Master/
 │       │   │   ├── Compilation/   Live Coding controller + log parser
 │       │   │   ├── Editor/        EditorSubsystem + ChatPanel
 │       │   │   ├── FileOps/       File read/write/search
+│       │   │   ├── Python/        Python script execution bridge
 │       │   │   └── Safety/        ApprovalGate + Slate dialog
 │       │   └── Private/           Implementations (.cpp)
-│       └── UnrealMasterAgentTests/ Test module (9 test files)
-│           ├── UnrealMasterAgentTests.Build.cs
-│           └── Private/
+│       └── UnrealMasterAgentTests/ Test module (9 test files + module entry)
+│
+├── TestProject/             ← UE5 development/test project
+│   ├── Source/UMATestProject/  C++ gameplay classes
+│   │   ├── PatrollingActor.*   Patrol system with LinkedActors support
+│   │   └── PatrolLocationSphere.*  Patrol waypoints
+│   └── Plugins/UnrealMasterAgent/  Plugin with Python scripts
 │
 └── docs/
-    └── schemas/
-        ├── ws-protocol.schema.json
-        ├── blueprint-ast.schema.json
-        └── tool-manifest.schema.json
+    ├── api-reference/
+    │   └── mcp-tools.md              MCP tool API reference (85 tools)
+    ├── coding-conventions/
+    │   └── README.md                 TypeScript + C++ coding conventions
+    ├── slate-templates/              7 Slate UI RAG templates
+    ├── setup-guide.md                Installation and configuration
+    ├── websocket-protocol.md         WS protocol specification
+    ├── safety-architecture.md        Safety system documentation
+    └── AGENTS.md                     Documentation index
 ```

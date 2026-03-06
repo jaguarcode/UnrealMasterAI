@@ -1,4 +1,4 @@
-<!-- Generated: 2026-02-25 | Updated: 2026-02-26 -->
+<!-- Generated: 2026-02-25 | Updated: 2026-03-06 -->
 
 # Unreal Master — Root
 
@@ -12,11 +12,12 @@ UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 
 | Path | Layer | Description |
 |------|-------|-------------|
-| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (227 tests passing) |
-| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin |
-| `docs/` | — | Schemas, Slate RAG templates, API reference |
+| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (85 tools, 461 tests) |
+| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin + 63 Python automation scripts |
+| `TestProject/` | — | UE5 test project with gameplay classes (PatrollingActor, etc.) |
+| `docs/` | — | API reference, protocol spec, schemas, Slate RAG templates, guides |
 | `README.md` | — | Setup instructions and development workflow |
-| `PRD.md` | — | Product Requirements Document (Korean) |
+| `docs/FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md` | — | Python API enhancement plan |
 
 ## Key Technical Constraints
 
@@ -69,7 +70,7 @@ Response (UE → MCP):
 { "id": "<uuid>", "result": { ... }, "duration_ms": 42 }
 ```
 
-### MCP Tools (20 registered)
+### MCP Tools (85 registered across 20 domains)
 
 | Domain | Tools |
 |--------|-------|
@@ -79,6 +80,20 @@ Response (UE → MCP):
 | File | `file-read`, `file-write`, `file-search` |
 | Slate | `slate-validate`, `slate-generate`, `slate-listTemplates` |
 | Chat | `chat-sendMessage` |
+| Actor | `actor-spawn`, `actor-delete`, `actor-getProperties`, `actor-setProperty`, `actor-setTransform`, `actor-getComponents`, `actor-addComponent`, `actor-select`, `actor-setArrayRef` |
+| Material | `material-create`, `material-createInstance`, `material-setParameter`, `material-getParameters`, `material-getNodes`, `material-setTexture` |
+| Mesh | `mesh-getInfo`, `mesh-setMaterial`, `mesh-setLOD`, `mesh-generateCollision` |
+| Level | `level-create`, `level-open`, `level-save`, `level-addSublevel`, `level-getWorldSettings` |
+| Asset | `asset-create`, `asset-delete`, `asset-duplicate`, `asset-import`, `asset-export`, `asset-rename`, `asset-getReferences`, `asset-setMetadata` |
+| Animation | `anim-listSequences`, `anim-listMontages`, `anim-createMontage`, `anim-getBlendSpace`, `anim-getSkeletonInfo` |
+| Content | `content-listAssets`, `content-findAssets`, `content-getAssetDetails`, `content-validateAssets` |
+| DataTable | `datatable-create`, `datatable-addRow`, `datatable-getRows`, `datatable-removeRow` |
+| Build | `build-lightmaps`, `build-cookContent`, `build-getMapCheck` |
+| Project | `project-getStructure`, `project-getPlugins`, `project-getSettings`, `project-getClassHierarchy`, `project-getDependencyGraph`, `project-snapshot` |
+| Gameplay | `gameplay-getGameMode`, `gameplay-setGameMode`, `gameplay-listInputActions`, `gameplay-addInputAction` |
+| Python | `python-execute` (runs named scripts from `Content/Python/uma/`) |
+| Source Control | `sourcecontrol-getStatus`, `sourcecontrol-checkout`, `sourcecontrol-diff` |
+| Debug | `debug-execConsole`, `debug-getLog`, `debug-getPerformance` |
 
 ### Subdirectory AGENTS.md
 
@@ -86,6 +101,6 @@ Response (UE → MCP):
 |------|---------|
 | `mcp-server/AGENTS.md` | MCP Bridge Server docs |
 | `ue-plugin/AGENTS.md` | UE Plugin docs |
-| `docs/AGENTS.md` | RAG knowledge base docs |
+| `docs/AGENTS.md` | Documentation index and RAG knowledge base docs |
 
 <!-- MANUAL: Custom project notes can be added below -->
