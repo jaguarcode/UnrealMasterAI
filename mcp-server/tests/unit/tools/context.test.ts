@@ -158,6 +158,190 @@ describe('tool-chains', () => {
   });
 });
 
+// --- workflow-knowledge ---
+describe('workflow-knowledge', () => {
+  it('has 20+ built-in workflows from Epic docs', async () => {
+    const { getAllWorkflows, getBuiltinWorkflowCount } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    expect(getBuiltinWorkflowCount()).toBeGreaterThanOrEqual(20);
+    expect(getAllWorkflows().length).toBeGreaterThanOrEqual(20);
+  });
+
+  it('getWorkflowById returns a specific workflow', async () => {
+    const { getWorkflowById } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    const workflow = getWorkflowById('bp-create-actor-class');
+    expect(workflow).toBeDefined();
+    expect(workflow!.name).toBe('Create a Blueprint Actor Class');
+    expect(workflow!.domain).toBe('blueprint');
+    expect(workflow!.steps.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('getWorkflowsByDomain filters correctly', async () => {
+    const { getWorkflowsByDomain } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    const materialWorkflows = getWorkflowsByDomain('material');
+    expect(materialWorkflows.length).toBeGreaterThanOrEqual(2);
+    for (const w of materialWorkflows) {
+      expect(w.domain).toBe('material');
+    }
+  });
+
+  it('getWorkflowsByTag filters correctly', async () => {
+    const { getWorkflowsByTag } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    const animWorkflows = getWorkflowsByTag('animation');
+    expect(animWorkflows.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('every workflow has required fields', async () => {
+    const { getAllWorkflows } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    for (const w of getAllWorkflows()) {
+      expect(w.id).toBeTruthy();
+      expect(w.name).toBeTruthy();
+      expect(w.domain).toBeTruthy();
+      expect(w.intentPatterns.length).toBeGreaterThanOrEqual(1);
+      expect(w.steps.length).toBeGreaterThanOrEqual(2);
+      expect(w.expectedOutcome).toBeTruthy();
+      expect(['beginner', 'intermediate', 'advanced']).toContain(w.difficulty);
+      expect(['epic-docs', 'community', 'user-defined']).toContain(w.source);
+    }
+  });
+
+  it('addLearnedWorkflow adds and retrieves workflow', async () => {
+    const { addLearnedWorkflow, getLearnedWorkflows, clearLearnedWorkflows, getAllWorkflows } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    clearLearnedWorkflows();
+    const before = getAllWorkflows().length;
+    addLearnedWorkflow({
+      id: 'test-workflow',
+      name: 'Test Workflow',
+      description: 'A test',
+      domain: 'test',
+      difficulty: 'beginner',
+      intentPatterns: ['test something'],
+      prerequisites: [],
+      steps: [{ tool: 'editor-ping', purpose: 'test' }, { tool: 'editor-listActors', purpose: 'test' }],
+      expectedOutcome: 'test passes',
+      source: 'user-defined',
+      tags: ['test'],
+    });
+    expect(getAllWorkflows().length).toBe(before + 1);
+    expect(getLearnedWorkflows().length).toBe(1);
+    clearLearnedWorkflows();
+    expect(getLearnedWorkflows().length).toBe(0);
+  });
+});
+
+// --- intent-matcher ---
+describe('intent-matcher', () => {
+  it('matches "create a character" to character setup workflow', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('create a playable character');
+    expect(result.matches.length).toBeGreaterThanOrEqual(1);
+    expect(result.topRecommendation).toBeDefined();
+    expect(result.topRecommendation!.id).toBe('char-setup-playable');
+  });
+
+  it('matches "create a material" to material workflow', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('create a basic material with textures');
+    expect(result.matches.length).toBeGreaterThanOrEqual(1);
+    expect(result.topRecommendation!.domain).toBe('material');
+  });
+
+  it('matches "add logic to blueprint" to blueprint logic workflow', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('add logic to blueprint');
+    expect(result.topRecommendation).toBeDefined();
+    expect(result.topRecommendation!.domain).toBe('blueprint');
+  });
+
+  it('returns suggested tool sequence from top match', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('create a new level');
+    expect(result.suggestedToolSequence.length).toBeGreaterThanOrEqual(2);
+    expect(result.suggestedToolSequence).toContain('level-create');
+  });
+
+  it('returns no high-confidence matches for unrelated query', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('xyzzy frobulate the quantum flux capacitor');
+    expect(result.matches.length).toBe(0);
+    expect(result.topRecommendation).toBeNull();
+  });
+
+  it('respects maxResults parameter', async () => {
+    const { matchIntent } = await import(
+      '../../../src/tools/context/intent-matcher.js'
+    );
+    const result = matchIntent('create blueprint actor material', 2);
+    expect(result.matches.length).toBeLessThanOrEqual(2);
+  });
+});
+
+// --- learn-workflow tool handler ---
+describe('context-learnWorkflow', () => {
+  it('learns a new workflow and returns success', async () => {
+    const { contextLearnWorkflow } = await import(
+      '../../../src/tools/context/learn-workflow.js'
+    );
+    const { clearLearnedWorkflows } = await import(
+      '../../../src/tools/context/workflow-knowledge.js'
+    );
+    clearLearnedWorkflows();
+    const result = await contextLearnWorkflow({
+      id: 'custom-decal-workflow',
+      name: 'Create Decal Material',
+      description: 'Create a deferred decal material and apply to level',
+      domain: 'material',
+      intentPatterns: ['create decal', 'add decal material'],
+      steps: [
+        { tool: 'material-create', purpose: 'Create decal material' },
+        { tool: 'material-setParameter', purpose: 'Set blend mode to translucent' },
+      ],
+      expectedOutcome: 'A decal material applied in the level',
+    });
+    const parsed = JSON.parse(result.content[0].text);
+    expect(parsed.status).toBe('success');
+    expect(parsed.learnedWorkflows).toBe(1);
+    clearLearnedWorkflows();
+  });
+});
+
+// --- matchIntent tool handler ---
+describe('context-matchIntent', () => {
+  it('returns structured match results', async () => {
+    const { contextMatchIntent } = await import(
+      '../../../src/tools/context/learn-workflow.js'
+    );
+    const result = await contextMatchIntent({ query: 'create a hud widget' });
+    const parsed = JSON.parse(result.content[0].text);
+    expect(parsed.status).toBe('success');
+    expect(parsed.matchCount).toBeGreaterThanOrEqual(1);
+    expect(parsed.topRecommendation).toBeDefined();
+    expect(parsed.suggestedToolSequence).toBeDefined();
+    expect(parsed.allMatches.length).toBeGreaterThanOrEqual(1);
+  });
+});
+
 // --- error-recovery ---
 describe('error-recovery', () => {
   it('exports recovery strategies', async () => {

@@ -126,6 +126,9 @@ const SAFE_TOOLS = new Set([
   'context-autoGather',
   'context-getManifest',
   'context-getChains',
+  'context-learnWorkflow',
+  'context-matchIntent',
+  'context-getWorkflows',
 ]);
 
 /** Mutation operations that change state but are generally recoverable. */

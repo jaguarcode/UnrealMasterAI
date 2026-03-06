@@ -214,6 +214,7 @@ describe('classifyOperation', () => {
     'analyze-blueprintComplexity', 'analyze-assetHealth', 'analyze-performanceHints', 'analyze-codeConventions',
     // Context intelligence (read-only)
     'context-autoGather', 'context-getManifest', 'context-getChains',
+    'context-learnWorkflow', 'context-matchIntent', 'context-getWorkflows',
   ])('classifies %s as "safe"', (tool) => {
     const result = classifyOperation(tool, {});
     expect(result.level).toBe('safe');

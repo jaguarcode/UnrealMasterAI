@@ -216,6 +216,8 @@ import { contextAutoGather } from './tools/context/auto-gather.js';
 import { generateManifest } from './tools/context/tool-manifest.js';
 import { listChains } from './tools/context/tool-chains.js';
 import { listRecoveryStrategies } from './tools/context/error-recovery.js';
+import { contextLearnWorkflow, contextMatchIntent } from './tools/context/learn-workflow.js';
+import { getAllWorkflows } from './tools/context/workflow-knowledge.js';
 
 /**
  * Create and configure the MCP server with all tools registered.
@@ -1270,7 +1272,46 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
     return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', result: { chains, recoveryStrategies } }) }] };
   });
 
-  logger.info(`MCP tools registered: 173 tools across 37 domains`);
+  server.tool('context-learnWorkflow', 'Learn a new UE developer workflow from documentation or web research. Stores structured workflow with intent patterns and tool sequences.', {
+    id: z.string().describe('Unique workflow identifier (e.g., "mat-create-decal")'),
+    name: z.string().describe('Human-readable workflow name'),
+    description: z.string().describe('What the workflow accomplishes'),
+    domain: z.string().describe('Primary domain (blueprint, material, character, level, etc.)'),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional().describe('Difficulty level'),
+    intentPatterns: z.array(z.string()).describe('Natural language phrases that trigger this workflow'),
+    prerequisites: z.array(z.string()).optional().describe('What must be true before starting'),
+    steps: z.array(z.object({
+      tool: z.string().describe('MCP tool name to call'),
+      purpose: z.string().describe('Why this step is needed'),
+      optional: z.boolean().optional(),
+      repeat: z.boolean().optional(),
+    })).describe('Ordered sequence of tool calls'),
+    expectedOutcome: z.string().describe('What the developer gets at the end'),
+    source: z.string().optional().describe('Where this workflow was learned from'),
+    tags: z.array(z.string()).optional().describe('Search tags'),
+  }, async (params) => { logger.info('context.learnWorkflow called'); return contextLearnWorkflow(params); });
+
+  server.tool('context-matchIntent', 'Match a natural language description of developer intent to known UE workflows. Returns ranked recommendations with tool sequences.', {
+    query: z.string().describe('Natural language description of what the developer wants to do'),
+    maxResults: z.number().optional().describe('Maximum number of matches to return (default 5)'),
+  }, async (params) => { logger.info('context.matchIntent called'); return contextMatchIntent(params); });
+
+  server.tool('context-getWorkflows', 'List all known UE developer workflows (built-in + learned). Optionally filter by domain or tag.', {
+    domain: z.string().optional().describe('Filter by domain (blueprint, material, character, level, etc.)'),
+    tag: z.string().optional().describe('Filter by tag'),
+  }, async (params) => {
+    logger.info('context.getWorkflows called');
+    let workflows = getAllWorkflows();
+    if (params.domain) workflows = workflows.filter((w) => w.domain === params.domain);
+    if (params.tag) workflows = workflows.filter((w) => w.tags.includes(params.tag!));
+    const summary = workflows.map((w) => ({
+      id: w.id, name: w.name, domain: w.domain, difficulty: w.difficulty,
+      stepCount: w.steps.length, source: w.source, tags: w.tags,
+    }));
+    return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', count: summary.length, workflows: summary }) }] };
+  });
+
+  logger.info(`MCP tools registered: 176 tools across 37 domains`);
 
   return server;
 }
