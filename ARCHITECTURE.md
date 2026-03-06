@@ -2,7 +2,7 @@
 
 **Version:** 0.2.0
 **Date:** 2026-02-25 (Updated: 2026-03-06)
-**Status:** Implementation Complete (Phase 0-9 done, 85 MCP tools across 20 domains)
+**Status:** Implementation Complete (Phase 0-14 done, 173 MCP tools across 37 domains)
 
 ---
 
@@ -287,7 +287,7 @@ Receive WS frame
 
 **Rationale:** UE's Python API (`unreal` module) provides comprehensive access to editor operations including asset management, material editing, actor manipulation, level operations, and more. Python scripts are faster to iterate on than C++ and don't require recompilation.
 
-**Architecture:** 63 Python scripts in `ue-plugin/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
+**Architecture:** 130+ Python scripts in `ue-plugin/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
 
 **Updated from original:** The original decision to minimize Python was revised after discovering that UE's Python API is sufficient for the majority of editor automation tasks. C++ remains essential for Blueprint graph internals (UEdGraph, pin connections) and WebSocket transport.
 
@@ -417,7 +417,7 @@ Unreal Master/
 ├── mcp-server/              ← Layer 2: Node.js/TypeScript bridge
 │   ├── src/
 │   │   ├── index.ts         (McpServerBootstrap)
-│   │   ├── server.ts        (85 tools registered across 20 domains)
+│   │   ├── server.ts        (173 tools registered across 37 domains)
 │   │   ├── tools/           Tool handlers by domain
 │   │   │   ├── editor/      Editor queries (ping, list-actors, level-info)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
@@ -438,7 +438,24 @@ Unreal Master/
 │   │   │   ├── gameplay/    Input actions and game mode
 │   │   │   ├── python/      Python script execution bridge
 │   │   │   ├── sourcecontrol/ Source control integration
-│   │   │   └── debug/       Console, logs, performance
+│   │   │   ├── debug/       Console, logs, performance
+│   │   │   ├── sequencer/   Cinematics
+│   │   │   ├── ai/          Behavior trees, nav mesh
+│   │   │   ├── widget/      UMG widgets
+│   │   │   ├── texture/     Texture pipeline
+│   │   │   ├── niagara/     Niagara VFX
+│   │   │   ├── audio/       Audio pipeline
+│   │   │   ├── landscape/   Landscape ops
+│   │   │   ├── physics/     Physics assets
+│   │   │   ├── worldpartition/ World partition
+│   │   │   ├── foliage/     Foliage types
+│   │   │   ├── curve/       Curve assets
+│   │   │   ├── pcg/         PCG graphs
+│   │   │   ├── geoscript/   Geometry script
+│   │   │   ├── workflow/    Workflow templates
+│   │   │   ├── analyze/     Analysis tools
+│   │   │   ├── refactor/    Refactoring tools
+│   │   │   └── context/     Context intelligence
 │   │   ├── transport/
 │   │   │   ├── websocket-bridge.ts
 │   │   │   ├── message-codec.ts
@@ -454,7 +471,7 @@ Unreal Master/
 │
 ├── ue-plugin/               ← Layer 3: C++ UE Plugin + Python automation
 │   ├── UnrealMasterAgent.uplugin
-│   ├── Content/Python/uma/  63 Python scripts (actor, material, level, etc.)
+│   ├── Content/Python/uma/  130+ Python scripts (actor, material, level, sequencer, ai, etc.)
 │   └── Source/
 │       ├── UnrealMasterAgent/      Main module
 │       │   ├── UnrealMasterAgent.Build.cs
@@ -477,7 +494,7 @@ Unreal Master/
 │
 └── docs/
     ├── api-reference/
-    │   └── mcp-tools.md              MCP tool API reference (85 tools)
+    │   └── mcp-tools.md              MCP tool API reference (173 tools)
     ├── coding-conventions/
     │   └── README.md                 TypeScript + C++ coding conventions
     ├── slate-templates/              7 Slate UI RAG templates

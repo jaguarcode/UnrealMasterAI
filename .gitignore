@@ -28,3 +28,9 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# OMC orchestration state
+.omc/
+
+# Plan documents
+.omc/plans/

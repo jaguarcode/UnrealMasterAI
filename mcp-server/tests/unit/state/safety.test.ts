@@ -212,6 +212,8 @@ describe('classifyOperation', () => {
     'geoscript-getInfo',
     // Analysis (read-only)
     'analyze-blueprintComplexity', 'analyze-assetHealth', 'analyze-performanceHints', 'analyze-codeConventions',
+    // Context intelligence (read-only)
+    'context-autoGather', 'context-getManifest', 'context-getChains',
   ])('classifies %s as "safe"', (tool) => {
     const result = classifyOperation(tool, {});
     expect(result.level).toBe('safe');

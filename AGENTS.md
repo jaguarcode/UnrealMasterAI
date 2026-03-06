@@ -12,8 +12,8 @@ UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 
 | Path | Layer | Description |
 |------|-------|-------------|
-| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (85 tools, 461 tests) |
-| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin + 63 Python automation scripts |
+| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (173 tools, 765 tests) |
+| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin + 130+ Python automation scripts |
 | `TestProject/` | — | UE5 test project with gameplay classes (PatrollingActor, etc.) |
 | `docs/` | — | API reference, protocol spec, schemas, Slate RAG templates, guides |
 | `README.md` | — | Setup instructions and development workflow |
@@ -56,6 +56,10 @@ All code changes start with failing tests.
 | 4000–4099 | Blueprint operations | Spawn failed (4001), connect failed (4002), delete failed (4003), modify failed (4004) |
 | 5000–5099 | Internal / compilation | Serialization error (5000), Live Coding init (5001–5004) |
 | 6000–6099 | Safety gate | Not initialized (6000), rejected/timeout (6001) |
+| 7000–8999 | Extended domains | Sequencer, AI, widget, texture, niagara, audio, landscape, physics, world partition, foliage, curve, PCG, geoscript |
+| 9000–9099 | Workflow orchestration | Workflow template errors |
+| 9100–9199 | Analysis / refactor | Blueprint complexity, asset health, rename chain |
+| 9200–9299 | Context intelligence | Auto-gather, manifest, tool chains, error recovery |
 
 ### WS Message Envelope
 
@@ -70,7 +74,7 @@ Response (UE → MCP):
 { "id": "<uuid>", "result": { ... }, "duration_ms": 42 }
 ```
 
-### MCP Tools (85 registered across 20 domains)
+### MCP Tools (173 registered across 37 domains)
 
 | Domain | Tools |
 |--------|-------|
@@ -94,6 +98,23 @@ Response (UE → MCP):
 | Python | `python-execute` (runs named scripts from `Content/Python/uma/`) |
 | Source Control | `sourcecontrol-getStatus`, `sourcecontrol-checkout`, `sourcecontrol-diff` |
 | Debug | `debug-execConsole`, `debug-getLog`, `debug-getPerformance` |
+| Sequencer | `sequencer-createSequence`, `sequencer-addTrack`, `sequencer-setKeyframe`, `sequencer-getSequenceInfo`, `sequencer-renderMovie` |
+| AI | `ai-createBehaviorTree`, `ai-addBTNode`, `ai-createBlackboard`, `ai-addBBKey`, `ai-getNavMesh`, `ai-createEQS` |
+| Widget | `widget-createWidget`, `widget-addChild`, `widget-setProperty`, `widget-bindEvent`, `widget-getHierarchy` |
+| Texture | `texture-import`, `texture-setCompression`, `texture-createRenderTarget`, `texture-getInfo` |
+| Niagara | `niagara-createSystem`, `niagara-addEmitter`, `niagara-setParameter`, `niagara-getSystemInfo` |
+| Audio | `audio-import`, `audio-createSoundCue`, `audio-createMetaSound`, `audio-getInfo`, `audio-setAttenuation` |
+| Landscape | `landscape-create`, `landscape-importHeightmap`, `landscape-setMaterial`, `landscape-getLayers`, `landscape-sculptLayer` |
+| Physics | `physics-createAsset`, `physics-setProfile`, `physics-addConstraint`, `physics-getInfo` |
+| World Partition | `worldpartition-getInfo`, `worldpartition-addDataLayer`, `worldpartition-setHLOD`, `worldpartition-streamCells` |
+| Foliage | `foliage-addType`, `foliage-setDensity`, `foliage-getTypes`, `foliage-setProperties` |
+| Curve | `curve-create`, `curve-addKey`, `curve-getKeys` |
+| PCG | `pcg-createGraph`, `pcg-addNode`, `pcg-connectNodes`, `pcg-getGraphInfo` |
+| GeoScript | `geoscript-execute`, `geoscript-getInfo` |
+| Workflow | `workflow-createCharacter`, `workflow-createUIScreen`, `workflow-setupLevel`, `workflow-createInteractable`, `workflow-createProjectile`, `workflow-setupMultiplayer`, `workflow-createInventorySystem`, `workflow-createDialogueSystem` |
+| Analyze | `analyze-blueprintComplexity`, `analyze-assetHealth`, `analyze-performanceHints`, `analyze-codeConventions` |
+| Refactor | `refactor-renameChain` |
+| Context | `context-autoGather`, `context-getManifest`, `context-getChains` |
 
 ### Subdirectory AGENTS.md
 

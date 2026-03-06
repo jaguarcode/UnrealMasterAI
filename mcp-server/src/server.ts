@@ -211,6 +211,11 @@ import { analyzePerformanceHints } from './tools/analyze/performance-hints.js';
 import { analyzeCodeConventions } from './tools/analyze/code-conventions.js';
 // Refactoring tools
 import { refactorRenameChain } from './tools/refactor/rename-chain.js';
+// Context intelligence tools
+import { contextAutoGather } from './tools/context/auto-gather.js';
+import { generateManifest } from './tools/context/tool-manifest.js';
+import { listChains } from './tools/context/tool-chains.js';
+import { listRecoveryStrategies } from './tools/context/error-recovery.js';
 
 /**
  * Create and configure the MCP server with all tools registered.
@@ -1244,7 +1249,28 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
     updateReferences: z.boolean().optional().describe('Update all references (default true)'),
   }, async (params) => { logger.info('refactor.renameChain called'); return refactorRenameChain(bridge, params); });
 
-  logger.info(`MCP tools registered: 170 tools across 36 domains`);
+  // --- Context intelligence tools ---
+  server.tool('context-autoGather', 'Gather comprehensive project context: info, code stats, content, conventions.', {
+    includeConventions: z.boolean().optional().describe('Include convention detection (default true)'),
+    includeViewport: z.boolean().optional().describe('Include viewport state (default true)'),
+  }, async (params) => { logger.info('context.autoGather called'); return contextAutoGather(bridge, params); });
+
+  server.tool('context-getManifest', 'Get the complete tool manifest with all tools, domains, and workflow chains.', {
+  }, async () => {
+    logger.info('context.getManifest called');
+    const manifest = generateManifest();
+    return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', result: manifest }) }] };
+  });
+
+  server.tool('context-getChains', 'Get available tool workflow chains and error recovery strategies.', {
+  }, async () => {
+    logger.info('context.getChains called');
+    const chains = listChains();
+    const recoveryStrategies = listRecoveryStrategies();
+    return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', result: { chains, recoveryStrategies } }) }] };
+  });
+
+  logger.info(`MCP tools registered: 173 tools across 37 domains`);
 
   return server;
 }

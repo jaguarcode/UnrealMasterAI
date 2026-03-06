@@ -33,7 +33,13 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Build pipeline (lightmaps, content cooking, map check)
 - Source control integration (status, checkout, diff)
 - Gameplay systems (input actions, game mode)
-- Python script execution bridge (63 scripts) for extensible UE automation
+- Python script execution bridge (130+ scripts) for extensible UE automation
+- Sequencer/cinematics, AI/navigation, widget/UMG tools
+- Texture, Niagara VFX, audio, landscape pipelines
+- Physics, world partition, foliage, curves, PCG, geometry script tools
+- Workflow templates (character, UI, level, multiplayer, inventory, dialogue)
+- Analysis tools (Blueprint complexity, asset health, performance, conventions)
+- Context intelligence (auto-gather project context, tool manifest, workflow chains)
 
 ---
 
@@ -153,8 +159,8 @@ Unreal Master/
 ├── mcp-server/              Layer 2: Node.js/TypeScript MCP bridge
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
-│   │   ├── server.ts        McpServer configuration (85 tools registered)
-│   │   ├── tools/           85 MCP tool handlers across 20 domains
+│   │   ├── server.ts        McpServer configuration (173 tools registered)
+│   │   ├── tools/           173 MCP tool handlers across 37 domains
 │   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
 │   │   │   ├── compilation/ Live Coding trigger and status
@@ -174,7 +180,24 @@ Unreal Master/
 │   │   │   ├── gameplay/    Input actions, game mode
 │   │   │   ├── python/      Python script execution bridge
 │   │   │   ├── sourcecontrol/ Source control status, checkout, diff
-│   │   │   └── debug/       Console commands, logs, performance
+│   │   │   ├── debug/       Console commands, logs, performance
+│   │   │   ├── sequencer/   Cinematics sequences, tracks, keyframes
+│   │   │   ├── ai/          Behavior trees, blackboards, nav mesh, EQS
+│   │   │   ├── widget/      UMG widget creation and editing
+│   │   │   ├── texture/     Texture import, compression, render targets
+│   │   │   ├── niagara/     Niagara VFX systems, emitters, parameters
+│   │   │   ├── audio/       Audio import, sound cues, MetaSound
+│   │   │   ├── landscape/   Landscape creation, heightmaps, materials
+│   │   │   ├── physics/     Physics assets, profiles, constraints
+│   │   │   ├── worldpartition/ World partition, data layers, HLOD
+│   │   │   ├── foliage/     Foliage types, density, properties
+│   │   │   ├── curve/       Curve creation, keyframes
+│   │   │   ├── pcg/         PCG graphs, nodes, connections
+│   │   │   ├── geoscript/   Geometry script operations
+│   │   │   ├── workflow/    Workflow templates (character, UI, level)
+│   │   │   ├── analyze/     Blueprint complexity, asset health, perf
+│   │   │   ├── refactor/    Rename chain with reference updates
+│   │   │   └── context/     Auto-gather, tool manifest, chains
 │   │   ├── transport/       WebSocket bridge and codec
 │   │   ├── state/           Cache store and safety gate
 │   │   └── observability/   Tracing (LangSmith/Langfuse)
@@ -185,7 +208,7 @@ Unreal Master/
 │   └── docs/              Development guides
 │
 ├── ue-plugin/               Layer 3: C++ UE plugin
-│   ├── Content/Python/uma/  Python scripts for UE automation (63 scripts)
+│   ├── Content/Python/uma/  Python scripts for UE automation (130+ scripts)
 │   └── Source/
 │       ├── UnrealMasterAgent/        Main module
 │       │   ├── Safety/               UMAApprovalGate
@@ -290,6 +313,11 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 | Phase 7 | Safety + Observability — Human-in-the-loop gate, tracing | Complete |
 | Phase 8 | Polish — Performance, caching, documentation | Complete |
 | Phase 9 | Extended Tools — Actor, material, mesh, level, asset, animation, build, project, gameplay, datatable, source control, debug, Python bridge (85 total tools) | Complete |
+| Phase 10 | Sequencer, AI/Nav, Widget, Editor Utils (112 tools) | Complete |
+| Phase 11 | Texture, Niagara, Audio, Landscape (135 tools) | Complete |
+| Phase 12 | Physics, World Partition, Foliage, Curves, PCG, GeoScript (157 tools) | Complete |
+| Phase 13 | Workflow Orchestration, Analysis, Refactoring (170 tools) | Complete |
+| Phase 14 | Claude Intelligence — Context engine, tool manifest, workflow chains (173 tools) | Complete |
 
 ---
 
@@ -308,9 +336,9 @@ All user stories are code-complete. The system has been verified with a live UE 
 
 | Layer | Tests | Status |
 |-------|-------|--------|
-| MCP Server (TypeScript) | 461 tests across 34 files | All passing |
+| MCP Server (TypeScript) | 765 tests across 52 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
-| Python Scripts | 63 scripts in `ue-plugin/Content/Python/uma/` | Verified live |
+| Python Scripts | 130+ scripts in `ue-plugin/Content/Python/uma/` | Verified live |
 
 ### Bug Fixes Applied
 

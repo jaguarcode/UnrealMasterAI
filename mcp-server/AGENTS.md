@@ -14,14 +14,14 @@ as CLIENT.
 | File | Description |
 |------|-------------|
 | `src/index.ts` | Entry point — creates `McpServer`, binds `StdioServerTransport` |
-| `src/server.ts` | Registers all 85 MCP tools across 20 domains |
+| `src/server.ts` | Registers all 173 MCP tools across 37 domains |
 | `src/transport/websocket-bridge.ts` | WS server, pending-request correlation map |
 | `src/transport/message-codec.ts` | Encode/decode with Zod validation |
 | `src/transport/connection-manager.ts` | Exponential backoff reconnection |
 | `src/state/safety.ts` | `classifyOperation()`, `isPathSafe()`, `ApprovalGate` |
 | `src/state/session.ts` | `SessionManager` — retry counts, compile history |
 | `src/state/cache-store.ts` | LRU cache — 1000 entries, 60s TTL |
-| `src/tools/` | 85 tool handlers across 20 domains: editor, blueprint, compilation, file, slate, chat, actor, material, mesh, level, asset, animation, content, datatable, build, project, gameplay, python, sourcecontrol, debug |
+| `src/tools/` | 173 tool handlers across 37 domains: editor, blueprint, compilation, file, slate, chat, actor, material, mesh, level, asset, animation, content, datatable, build, project, gameplay, python, sourcecontrol, debug, sequencer, ai, widget, texture, niagara, audio, landscape, physics, worldpartition, foliage, curve, pcg, geoscript, workflow, analyze, refactor, context |
 | `src/rag/` | `EmbeddingStore`, `SlateTemplateLoader`, `SemanticSearch` |
 | `src/observability/` | `logger.ts`, `tracer.ts`, `metrics.ts` |
 | `tests/` | Vitest tests — `tests/unit/**` and `tests/integration/**` |
@@ -31,7 +31,7 @@ as CLIENT.
 ```bash
 cd mcp-server
 
-npm test                    # run all tests (461 tests, 34 files)
+npm test                    # run all tests (765 tests, 52 files)
 npm run test:watch          # watch mode
 npm run test:coverage       # with coverage report
 npm run typecheck           # TypeScript type check only

@@ -122,6 +122,10 @@ const SAFE_TOOLS = new Set([
   'analyze-assetHealth',
   'analyze-performanceHints',
   'analyze-codeConventions',
+  // Context intelligence (read-only)
+  'context-autoGather',
+  'context-getManifest',
+  'context-getChains',
 ]);
 
 /** Mutation operations that change state but are generally recoverable. */
