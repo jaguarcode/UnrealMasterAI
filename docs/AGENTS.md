@@ -17,10 +17,10 @@ guides covering the full Unreal Master Agent system.
 | `setup-guide.md` | Installation, configuration, and quickstart guide |
 | `websocket-protocol.md` | WebSocket protocol specification (message format, error codes, threading) |
 | `safety-architecture.md` | Safety system: operation classification, approval gate, self-healing |
-| `api-reference/mcp-tools.md` | Complete API reference for all 173 MCP tools across 37 domains |
+| `api-reference/mcp-tools.md` | Complete API reference for all 183 MCP tools across 37 domains |
 | `coding-conventions/README.md` | TypeScript + C++ coding conventions and style guide |
 | `AGENTS.md` | This file — AI agent guidance for documentation |
-| `FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md` | Python API enhancement plan (173 tools implemented) |
+| `FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md` | Python API enhancement plan (183 tools implemented) |
 
 ### JSON Schemas
 

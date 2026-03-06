@@ -4,7 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unreal Master Agent - AI-Powered Unreal Engine Development</title>
-<meta name="description" content="Give Claude Code bidirectional control over Unreal Engine. Manipulate Blueprints, generate UI, compile, and self-heal — all from natural language.">
+<meta name="description" content="Open-source AI agent giving Claude Code bidirectional control over Unreal Engine. 183 tools across 37 domains with AI-powered workflow learning. Manipulate Blueprints, create materials, compile, and self-heal — all from natural language.">
+<link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/">
+<!-- Open Graph / Social -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/">
+<meta property="og:title" content="Unreal Master Agent - AI-Powered Unreal Engine Development">
+<meta property="og:description" content="Open-source MCP bridge giving Claude Code bidirectional control over Unreal Engine. 183 tools, 37 domains, AI-powered workflow learning.">
+<meta property="og:site_name" content="Unreal Master Agent">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unreal Master Agent - AI-Powered Unreal Engine Development">
+<meta name="twitter:description" content="Open-source MCP bridge giving Claude Code bidirectional control over Unreal Engine. 183 tools, 37 domains, AI-powered workflow learning.">
+<!-- Additional SEO -->
+<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI, Blueprint, automation, game development, open source, Model Context Protocol">
+<meta name="author" content="JaguarCode">
+<meta name="robots" content="index, follow">
 <style>
 /* ============ RESET & BASE ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -463,7 +478,11 @@ img{max-width:100%;display:block}
       <a href="#safety">Safety</a>
       <a href="#docs">Docs</a>
       <a href="#roadmap">Roadmap</a>
-      <a href="setup-guide.md" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-outline" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -484,7 +503,7 @@ img{max-width:100%;display:block}
       <h1>AI-Powered<br><span class="text-gradient">Unreal Engine</span><br>Development</h1>
       <p>Give Claude Code bidirectional control over Unreal Engine internals. 183 tools across 37 domains &mdash; from Blueprints and materials to AI-powered workflow learning that gets smarter with every interaction.</p>
       <div class="hero-buttons">
-        <a href="setup-guide.md" class="btn btn-primary">
+        <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Get Started
         </a>
@@ -584,7 +603,7 @@ img{max-width:100%;display:block}
           <h4>Python API Expansion</h4>
           <span class="badge badge-green">Complete</span>
         </div>
-        <p>63 Python scripts across 15 domains: actors, assets, materials, levels, animation, meshes, gameplay, build, debug, and more.</p>
+        <p>130+ Python scripts across 37 domains: actors, assets, materials, levels, animation, meshes, gameplay, build, debug, sequencer, AI, widgets, and more.</p>
         <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
       </div>
       <div class="phase-card completed reveal reveal-delay-2">
@@ -1016,7 +1035,7 @@ img{max-width:100%;display:block}
       <p>Everything you need to get started, extend, and understand the system.</p>
     </div>
     <div class="docs-grid">
-      <a href="setup-guide.md" class="doc-card reveal">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/setup-guide.md" class="doc-card reveal" target="_blank" rel="noopener">
         <div class="doc-icon di-green">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </div>
@@ -1025,16 +1044,16 @@ img{max-width:100%;display:block}
           <p>Installation, configuration, and first connection walkthrough for both the MCP server and UE plugin.</p>
         </div>
       </a>
-      <a href="api-reference/mcp-tools.md" class="doc-card reveal reveal-delay-1">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
         <div class="doc-icon di-blue">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
         <div>
           <h4>MCP Tools API Reference</h4>
-          <p>Complete reference for all 183 tools: parameters, return values, safety levels, and usage examples.</p>
+          <p>Complete reference for all 183 tools across 37 domains: parameters, return values, safety levels, and usage examples.</p>
         </div>
       </a>
-      <a href="../ARCHITECTURE.md" class="doc-card reveal reveal-delay-2">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="doc-card reveal reveal-delay-2">
         <div class="doc-icon di-purple">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </div>
@@ -1043,7 +1062,7 @@ img{max-width:100%;display:block}
           <p>4-layer design, ADRs, threading model, caching strategy, error taxonomy, and data flow diagrams.</p>
         </div>
       </a>
-      <a href="websocket-protocol.md" class="doc-card reveal">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/websocket-protocol.md" class="doc-card reveal" target="_blank" rel="noopener">
         <div class="doc-icon di-cyan">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         </div>
@@ -1052,7 +1071,7 @@ img{max-width:100%;display:block}
           <p>Message envelopes, request/response correlation, error codes (1000-6099), and connection lifecycle.</p>
         </div>
       </a>
-      <a href="safety-architecture.md" class="doc-card reveal reveal-delay-1">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/safety-architecture.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
         <div class="doc-icon di-orange">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         </div>
@@ -1061,7 +1080,7 @@ img{max-width:100%;display:block}
           <p>3-tier classification system, approval workflow, path sandboxing, and the human-in-the-loop gate.</p>
         </div>
       </a>
-      <a href="coding-conventions/README.md" class="doc-card reveal reveal-delay-2">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/coding-conventions/README.md" class="doc-card reveal reveal-delay-2" target="_blank" rel="noopener">
         <div class="doc-icon di-green">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </div>
@@ -1070,7 +1089,7 @@ img{max-width:100%;display:block}
           <p>TypeScript and C++ style guides, naming conventions, testing patterns, and contribution guidelines.</p>
         </div>
       </a>
-      <a href="IMPROVEMENT-PLAN.md" class="doc-card reveal">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/IMPROVEMENT-PLAN.md" class="doc-card reveal" target="_blank" rel="noopener">
         <div class="doc-icon di-blue">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
         </div>
@@ -1079,7 +1098,7 @@ img{max-width:100%;display:block}
           <p>Python API expansion roadmap: 60+ new tools across 14 categories with implementation timeline.</p>
         </div>
       </a>
-      <a href="PHASE2-IMPROVEMENT-PLAN.md" class="doc-card reveal reveal-delay-1">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/PHASE2-IMPROVEMENT-PLAN.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
         <div class="doc-icon di-purple">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
         </div>
@@ -1088,13 +1107,13 @@ img{max-width:100%;display:block}
           <p>Context engine, Claude orchestrator, streaming UI, viewport/content browser context menus.</p>
         </div>
       </a>
-      <a href="FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md" class="doc-card reveal reveal-delay-2">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md" class="doc-card reveal reveal-delay-2" target="_blank" rel="noopener">
         <div class="doc-icon di-cyan">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
         </div>
         <div>
           <h4>Full UE API Enhancement Plan</h4>
-          <p>Comprehensive plan to reach 158 tools with full UE Python API coverage. Consensus-approved via RALPLAN.</p>
+          <p>Full UE Python API coverage achieved with 183 tools. Includes workflow learning and error resolution intelligence.</p>
         </div>
       </a>
     </div>
@@ -1107,15 +1126,15 @@ img{max-width:100%;display:block}
     <h2>Ready to <span class="text-gradient">Transform</span> Your Workflow?</h2>
     <p>Stop clicking through menus. Start describing what you want. Let Claude and Unreal Engine handle the rest.</p>
     <div class="cta-buttons">
-      <a href="setup-guide.md" class="btn btn-primary">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Get Started
       </a>
-      <a href="api-reference/mcp-tools.md" class="btn btn-outline">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        API Reference
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-outline" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub Repo
       </a>
-      <a href="../ARCHITECTURE.md" class="btn btn-outline">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="btn btn-outline" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         Architecture
       </a>
