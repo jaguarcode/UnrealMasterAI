@@ -321,17 +321,6 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 ---
 
-## Implementation Status
-
-All user stories are code-complete. The system has been verified with a live UE 5.4 TestProject.
-
-| Story | Feature | Status |
-|-------|---------|--------|
-| US-021 | Human-in-the-Loop Safety (Slate approval dialog, FUMAApprovalGate, 6 C++ tests) | Complete |
-| US-022 | In-Editor Chat Panel (SUMAChatPanel, UUMAEditorSubsystem, 4 C++ tests) | Complete |
-| US-023 | Documentation and AGENTS.md hierarchy | Complete |
-| Phase 9 | Extended MCP Tools — 85 tools across 20 domains with Python bridge | Complete |
-
 ### Test Summary
 
 | Layer | Tests | Status |
@@ -339,14 +328,6 @@ All user stories are code-complete. The system has been verified with a live UE 
 | MCP Server (TypeScript) | 765 tests across 52 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
 | Python Scripts | 130+ scripts in `ue-plugin/Content/Python/uma/` | Verified live |
-
-### Bug Fixes Applied
-
-| Fix | Description |
-|-----|-------------|
-| `material_set_param.py` | JSON string parsing for MCP values, `parameterValue` fallback, auto-detect vector type, base Material expression editing support |
-| `PatrollingActor.cpp` | Added `LinkedActors` TArray for moving grouped actors together |
-| `set_car_movable.py` | Utility to set StaticMeshActor mobility to Movable for runtime movement |
 
 ---
 
