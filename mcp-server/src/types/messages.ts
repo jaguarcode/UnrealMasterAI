@@ -14,7 +14,7 @@ export interface WSMessage {
 }
 
 export interface WSError {
-  /** Error code per taxonomy (1000-6099) */
+  /** Error code per taxonomy (1000-7599) */
   code: number;
   /** Human-readable error description */
   message: string;

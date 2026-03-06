@@ -26,7 +26,11 @@ public class UnrealMasterAgent : ModuleRules
             "EditorSubsystem",
             "Networking",
             "Sockets",
-            "WorkspaceMenuStructure"
+            "WorkspaceMenuStructure",
+            "LiveCoding",
+            "InputCore",
+            "AssetRegistry",
+            "PythonScriptPlugin"
         });
     }
 }

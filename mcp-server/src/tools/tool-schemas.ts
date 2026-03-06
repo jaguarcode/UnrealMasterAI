@@ -32,6 +32,8 @@ export const BlueprintCreateNodeInputSchema = z.object({
   blueprintCacheKey: z.string(),
   graphName: z.string(),
   nodeClass: z.string(),
+  functionOwnerClass: z.string().optional(),
+  functionName: z.string().optional(),
   posX: z.number().int().optional(),
   posY: z.number().int().optional(),
 });

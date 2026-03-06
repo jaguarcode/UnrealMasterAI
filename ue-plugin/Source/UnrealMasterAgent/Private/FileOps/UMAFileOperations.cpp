@@ -22,7 +22,11 @@ bool FUMAFileOperations::IsPathWithinProject(const FString& FilePath)
 FString FUMAFileOperations::ResolvePath(const FString& FilePath)
 {
     FString FullPath;
-    if (FPaths::IsRelativePath(FilePath))
+    // Check if path is relative (doesn't start with drive letter or UNC path)
+    bool bIsRelative = !FilePath.StartsWith(TEXT("/")) &&
+                       !FilePath.StartsWith(TEXT("\\")) &&
+                       (FilePath.Len() < 2 || FilePath[1] != TEXT(':'));
+    if (bIsRelative)
     {
         FullPath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / FilePath);
     }

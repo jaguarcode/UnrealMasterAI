@@ -213,6 +213,7 @@ FUMANodeSpawnResult FUMABlueprintManipulator::SpawnNode(
         }
 
         UK2Node_CallFunction* NewNode = NewObject<UK2Node_CallFunction>(TargetGraph);
+        NewNode->CreateNewGuid();
         NewNode->SetFromFunction(Func);
         NewNode->NodePosX = PosX;
         NewNode->NodePosY = PosY;
@@ -227,6 +228,7 @@ FUMANodeSpawnResult FUMABlueprintManipulator::SpawnNode(
     else if (NodeClass == TEXT("K2Node_CustomEvent"))
     {
         UK2Node_CustomEvent* NewNode = NewObject<UK2Node_CustomEvent>(TargetGraph);
+        NewNode->CreateNewGuid();
         NewNode->CustomFunctionName = *FunctionName;
         NewNode->NodePosX = PosX;
         NewNode->NodePosY = PosY;
@@ -241,6 +243,7 @@ FUMANodeSpawnResult FUMABlueprintManipulator::SpawnNode(
     else if (NodeClass == TEXT("K2Node_IfThenElse"))
     {
         UK2Node_IfThenElse* NewNode = NewObject<UK2Node_IfThenElse>(TargetGraph);
+        NewNode->CreateNewGuid();
         NewNode->NodePosX = PosX;
         NewNode->NodePosY = PosY;
         NewNode->AllocateDefaultPins();
@@ -254,6 +257,7 @@ FUMANodeSpawnResult FUMABlueprintManipulator::SpawnNode(
     else if (NodeClass == TEXT("K2Node_VariableGet"))
     {
         UK2Node_VariableGet* NewNode = NewObject<UK2Node_VariableGet>(TargetGraph);
+        NewNode->CreateNewGuid();
         NewNode->VariableReference.SetSelfMember(*FunctionName);
         NewNode->NodePosX = PosX;
         NewNode->NodePosY = PosY;
@@ -268,6 +272,7 @@ FUMANodeSpawnResult FUMABlueprintManipulator::SpawnNode(
     else if (NodeClass == TEXT("K2Node_VariableSet"))
     {
         UK2Node_VariableSet* NewNode = NewObject<UK2Node_VariableSet>(TargetGraph);
+        NewNode->CreateNewGuid();
         NewNode->VariableReference.SetSelfMember(*FunctionName);
         NewNode->NodePosX = PosX;
         NewNode->NodePosY = PosY;

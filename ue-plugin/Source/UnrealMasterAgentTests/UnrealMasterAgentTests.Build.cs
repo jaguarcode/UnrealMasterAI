@@ -13,7 +13,11 @@ public class UnrealMasterAgentTests : ModuleRules
             "Engine",
             "Json",
             "JsonUtilities",
-            "UnrealMasterAgent"
+            "UnrealMasterAgent",
+            "UnrealEd",
+            "Slate",
+            "SlateCore",
+            "EditorSubsystem"
         });
     }
 }

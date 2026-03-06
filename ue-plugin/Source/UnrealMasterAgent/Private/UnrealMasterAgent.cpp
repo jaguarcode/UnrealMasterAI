@@ -11,6 +11,7 @@
 #include "Editor/UMAEditorSubsystem.h"
 #include "Safety/UMAApprovalGate.h"
 #include "FileOps/UMAFileOperations.h"
+#include "Python/UMAPythonBridge.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
 #include "Serialization/JsonReader.h"
@@ -651,6 +652,33 @@ void FUnrealMasterAgentModule::StartupModule()
             TSharedPtr<FJsonObject> ResultObj = MakeShared<FJsonObject>();
             ResultObj->SetBoolField(TEXT("approved"), bApproved);
             Response.Result = ResultObj;
+            return Response;
+        }));
+
+    // Register Python bridge handler
+    GMessageHandler->RegisterHandler(TEXT("python.execute"),
+        FOnUMAHandleMethod::CreateLambda([](const FUMAWSMessage& Message) -> FUMAWSResponse
+        {
+            FString ScriptName;
+            FUMAWSResponse ErrorResp;
+            if (!GetStringParam(Message, TEXT("script"), ScriptName, ErrorResp))
+            {
+                return ErrorResp;
+            }
+
+            // Extract args sub-object
+            TSharedPtr<FJsonObject> Args;
+            if (Message.Params.IsValid())
+            {
+                const TSharedPtr<FJsonObject>* ArgsObj = nullptr;
+                if (Message.Params->TryGetObjectField(TEXT("args"), ArgsObj) && ArgsObj)
+                {
+                    Args = *ArgsObj;
+                }
+            }
+
+            FUMAWSResponse Response = FUMAPythonBridge::ExecutePython(ScriptName, Args);
+            Response.Id = Message.Id;
             return Response;
         }));
 

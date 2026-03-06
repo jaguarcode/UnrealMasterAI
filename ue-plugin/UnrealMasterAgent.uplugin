@@ -8,6 +8,12 @@
   "CreatedBy": "Unreal Master Team",
   "EnabledByDefault": true,
   "CanContainContent": true,
+  "Plugins": [
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true
+    }
+  ],
   "Modules": [
     {
       "Name": "UnrealMasterAgent",

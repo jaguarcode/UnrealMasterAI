@@ -9,6 +9,8 @@ export interface CreateNodeParams {
   blueprintCacheKey: string;
   graphName: string;
   nodeClass: string;
+  functionOwnerClass?: string;
+  functionName?: string;
   posX?: number;
   posY?: number;
 }
@@ -24,6 +26,8 @@ export async function blueprintCreateNode(
       blueprintPath: params.blueprintCacheKey.replace(/^bp:/, ''),
       graphName: params.graphName,
       nodeClass: params.nodeClass,
+      ...(params.functionOwnerClass && { functionOwnerClass: params.functionOwnerClass }),
+      ...(params.functionName && { functionName: params.functionName }),
       ...(params.posX !== undefined && { posX: params.posX }),
       ...(params.posY !== undefined && { posY: params.posY }),
     },

@@ -11,7 +11,7 @@ export const WSMessageSchema = z.object({
 });
 
 export const WSErrorSchema = z.object({
-  code: z.number().int().min(1000).max(6099),
+  code: z.number().int().min(1000).max(7599),
   message: z.string(),
   data: z.unknown().optional(),
 });

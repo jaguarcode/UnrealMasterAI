@@ -78,6 +78,7 @@ void FUMAWebSocketClient::SendResponse(const FUMAWSResponse& Response)
     }
 
     const FString JsonString = Response.ToJson();
+    UE_LOG(LogTemp, Log, TEXT("[UMA] Sending response: %s"), *JsonString);
     WebSocket->Send(JsonString);
 }
 
@@ -94,12 +95,15 @@ void FUMAWebSocketClient::SendRawMessage(const FUMAWSMessage& Message)
 
 void FUMAWebSocketClient::OnRawMessageReceived(const FString& Message)
 {
+    UE_LOG(LogTemp, Log, TEXT("[UMA] Raw message received: %s"), *Message);
+
     // CRITICAL: Dispatch to GameThread for safe UE API access
     AsyncTask(ENamedThreads::GameThread, [this, Message]()
     {
         FUMAWSMessage ParsedMessage;
         if (ParsedMessage.FromJson(Message))
         {
+            UE_LOG(LogTemp, Log, TEXT("[UMA] Parsed message - Method: %s, Id: %s"), *ParsedMessage.Method, *ParsedMessage.Id);
             OnMessageReceived.ExecuteIfBound(ParsedMessage);
         }
         else

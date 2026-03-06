@@ -13,7 +13,8 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FUMAEditorSubsystemTabRegisteredTest,
 bool FUMAEditorSubsystemTabRegisteredTest::RunTest(const FString& Parameters)
 {
     const FName ChatTabId = TEXT("UMAChatPanel");
-    bool bRegistered = FGlobalTabmanager::Get()->CanSpawnTab(ChatTabId);
+    // In UE 5.7, use HasTabSpawner instead of CanSpawnTab
+    bool bRegistered = FGlobalTabmanager::Get()->HasTabSpawner(ChatTabId);
     TestTrue(TEXT("UMAChatPanel tab spawner is registered"), bRegistered);
     return true;
 }

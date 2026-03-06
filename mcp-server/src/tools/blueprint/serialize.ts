@@ -66,6 +66,8 @@ export async function blueprintSerialize(
     cache.set(cacheKey, result);
 
     const graphs = result?.graphs as Array<{ nodes?: unknown[] }> | undefined;
+    const graph = result?.graph as { nodes?: unknown[] } | undefined;
+    const allGraphs = graphs ?? (graph ? [graph] : []);
     return {
       content: [
         {
@@ -75,13 +77,14 @@ export async function blueprintSerialize(
             cached: false,
             summary: {
               blueprintPath: params.assetPath,
-              graphCount: graphs?.length ?? 0,
+              graphCount: allGraphs.length,
               nodeCount:
-                graphs?.reduce(
+                allGraphs.reduce(
                   (sum: number, g) => sum + (g?.nodes?.length ?? 0),
                   0,
                 ) ?? 0,
             },
+            result,
           }),
         },
       ],

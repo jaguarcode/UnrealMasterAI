@@ -14,14 +14,14 @@ bool FUMAMessageHandlerPingRouteTest::RunTest(const FString& Parameters)
     FUMAMessageHandler Handler;
     bool bPingHandled = false;
 
-    Handler.RegisterHandler(TEXT("editor.ping"), [&bPingHandled](const FUMAWSMessage& Message)
+    Handler.RegisterHandler(TEXT("editor.ping"), FOnUMAHandleMethod::CreateLambda([&bPingHandled](const FUMAWSMessage& Message)
     {
         bPingHandled = true;
         FUMAWSResponse Response;
         Response.Id = Message.Id;
         Response.Duration_ms = 0.1;
         return Response;
-    });
+    }));
 
     FUMAWSMessage PingMessage;
     PingMessage.Id = FGuid::NewGuid().ToString();

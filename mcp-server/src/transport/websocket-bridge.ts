@@ -61,27 +61,35 @@ export class WebSocketBridge {
       });
 
       this.wss.on('connection', (ws) => {
+        console.error(`[WS] Client connection attempt`);
         // Only allow one active client (the UE plugin)
         if (this.activeClient && this.activeClient.readyState === WebSocket.OPEN) {
+          console.error(`[WS] Rejecting connection - already have active client`);
           ws.close(1008, 'Only one client allowed');
           return;
         }
 
+        console.error(`[WS] Client connected successfully`);
         this.activeClient = ws;
         this.onClientConnected?.();
 
         ws.on('message', (data) => {
           try {
             const raw = data.toString();
+            console.error(`[WS] Received response: ${raw.substring(0, 200)}`);
             const response = decodeResponse(raw);
+            console.error(`[WS] Decoded response id: ${response.id}`);
             const pending = this.pendingRequests.get(response.id);
             if (pending) {
+              console.error(`[WS] Found pending request, resolving`);
               clearTimeout(pending.timer);
               this.pendingRequests.delete(response.id);
               pending.resolve(response);
+            } else {
+              console.error(`[WS] No pending request found for id: ${response.id}`);
             }
-          } catch {
-            // Ignore malformed responses
+          } catch (err) {
+            console.error(`[WS] Error decoding response: ${err}`);
           }
         });
 
@@ -144,7 +152,9 @@ export class WebSocketBridge {
    */
   sendRequest(msg: WSMessage): Promise<WSResponse> {
     return new Promise((resolve, reject) => {
+      console.error(`[WS] sendRequest called for ${msg.method}, hasClient=${!!this.activeClient}, readyState=${this.activeClient?.readyState}`);
       if (!this.activeClient || this.activeClient.readyState !== WebSocket.OPEN) {
+        console.error(`[WS] Rejecting request - UE plugin not connected`);
         reject(new Error('UE plugin not connected'));
         return;
       }
@@ -158,8 +168,10 @@ export class WebSocketBridge {
 
       try {
         const encoded = encodeMessage(msg);
+        console.error(`[WS] Sending message: ${encoded.substring(0, 200)}`);
         this.activeClient.send(encoded);
       } catch (err) {
+        console.error(`[WS] Error sending message: ${err}`);
         clearTimeout(timer);
         this.pendingRequests.delete(msg.id);
         reject(err);

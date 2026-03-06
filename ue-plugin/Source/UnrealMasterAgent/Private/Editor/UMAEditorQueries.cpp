@@ -24,7 +24,20 @@ FString FUMAEditorQueries::GetLevelInfo()
 
     Result->SetStringField(TEXT("levelName"), World->GetMapName());
     Result->SetNumberField(TEXT("actorCount"), World->GetActorCount());
-    Result->SetStringField(TEXT("worldType"), StaticEnum<EWorldType::Type>()->GetNameStringByValue(static_cast<int64>(World->WorldType)));
+    // Simplified world type string without StaticEnum dependency
+    FString WorldTypeStr;
+    switch (World->WorldType)
+    {
+        case EWorldType::Editor: WorldTypeStr = TEXT("Editor"); break;
+        case EWorldType::Game: WorldTypeStr = TEXT("Game"); break;
+        case EWorldType::PIE: WorldTypeStr = TEXT("PIE"); break;
+        case EWorldType::EditorPreview: WorldTypeStr = TEXT("EditorPreview"); break;
+        case EWorldType::GamePreview: WorldTypeStr = TEXT("GamePreview"); break;
+        case EWorldType::GameRPC: WorldTypeStr = TEXT("GameRPC"); break;
+        case EWorldType::Inactive: WorldTypeStr = TEXT("Inactive"); break;
+        default: WorldTypeStr = TEXT("Unknown"); break;
+    }
+    Result->SetStringField(TEXT("worldType"), WorldTypeStr);
 
     FString Output;
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Output);
@@ -99,7 +112,8 @@ FString FUMAEditorQueries::GetAssetInfo(const FString& AssetPath)
 
     Result->SetStringField(TEXT("assetPath"), AssetData.GetObjectPathString());
     Result->SetStringField(TEXT("assetClass"), AssetData.AssetClassPath.GetAssetName().ToString());
-    Result->SetNumberField(TEXT("diskSize"), static_cast<double>(AssetData.GetDiskSize()));
+    // Note: GetDiskSize removed in UE 5.7, use -1 to indicate unavailable
+    Result->SetNumberField(TEXT("diskSize"), -1.0);
     Result->SetStringField(TEXT("packageName"), AssetData.PackageName.ToString());
 
     FString Output;

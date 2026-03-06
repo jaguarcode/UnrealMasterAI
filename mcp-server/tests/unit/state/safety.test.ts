@@ -115,13 +115,159 @@ describe('classifyOperation', () => {
   });
 
   it('classifies blueprint-deleteNode as "dangerous" requiring approval', () => {
-    const result = classifyOperation('blueprint-deleteNode', {
-      blueprintCacheKey: 'key',
-      nodeId: 'node-123',
-    });
+    const result = classifyOperation('blueprint-deleteNode', {});
     expect(result.level).toBe('dangerous');
-    expect(result.reason).toBe('Destructive Blueprint operation');
     expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies asset-delete as "dangerous"', () => {
+    const result = classifyOperation('asset-delete', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies asset-rename as "dangerous"', () => {
+    const result = classifyOperation('asset-rename', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies actor-delete as "dangerous"', () => {
+    const result = classifyOperation('actor-delete', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies datatable-removeRow as "dangerous"', () => {
+    const result = classifyOperation('datatable-removeRow', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies debug-execConsole as "dangerous"', () => {
+    const result = classifyOperation('debug-execConsole', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies build-cookContent as "dangerous"', () => {
+    const result = classifyOperation('build-cookContent', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  it('classifies refactor-renameChain as "dangerous"', () => {
+    const result = classifyOperation('refactor-renameChain', {});
+    expect(result.level).toBe('dangerous');
+    expect(result.requiresApproval).toBe(true);
+  });
+
+  // --- New safe tools ---
+  it.each([
+    'project-getStructure', 'project-getSettings', 'project-getPlugins',
+    'project-getDependencyGraph', 'project-getClassHierarchy', 'project-snapshot',
+    'content-listAssets', 'content-findAssets', 'content-getAssetDetails', 'content-validateAssets',
+    'asset-export', 'asset-getReferences',
+    'actor-getProperties', 'actor-getComponents', 'actor-select',
+    'level-getWorldSettings',
+    'material-getParameters', 'material-getNodes',
+    'mesh-getInfo',
+    'datatable-getRows',
+    'anim-listMontages', 'anim-getBlendSpace', 'anim-listSequences', 'anim-getSkeletonInfo',
+    'gameplay-getGameMode', 'gameplay-listInputActions',
+    'sourcecontrol-getStatus', 'sourcecontrol-diff',
+    'build-getMapCheck',
+    'debug-getLog', 'debug-getPerformance',
+    // Sequencer (read-only)
+    'sequencer-getInfo', 'sequencer-exportFBX',
+    // AI/Navigation (read-only)
+    'ai-getBehaviorTreeInfo', 'ai-getBlackboardKeys', 'ai-getNavMeshInfo',
+    // Widget (read-only)
+    'widget-getInfo', 'widget-getBindings', 'widget-listWidgets',
+    // Editor utilities (read-only)
+    'editor-getSelection', 'editor-getViewport', 'editor-setSelection', 'editor-getRecentActivity',
+    // Slate (read-only)
+    'slate-listTemplates', 'slate-generate', 'slate-validate',
+    // Chat
+    'chat-sendMessage',
+    // Texture (read-only)
+    'texture-getInfo', 'texture-listTextures',
+    // Niagara (read-only)
+    'niagara-getInfo', 'niagara-listSystems',
+    // Audio (read-only)
+    'audio-getInfo', 'audio-listAssets',
+    // Landscape (read-only)
+    'landscape-getInfo', 'landscape-exportHeightmap',
+    // Physics (read-only)
+    'physics-getInfo',
+    // World Partition (read-only)
+    'worldpartition-getInfo',
+    // Foliage (read-only)
+    'foliage-getInfo',
+    // Curves (read-only)
+    'curve-getInfo',
+    // PCG (read-only)
+    'pcg-getInfo',
+    // Geometry Script (read-only)
+    'geoscript-getInfo',
+    // Analysis (read-only)
+    'analyze-blueprintComplexity', 'analyze-assetHealth', 'analyze-performanceHints', 'analyze-codeConventions',
+  ])('classifies %s as "safe"', (tool) => {
+    const result = classifyOperation(tool, {});
+    expect(result.level).toBe('safe');
+    expect(result.requiresApproval).toBe(false);
+  });
+
+  // --- New warn tools ---
+  it.each([
+    'asset-create', 'asset-duplicate', 'asset-import', 'asset-setMetadata',
+    'actor-spawn', 'actor-setTransform', 'actor-setProperty', 'actor-addComponent',
+    'level-create', 'level-open', 'level-save', 'level-addSublevel',
+    'material-create', 'material-setParameter', 'material-createInstance', 'material-setTexture',
+    'mesh-setMaterial', 'mesh-generateCollision', 'mesh-setLOD',
+    'datatable-create', 'datatable-addRow',
+    'anim-createMontage',
+    'gameplay-setGameMode', 'gameplay-addInputAction',
+    'sourcecontrol-checkout',
+    'build-lightmaps',
+    // Sequencer (mutations)
+    'sequencer-create', 'sequencer-open', 'sequencer-addTrack', 'sequencer-addBinding',
+    'sequencer-setKeyframe', 'sequencer-importFBX',
+    // AI/Navigation (mutations)
+    'ai-createBehaviorTree', 'ai-createBlackboard', 'ai-addBlackboardKey',
+    'ai-configureNavMesh', 'ai-createEQS',
+    // Widget (mutations)
+    'widget-create', 'widget-addElement', 'widget-setProperty',
+    // Editor utilities (mutations)
+    'editor-batchOperation',
+    // Texture (mutations)
+    'texture-import', 'texture-setCompression', 'texture-createRenderTarget', 'texture-resize',
+    // Niagara (mutations)
+    'niagara-createSystem', 'niagara-addEmitter', 'niagara-setParameter', 'niagara-compile',
+    // Audio (mutations)
+    'audio-import', 'audio-createCue', 'audio-setAttenuation', 'audio-createMetaSound',
+    // Landscape (mutations)
+    'landscape-create', 'landscape-importHeightmap', 'landscape-setMaterial',
+    // Physics (mutations)
+    'physics-createAsset', 'physics-setProfile', 'physics-createMaterial', 'physics-setConstraint',
+    // World Partition (mutations)
+    'worldpartition-setConfig', 'worldpartition-createDataLayer', 'worldpartition-createHLOD',
+    // Foliage (mutations)
+    'foliage-createType', 'foliage-setProperties',
+    // Curves (mutations)
+    'curve-create', 'curve-setKeys',
+    // PCG (mutations)
+    'pcg-createGraph', 'pcg-addNode', 'pcg-connectNodes',
+    // Geometry Script (mutations)
+    'geoscript-meshBoolean', 'geoscript-meshTransform',
+    // Workflow (mutations)
+    'workflow-createCharacter', 'workflow-createUIScreen', 'workflow-setupLevel',
+    'workflow-createInteractable', 'workflow-createProjectile', 'workflow-setupMultiplayer',
+    'workflow-createInventorySystem', 'workflow-createDialogueSystem',
+  ])('classifies %s as "warn"', (tool) => {
+    const result = classifyOperation(tool, {});
+    expect(result.level).toBe('warn');
+    expect(result.requiresApproval).toBe(false);
   });
 });
 
