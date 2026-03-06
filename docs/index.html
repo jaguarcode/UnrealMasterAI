@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unreal Master Agent - AI-Powered Unreal Engine Development</title>
+<meta name="description" content="Give Claude Code bidirectional control over Unreal Engine. Manipulate Blueprints, generate UI, compile, and self-heal — all from natural language.">
+<style>
+/* ============ RESET & BASE ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ue-blue:#0d7dff;
+  --ue-blue-dark:#0050b3;
+  --ue-purple:#6c3bff;
+  --ue-cyan:#00d4ff;
+  --ue-green:#00e68a;
+  --ue-orange:#ff6b35;
+  --ue-dark:#0a0e17;
+  --ue-darker:#060a12;
+  --ue-card:#0f1724;
+  --ue-card-hover:#141d2e;
+  --ue-border:#1a2540;
+  --ue-text:#c8d6e5;
+  --ue-text-bright:#edf2f7;
+  --ue-gradient:linear-gradient(135deg,var(--ue-blue),var(--ue-purple));
+  --ue-gradient2:linear-gradient(135deg,var(--ue-cyan),var(--ue-green));
+  --ue-gradient3:linear-gradient(135deg,var(--ue-orange),var(--ue-purple));
+  --font-main:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:var(--font-main);
+  background:var(--ue-darker);
+  color:var(--ue-text);
+  line-height:1.7;
+  overflow-x:hidden;
+}
+a{color:var(--ue-cyan);text-decoration:none;transition:color .2s}
+a:hover{color:var(--ue-blue)}
+img{max-width:100%;display:block}
+
+/* ============ UTILITIES ============ */
+.container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.section{padding:6rem 0}
+.text-gradient{background:var(--ue-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.text-gradient2{background:var(--ue-gradient2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.text-gradient3{background:var(--ue-gradient3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.badge-blue{background:rgba(13,125,255,.15);color:var(--ue-blue);border:1px solid rgba(13,125,255,.3)}
+.badge-green{background:rgba(0,230,138,.12);color:var(--ue-green);border:1px solid rgba(0,230,138,.3)}
+.badge-purple{background:rgba(108,59,255,.15);color:var(--ue-purple);border:1px solid rgba(108,59,255,.3)}
+.badge-orange{background:rgba(255,107,53,.12);color:var(--ue-orange);border:1px solid rgba(255,107,53,.3)}
+
+/* ============ ANIMATED BACKGROUND ============ */
+.bg-grid{
+  position:fixed;inset:0;z-index:-2;
+  background-image:
+    linear-gradient(rgba(13,125,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(13,125,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridMove 20s linear infinite;
+}
+@keyframes gridMove{to{background-position:60px 60px}}
+
+.bg-glow{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%,rgba(13,125,255,.08),transparent),
+    radial-gradient(ellipse 50% 50% at 80% 80%,rgba(108,59,255,.06),transparent),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,212,255,.04),transparent);
+}
+
+/* ============ NAV ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1rem 0;
+  background:rgba(6,10,18,.8);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--ue-border);
+  transition:padding .3s;
+}
+.nav.scrolled{padding:.5rem 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:.75rem;font-weight:700;font-size:1.15rem;color:var(--ue-text-bright)}
+.nav-logo svg{width:32px;height:32px}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:var(--ue-text);font-size:.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--ue-text-bright)}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.65rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;
+  transition:all .3s;cursor:pointer;border:none;
+}
+.btn-primary{background:var(--ue-gradient);color:#fff;box-shadow:0 4px 20px rgba(13,125,255,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,125,255,.4);color:#fff}
+.btn-outline{background:transparent;color:var(--ue-text-bright);border:1px solid var(--ue-border)}
+.btn-outline:hover{border-color:var(--ue-blue);color:var(--ue-blue)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{width:24px;height:2px;background:var(--ue-text-bright);border-radius:2px;transition:.3s}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding-top:6rem;position:relative;overflow:hidden;
+}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;margin:0 auto}
+.hero-badge{margin-bottom:1.5rem}
+.hero h1{
+  font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;
+  line-height:1.1;margin-bottom:1.5rem;color:var(--ue-text-bright);
+  letter-spacing:-.03em;
+}
+.hero p{font-size:1.25rem;color:var(--ue-text);max-width:700px;margin:0 auto 2.5rem;line-height:1.8}
+.hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.hero-visual{margin-top:4rem;position:relative}
+
+/* Floating orbs */
+.orb{
+  position:absolute;border-radius:50%;filter:blur(60px);opacity:.4;
+  animation:float 6s ease-in-out infinite;
+}
+.orb-1{width:300px;height:300px;background:var(--ue-blue);top:-10%;left:-5%;animation-delay:0s}
+.orb-2{width:250px;height:250px;background:var(--ue-purple);bottom:10%;right:-5%;animation-delay:2s}
+.orb-3{width:200px;height:200px;background:var(--ue-cyan);top:50%;left:50%;animation-delay:4s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+
+/* Terminal mockup */
+.terminal{
+  background:var(--ue-dark);border:1px solid var(--ue-border);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);
+  text-align:left;max-width:800px;margin:0 auto;
+}
+.terminal-bar{
+  display:flex;align-items:center;gap:8px;padding:.75rem 1rem;
+  background:rgba(255,255,255,.03);border-bottom:1px solid var(--ue-border);
+}
+.terminal-dot{width:12px;height:12px;border-radius:50%}
+.terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#febc2e}.terminal-dot.g{background:#28c840}
+.terminal-title{flex:1;text-align:center;font-size:.8rem;color:rgba(255,255,255,.4);font-family:var(--font-mono)}
+.terminal-body{padding:1.5rem;font-family:var(--font-mono);font-size:.85rem;line-height:1.9;min-height:200px}
+.terminal-body .prompt{color:var(--ue-green)}
+.terminal-body .cmd{color:var(--ue-text-bright)}
+.terminal-body .comment{color:rgba(255,255,255,.3)}
+.terminal-body .output{color:var(--ue-cyan)}
+.terminal-body .tool{color:var(--ue-orange)}
+.terminal-body .success{color:var(--ue-green)}
+.typing-cursor{
+  display:inline-block;width:8px;height:1.1em;background:var(--ue-green);
+  vertical-align:text-bottom;animation:blink 1s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ============ STATS BAR ============ */
+.stats-bar{
+  padding:3rem 0;
+  background:linear-gradient(180deg,transparent,rgba(13,125,255,.03),transparent);
+  border-top:1px solid var(--ue-border);border-bottom:1px solid var(--ue-border);
+}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center}
+.stat-item h3{font-size:2.5rem;font-weight:800;margin-bottom:.25rem}
+.stat-item p{font-size:.85rem;color:var(--ue-text);text-transform:uppercase;letter-spacing:.1em}
+.stat-num{display:inline-block}
+
+/* ============ ARCHITECTURE ============ */
+.arch-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
+.section-header{text-align:center;margin-bottom:4rem}
+.section-header h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ue-text-bright);margin-bottom:1rem}
+.section-header p{font-size:1.1rem;color:var(--ue-text);max-width:600px;margin:0 auto}
+
+.arch-diagram{
+  display:grid;grid-template-columns:1fr;gap:0;max-width:700px;margin:0 auto;
+  position:relative;
+}
+.arch-layer{
+  display:flex;align-items:center;gap:1.5rem;
+  padding:1.5rem 2rem;
+  background:var(--ue-card);border:1px solid var(--ue-border);
+  border-radius:12px;position:relative;
+  transition:all .3s;
+}
+.arch-layer:hover{transform:translateX(8px);border-color:var(--ue-blue);box-shadow:0 0 30px rgba(13,125,255,.1)}
+.arch-layer + .arch-layer{margin-top:-1px}
+.arch-icon{
+  width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.2rem;
+}
+.arch-icon.l1{background:rgba(13,125,255,.15);color:var(--ue-blue)}
+.arch-icon.l2{background:rgba(0,212,255,.15);color:var(--ue-cyan)}
+.arch-icon.l3{background:rgba(108,59,255,.15);color:var(--ue-purple)}
+.arch-icon.l4{background:rgba(0,230,138,.15);color:var(--ue-green)}
+.arch-info h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
+.arch-info p{font-size:.85rem;color:var(--ue-text)}
+.arch-connector{
+  width:2px;height:30px;margin:0 auto;
+  background:linear-gradient(180deg,var(--ue-blue),var(--ue-purple));
+  position:relative;
+}
+.arch-connector::after{
+  content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;background:var(--ue-purple);
+}
+.arch-protocol{
+  text-align:center;padding:.4rem .8rem;font-size:.7rem;font-family:var(--font-mono);
+  color:var(--ue-cyan);letter-spacing:.05em;
+}
+
+/* ============ FEATURES ============ */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.feature-card{
+  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:16px;
+  padding:2rem;position:relative;overflow:hidden;
+  transition:all .4s cubic-bezier(.165,.84,.44,1);
+}
+.feature-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--ue-gradient);opacity:0;transition:opacity .3s;
+}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(13,125,255,.3);background:var(--ue-card-hover)}
+.feature-card:hover::before{opacity:1}
+.feature-icon{
+  width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;font-size:1.3rem;
+}
+.feature-card h3{font-size:1.1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
+.feature-card p{font-size:.9rem;line-height:1.7;color:var(--ue-text)}
+.fi-blue{background:rgba(13,125,255,.12);color:var(--ue-blue)}
+.fi-cyan{background:rgba(0,212,255,.12);color:var(--ue-cyan)}
+.fi-purple{background:rgba(108,59,255,.12);color:var(--ue-purple)}
+.fi-green{background:rgba(0,230,138,.12);color:var(--ue-green)}
+.fi-orange{background:rgba(255,107,53,.12);color:var(--ue-orange)}
+
+/* ============ TOOL DOMAINS ============ */
+.domains-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
+.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.domain-chip{
+  display:flex;align-items:center;gap:.75rem;
+  padding:1rem 1.25rem;background:var(--ue-card);border:1px solid var(--ue-border);
+  border-radius:10px;transition:all .3s;cursor:default;
+}
+.domain-chip:hover{border-color:var(--ue-blue);transform:translateY(-2px)}
+.domain-chip .count{
+  font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:6px;
+  background:rgba(13,125,255,.12);color:var(--ue-blue);font-family:var(--font-mono);
+}
+.domain-chip span{font-size:.9rem;font-weight:600;color:var(--ue-text-bright)}
+
+/* ============ DEMO / WORKFLOW ============ */
+.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
+.workflow-step{text-align:center;position:relative}
+.workflow-step::after{
+  content:'';position:absolute;top:28px;left:calc(50% + 30px);
+  width:calc(100% - 60px);height:2px;
+  background:linear-gradient(90deg,var(--ue-blue),var(--ue-purple));
+}
+.workflow-step:last-child::after{display:none}
+.step-num{
+  width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.25rem;font-weight:800;margin:0 auto 1rem;position:relative;z-index:2;
+  background:var(--ue-card);border:2px solid var(--ue-blue);color:var(--ue-blue);
+  transition:all .3s;
+}
+.workflow-step:hover .step-num{background:var(--ue-blue);color:#fff;box-shadow:0 0 30px rgba(13,125,255,.4)}
+.workflow-step h4{font-size:.95rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
+.workflow-step p{font-size:.8rem;color:var(--ue-text);line-height:1.6}
+
+/* ============ SAFETY ============ */
+.safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.safety-card{
+  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:14px;
+  padding:1.75rem;text-align:center;transition:all .3s;
+}
+.safety-card:hover{transform:translateY(-3px);border-color:rgba(0,230,138,.3)}
+.safety-icon{font-size:2rem;margin-bottom:1rem}
+.safety-card h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
+.safety-card p{font-size:.85rem;color:var(--ue-text)}
+
+/* ============ CODE EXAMPLE ============ */
+.code-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
+.code-tabs{display:flex;gap:.5rem;margin-bottom:0}
+.code-tab{
+  padding:.6rem 1.2rem;border-radius:8px 8px 0 0;font-size:.85rem;font-weight:600;
+  cursor:pointer;border:1px solid var(--ue-border);border-bottom:none;
+  background:var(--ue-darker);color:var(--ue-text);transition:all .2s;
+}
+.code-tab.active{background:var(--ue-card);color:var(--ue-text-bright);border-color:var(--ue-blue)}
+.code-panel{
+  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:0 12px 12px 12px;
+  padding:2rem;font-family:var(--font-mono);font-size:.85rem;line-height:2;
+  display:none;overflow-x:auto;
+}
+.code-panel.active{display:block}
+.code-panel .kw{color:var(--ue-purple)}
+.code-panel .fn{color:var(--ue-blue)}
+.code-panel .str{color:var(--ue-green)}
+.code-panel .cmt{color:rgba(255,255,255,.3)}
+.code-panel .var{color:var(--ue-orange)}
+.code-panel .op{color:var(--ue-cyan)}
+
+/* ============ CTA ============ */
+.cta-section{
+  background:linear-gradient(135deg,rgba(13,125,255,.08),rgba(108,59,255,.08));
+  border-top:1px solid var(--ue-border);border-bottom:1px solid var(--ue-border);
+  text-align:center;
+}
+.cta-section h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ue-text-bright);margin-bottom:1rem}
+.cta-section p{font-size:1.1rem;color:var(--ue-text);max-width:600px;margin:0 auto 2rem}
+.cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+/* ============ FOOTER ============ */
+.footer{padding:3rem 0;border-top:1px solid var(--ue-border);text-align:center}
+.footer p{font-size:.85rem;color:rgba(255,255,255,.4)}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem}
+.footer-links a{font-size:.85rem;color:var(--ue-text);transition:color .2s}
+.footer-links a:hover{color:var(--ue-text-bright)}
+
+/* ============ SCROLL ANIMATIONS ============ */
+.reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.165,.84,.44,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ============ PARTICLES ============ */
+.particles-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1024px){
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .workflow-steps{grid-template-columns:repeat(2,1fr)}
+  .workflow-step::after{display:none}
+  .safety-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-links.open{
+    display:flex;flex-direction:column;position:absolute;
+    top:100%;left:0;right:0;background:rgba(6,10,18,.95);
+    padding:1.5rem;gap:1rem;border-bottom:1px solid var(--ue-border);
+    backdrop-filter:blur(20px);
+  }
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
+  .features-grid{grid-template-columns:1fr}
+  .workflow-steps{grid-template-columns:1fr}
+  .safety-grid{grid-template-columns:1fr}
+  .domains-grid{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:2.2rem}
+  .section{padding:4rem 0}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr}
+  .domains-grid{grid-template-columns:1fr}
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Background effects -->
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<canvas class="particles-canvas" id="particles"></canvas>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+        <path d="M8 16L13 8L18 16L13 24L8 16Z" fill="white" fill-opacity="0.9"/>
+        <path d="M16 12L21 8L26 16L21 24L16 20" fill="white" fill-opacity="0.6"/>
+        <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0d7dff"/><stop offset="1" stop-color="#6c3bff"/></linearGradient></defs>
+      </svg>
+      Unreal Master Agent
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#tools">Tools</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#safety">Safety</a>
+      <a href="https://github.com" class="btn btn-primary">Get Started</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge badge-blue">Open Source MCP Bridge</span>
+      </div>
+      <h1>AI-Powered<br><span class="text-gradient">Unreal Engine</span><br>Development</h1>
+      <p>Give Claude Code bidirectional control over Unreal Engine internals. Manipulate Blueprints, spawn actors, create materials, compile, and self-heal &mdash; all from natural language.</p>
+      <div class="hero-buttons">
+        <a href="#workflow" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          See It In Action
+        </a>
+        <a href="#architecture" class="btn btn-outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Explore Architecture
+        </a>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal" id="heroTerminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot r"></div>
+            <div class="terminal-dot y"></div>
+            <div class="terminal-dot g"></div>
+            <div class="terminal-title">claude &mdash; Unreal Master Agent</div>
+          </div>
+          <div class="terminal-body" id="terminalBody">
+            <div class="comment"><!-- lines typed by JS --></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <h3 class="text-gradient"><span class="stat-num" data-target="73">0</span>+</h3>
+        <p>MCP Tools</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <h3 class="text-gradient2"><span class="stat-num" data-target="21">0</span></h3>
+        <p>Tool Domains</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <h3 class="text-gradient3"><span class="stat-num" data-target="63">0</span></h3>
+        <p>Python Scripts</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <h3 class="text-gradient"><span class="stat-num" data-target="4">0</span></h3>
+        <p>Layer Architecture</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-green">Capabilities</span>
+      <h2>Everything You Need to<br><span class="text-gradient">Automate Unreal Engine</span></h2>
+      <p>From Blueprint graph manipulation to asset pipelines, materials, and gameplay systems.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon fi-blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-2.93-7.07l-2.83 2.83m-8.48 8.48l-2.83 2.83m0-14.14l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
+        </div>
+        <h3>Blueprint Graph Manipulation</h3>
+        <p>Serialize Blueprints to structured JSON AST, create nodes, connect pins, modify properties, and delete nodes &mdash; all programmatically via C++ engine APIs.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-cyan">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Self-Healing Compilation</h3>
+        <p>Trigger Live Coding, capture structured compile errors, apply fixes, and retry automatically. Max 3 iterations of the heal loop with full error context.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-purple">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>Asset Pipeline</h3>
+        <p>Create, import, export, duplicate, rename, and delete assets. Query references and dependency graphs. Set metadata tags. Full content lifecycle management.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon fi-green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <h3>Level &amp; Actor Management</h3>
+        <p>Create levels, spawn actors, set transforms, edit properties, add components, manage sublevels and world settings. Full scene graph control.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2a5 5 0 010 10"/><circle cx="6.5" cy="17.5" r="2.5"/><path d="M3 22a5 5 0 010-10"/><line x1="15.5" y1="9" x2="8.5" y2="15"/></svg>
+        </div>
+        <h3>Materials &amp; Rendering</h3>
+        <p>Create materials and instances, set scalar/vector/texture parameters, inspect material graph nodes. Build complete material pipelines from code.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>Python Script Bridge</h3>
+        <p>63 bundled Python scripts across 15+ domains. Extensible framework with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section class="section arch-section" id="architecture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-purple">System Design</span>
+      <h2>4-Layer <span class="text-gradient">Architecture</span></h2>
+      <p>Clean separation between AI reasoning, protocol bridging, engine execution, and direct API access.</p>
+    </div>
+    <div class="arch-diagram reveal">
+      <div class="arch-layer">
+        <div class="arch-icon l1">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div class="arch-info">
+          <h4>Layer 1 &mdash; Claude Code</h4>
+          <p>AI reasoning, natural language understanding, tool orchestration</p>
+        </div>
+      </div>
+      <div class="arch-protocol">stdio &middot; JSON-RPC 2.0</div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer">
+        <div class="arch-icon l2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="arch-info">
+          <h4>Layer 2 &mdash; MCP Bridge Server</h4>
+          <p>Node.js/TypeScript &middot; Tool registry, safety gates, caching, Zod validation</p>
+        </div>
+      </div>
+      <div class="arch-protocol">WebSocket &middot; RFC 6455</div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer">
+        <div class="arch-icon l3">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="arch-info">
+          <h4>Layer 3 &mdash; UE Agent Plugin</h4>
+          <p>C++ &middot; Blueprint manipulation, Python bridge, Live Coding, approval gates</p>
+        </div>
+      </div>
+      <div class="arch-protocol">Direct C++ API Calls</div>
+      <div class="arch-connector"></div>
+      <div class="arch-layer">
+        <div class="arch-icon l4">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+        </div>
+        <div class="arch-info">
+          <h4>Layer 4 &mdash; Unreal Engine APIs</h4>
+          <p>UEdGraph, UEdGraphNode, ILiveCodingModule, FAssetRegistryModule, Python Runtime</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tool Domains -->
+<section class="section domains-section" id="tools">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-orange">Tool Ecosystem</span>
+      <h2><span class="text-gradient3">73+ Tools</span> Across 21 Domains</h2>
+      <p>Comprehensive coverage of UE editor operations, from Blueprints to build pipelines.</p>
+    </div>
+    <div class="domains-grid reveal">
+      <div class="domain-chip"><span class="count">5</span><span>Blueprint</span></div>
+      <div class="domain-chip"><span class="count">9</span><span>Actors</span></div>
+      <div class="domain-chip"><span class="count">8</span><span>Assets</span></div>
+      <div class="domain-chip"><span class="count">6</span><span>Materials</span></div>
+      <div class="domain-chip"><span class="count">6</span><span>Project</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Levels</span></div>
+      <div class="domain-chip"><span class="count">5</span><span>Animation</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Content</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Mesh</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>DataTables</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Gameplay</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Compilation</span></div>
+      <div class="domain-chip"><span class="count">4</span><span>Editor</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>Slate UI</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>File Ops</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>Source Ctrl</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>Build</span></div>
+      <div class="domain-chip"><span class="count">3</span><span>Debug</span></div>
+      <div class="domain-chip"><span class="count">1</span><span>Python</span></div>
+      <div class="domain-chip"><span class="count">1</span><span>Chat</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Workflow -->
+<section class="section" id="workflow">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-blue">How It Works</span>
+      <h2>From <span class="text-gradient">Natural Language</span> to Engine Changes</h2>
+      <p>Describe your intent. Claude orchestrates the tools. Unreal executes in real time.</p>
+    </div>
+    <div class="workflow-steps">
+      <div class="workflow-step reveal">
+        <div class="step-num">1</div>
+        <h4>Describe Intent</h4>
+        <p>"Add a PrintString node to BP_TestActor after BeginPlay, set the message to Hello World."</p>
+      </div>
+      <div class="workflow-step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <h4>Serialize &amp; Plan</h4>
+        <p>Claude calls <code>blueprint-serialize</code> to understand the current graph, then plans the node creation sequence.</p>
+      </div>
+      <div class="workflow-step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <h4>Execute Changes</h4>
+        <p>Creates the PrintString node, connects exec pins, sets the default value &mdash; all via C++ engine APIs on the GameThread.</p>
+      </div>
+      <div class="workflow-step reveal reveal-delay-3">
+        <div class="step-num">4</div>
+        <h4>Compile &amp; Heal</h4>
+        <p>Triggers Live Coding. If compilation fails, parses errors, applies fix, and retries up to 3 times automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Code Example -->
+<section class="section code-section" id="code">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-green">Developer Experience</span>
+      <h2>Simple to <span class="text-gradient2">Integrate &amp; Extend</span></h2>
+      <p>Clean Python scripts, standardized patterns, and a factory-based tool registry.</p>
+    </div>
+    <div class="reveal">
+      <div class="code-tabs">
+        <div class="code-tab active" data-tab="python">Python Script</div>
+        <div class="code-tab" data-tab="tool">Tool Definition</div>
+        <div class="code-tab" data-tab="usage">Claude Usage</div>
+      </div>
+      <div class="code-panel active" id="tab-python">
+<span class="cmt"># ue-plugin/Content/Python/uma/actor_spawn.py</span>
+<span class="kw">import</span> unreal
+<span class="kw">from</span> uma.utils <span class="kw">import</span> execute_wrapper, make_result, get_required_param
+
+<span class="op">@</span><span class="fn">execute_wrapper</span>
+<span class="kw">def</span> <span class="fn">execute</span>(<span class="var">params</span>):
+    class_path = <span class="fn">get_required_param</span>(params, <span class="str">"className"</span>, str)
+    location   = params.get(<span class="str">"location"</span>, {<span class="str">"x"</span>: <span class="var">0</span>, <span class="str">"y"</span>: <span class="var">0</span>, <span class="str">"z"</span>: <span class="var">0</span>})
+
+    actor_class = unreal.<span class="fn">load_class</span>(<span class="kw">None</span>, class_path)
+    loc = unreal.<span class="fn">Vector</span>(location[<span class="str">"x"</span>], location[<span class="str">"y"</span>], location[<span class="str">"z"</span>])
+    actor = unreal.EditorLevelLibrary.<span class="fn">spawn_actor_from_class</span>(actor_class, loc)
+
+    <span class="kw">return</span> <span class="fn">make_result</span>(
+        name=actor.<span class="fn">get_actor_label</span>(),
+        className=actor.<span class="fn">get_class</span>().<span class="fn">get_name</span>()
+    )
+      </div>
+      <div class="code-panel" id="tab-tool">
+<span class="cmt">// mcp-server/src/tools/actor/index.ts</span>
+<span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">"zod"</span>;
+<span class="kw">import</span> { <span class="fn">createPythonToolHandler</span> } <span class="kw">from</span> <span class="str">"../registry"</span>;
+
+<span class="kw">export const</span> <span class="var">tools</span> = [
+  {
+    name: <span class="str">"actor-spawn"</span>,
+    description: <span class="str">"Spawn an actor in the current level"</span>,
+    safety: <span class="str">"warn"</span>,
+    inputSchema: z.<span class="fn">object</span>({
+      className: z.<span class="fn">string</span>().<span class="fn">describe</span>(<span class="str">"UClass path"</span>),
+      location:  z.<span class="fn">object</span>({ x: z.<span class="fn">number</span>(), y: z.<span class="fn">number</span>(), z: z.<span class="fn">number</span>() }).<span class="fn">optional</span>(),
+    }),
+    handler: <span class="fn">createPythonToolHandler</span>(<span class="str">"actor_spawn"</span>),
+  },
+  <span class="cmt">// ... 8 more actor tools</span>
+];
+      </div>
+      <div class="code-panel" id="tab-usage">
+<span class="cmt"># In your terminal with Claude Code + MCP configured:</span>
+
+<span class="prompt">$</span> <span class="cmd">claude</span>
+<span class="output">> Spawn a PointLight at position (500, 200, 300) and</span>
+<span class="output">  set its intensity to 50000</span>
+
+<span class="tool">  [tool] actor-spawn</span>  className: PointLight, location: {500, 200, 300}
+<span class="success">  Created: PointLight_0 at (500, 200, 300)</span>
+
+<span class="tool">  [tool] actor-setProperty</span>  property: Intensity, value: 50000
+<span class="success">  Set PointLight_0.Intensity = 50000</span>
+
+<span class="output">> Done! Spawned a PointLight at (500, 200, 300)</span>
+<span class="output">  with intensity 50,000 lux.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Safety -->
+<section class="section" id="safety">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="badge badge-purple">Trust &amp; Safety</span>
+      <h2>3-Tier <span class="text-gradient">Safety System</span></h2>
+      <p>Every tool is classified by risk level. Destructive operations require explicit human approval.</p>
+    </div>
+    <div class="safety-grid">
+      <div class="safety-card reveal">
+        <div class="safety-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e68a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>Safe</h4>
+        <p><strong>31 tools</strong> &mdash; Read-only operations. Query data, list assets, inspect Blueprints. No approval needed.</p>
+      </div>
+      <div class="safety-card reveal reveal-delay-1">
+        <div class="safety-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#febc2e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h4>Warn</h4>
+        <p><strong>26 tools</strong> &mdash; Recoverable mutations. Create assets, spawn actors, modify properties. Logged but not gated.</p>
+      </div>
+      <div class="safety-card reveal reveal-delay-2">
+        <div class="safety-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ff5f57" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><line x1="12" y1="16" x2="12" y2="19"/></svg>
+        </div>
+        <h4>Dangerous</h4>
+        <p><strong>7 tools</strong> &mdash; Destructive operations. Delete assets, cook content, exec console commands. Requires Slate dialog approval with 60s timeout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta-section">
+  <div class="container reveal">
+    <h2>Ready to <span class="text-gradient">Transform</span> Your Workflow?</h2>
+    <p>Stop clicking through menus. Start describing what you want. Let Claude and Unreal Engine handle the rest.</p>
+    <div class="cta-buttons">
+      <a href="https://github.com" class="btn btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="#architecture" class="btn btn-outline">Read the Docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#tools">Tools</a>
+      <a href="#safety">Safety</a>
+      <a href="https://github.com">GitHub</a>
+    </div>
+    <p>Built with Claude Code &middot; Powered by Model Context Protocol &middot; Open Source</p>
+  </div>
+</footer>
+
+<script>
+/* ============ PARTICLES ============ */
+(function(){
+  const c=document.getElementById('particles'),ctx=c.getContext('2d');
+  let w,h,particles=[];
+  function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+  resize();window.addEventListener('resize',resize);
+  class P{
+    constructor(){this.reset()}
+    reset(){
+      this.x=Math.random()*w;this.y=Math.random()*h;
+      this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;
+      this.r=Math.random()*1.5+.5;this.a=Math.random()*.4+.1;
+      this.color=(['#0d7dff','#6c3bff','#00d4ff','#00e68a'])[Math.random()*4|0];
+    }
+    update(){
+      this.x+=this.vx;this.y+=this.vy;
+      if(this.x<0||this.x>w||this.y<0||this.y>h)this.reset();
+    }
+    draw(){
+      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle=this.color;ctx.globalAlpha=this.a;ctx.fill();
+    }
+  }
+  for(let i=0;i<80;i++)particles.push(new P);
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{p.update();p.draw()});
+    // connections
+    ctx.globalAlpha=.05;ctx.strokeStyle='#0d7dff';ctx.lineWidth=.5;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        if(dx*dx+dy*dy<15000){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ============ TERMINAL TYPING ============ */
+(function(){
+  const body=document.getElementById('terminalBody');
+  const lines=[
+    {type:'prompt',text:'$ '},
+    {type:'cmd',text:'claude "Add a health component to BP_Enemy with max HP 100"'},
+    {type:'br'},
+    {type:'tool',text:'  [tool] blueprint-serialize '},
+    {type:'output',text:'  Serialized BP_Enemy EventGraph: 12 nodes, 24 pins'},
+    {type:'tool',text:'  [tool] blueprint-createNode '},
+    {type:'output',text:'  Created HealthComponent variable node (id: a3f8...)'},
+    {type:'tool',text:'  [tool] blueprint-modifyProperty '},
+    {type:'output',text:'  Set MaxHP = 100 on HealthComponent'},
+    {type:'tool',text:'  [tool] blueprint-connectPins '},
+    {type:'output',text:'  Connected BeginPlay.exec -> SetMaxHP.exec'},
+    {type:'tool',text:'  [tool] compilation-trigger '},
+    {type:'success',text:'  Compilation successful (0 errors, 0 warnings, 1.2s)'},
+    {type:'br'},
+    {type:'output',text:'  Done! Added HealthComponent to BP_Enemy with MaxHP=100,'},
+    {type:'output',text:'  connected to BeginPlay. Blueprint compiled successfully.'},
+  ];
+  let lineIdx=0,charIdx=0;
+  body.innerHTML='';
+  function typeLine(){
+    if(lineIdx>=lines.length){
+      // add cursor at end
+      const cursor=document.createElement('span');
+      cursor.className='typing-cursor';
+      body.appendChild(cursor);
+      return;
+    }
+    const line=lines[lineIdx];
+    if(line.type==='br'){
+      body.appendChild(document.createElement('br'));
+      lineIdx++;setTimeout(typeLine,200);return;
+    }
+    if(!body.querySelector(`[data-line="${lineIdx}"]`)){
+      const span=document.createElement('span');
+      span.className=line.type;span.dataset.line=lineIdx;
+      body.appendChild(span);charIdx=0;
+    }
+    const el=body.querySelector(`[data-line="${lineIdx}"]`);
+    if(charIdx<line.text.length){
+      el.textContent+=line.text[charIdx];charIdx++;
+      const speed=line.type==='cmd'?35:line.type==='prompt'?0:12;
+      setTimeout(typeLine,speed);
+      body.parentElement.scrollTop=body.parentElement.scrollHeight;
+    }else{
+      body.appendChild(document.createElement('br'));
+      lineIdx++;
+      const delay=line.type==='tool'?400:line.type==='success'?600:150;
+      setTimeout(typeLine,delay);
+    }
+  }
+  // start after a small delay
+  setTimeout(typeLine,1500);
+})();
+
+/* ============ NAV SCROLL ============ */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>50)});
+
+/* ============ HAMBURGER ============ */
+document.getElementById('hamburger').addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* ============ CODE TABS ============ */
+document.querySelectorAll('.code-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.code-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.code-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============ SCROLL REVEAL ============ */
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ============ STAT COUNTER ============ */
+const statObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+    const target=+el.dataset.target;
+    let current=0;
+    const step=Math.max(1,Math.floor(target/40));
+    const interval=setInterval(()=>{
+      current+=step;
+      if(current>=target){current=target;clearInterval(interval)}
+      el.textContent=current;
+    },30);
+    statObserver.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('.stat-num').forEach(el=>statObserver.observe(el));
+</script>
+</body>
+</html>

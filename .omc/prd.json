@@ -1,404 +1,78 @@
 {
-  "project": "Unreal Master Agent",
-  "branchName": "ralph/ue-agent-architecture",
-  "description": "Design project structure, architecture, and detailed development phases for the Unreal Engine autonomous AI agent. Combines Claude Code + MCP for bidirectional UE communication. TDD methodology throughout.",
-  "userStories": [
+  "title": "Phase 5: Claude Intelligence Layer - Context Engine, Tool Manifest, Convention Detection",
+  "description": "Add intelligent context gathering, tool manifest generation, convention detection, and tool chaining recipes to make Claude an expert UE assistant",
+  "stories": [
     {
-      "id": "US-001",
-      "title": "Project Scaffolding & Monorepo Setup",
-      "description": "As a developer, I want the monorepo directory structure initialized with all config files so that both the MCP server (Node.js/TS) and UE plugin can coexist in one repository.",
-      "acceptanceCriteria": [
-        "Root contains: package.json (workspace), .gitignore, README.md, ARCHITECTURE.md",
-        "mcp-server/ initialized with package.json, tsconfig.json (strict), vitest.config.ts",
-        "mcp-server/src/ has index.ts, server.ts, and subdirectories: transport/, tools/, state/, rag/, observability/, types/",
-        "mcp-server/tests/ has unit/, integration/, fixtures/ subdirectories",
-        "ue-plugin/ has UnrealMasterAgent.uplugin descriptor",
-        "ue-plugin/Source/UnrealMasterAgent/ has Build.cs, Public/, Private/ directories",
-        "ue-plugin/Source/UnrealMasterAgentTests/ has Build.cs for test module",
-        "docs/ has slate-templates/, api-reference/, coding-conventions/, schemas/ subdirectories",
-        "scripts/ has dev-start.sh, test-all.sh",
-        ".claude/mcp.json template created",
-        "TypeScript compiles with zero errors (tsc --noEmit)",
-        "npm install succeeds"
-      ],
+      "id": "US-2000",
+      "title": "Convention Detection Python Script",
       "priority": 1,
-      "passes": false
+      "passes": true,
+      "acceptanceCriteria": [
+        "Python script at ue-plugin/Content/Python/uma/detect_conventions.py exists",
+        "Script uses @execute_wrapper and returns naming patterns, folder org, BP vs C++ ratio",
+        "Detects UE prefixes (BP_, SM_, M_, T_, MI_, WBP_, ABP_), folder organization (by-type vs by-feature), blueprint style (heavy-BP, hybrid, cpp-heavy)",
+        "Returns JSON with keys: namingPattern, folderOrganization, blueprintStyle, commonBaseClasses, inputSystem, physicsProfile, renderingApproach"
+      ]
     },
     {
-      "id": "US-002",
-      "title": "Architecture Decision Records",
-      "description": "As a developer, I want comprehensive architecture documentation so that all technical decisions, data flows, and interface contracts are recorded for consistent implementation.",
-      "acceptanceCriteria": [
-        "ARCHITECTURE.md documents 4-layer architecture with diagrams (text-based)",
-        "WebSocket protocol schema defined in docs/schemas/ws-protocol.schema.json",
-        "Blueprint AST JSON schema defined in docs/schemas/blueprint-ast.schema.json",
-        "MCP tool manifest schema in docs/schemas/tool-manifest.schema.json",
-        "Error code taxonomy documented (1000-6099 ranges)",
-        "Threading model documented (GameThread dispatch requirement)",
-        "Key decision: reverse WS connection direction (UE as client, Node.js as server) documented with rationale",
-        "Key decision: in-memory LRU caching (not Redis) documented with rationale",
-        "Key decision: minimize Python, prefer C++ for UE-internal ops documented",
-        "All AGENTS.md files updated to reflect architecture",
-        "Documents are accurate and internally consistent"
-      ],
+      "id": "US-2010",
+      "title": "Context Auto-Gather MCP Tool",
       "priority": 2,
-      "passes": false
+      "passes": true,
+      "acceptanceCriteria": [
+        "TypeScript handler at mcp-server/src/tools/context/auto-gather.ts exists",
+        "Handler calls bridge with python.execute for context_auto_gather script",
+        "Python script at ue-plugin/Content/Python/uma/context_auto_gather.py exists",
+        "Returns ProjectContext: project info, code stats, content summary, current state, detected conventions",
+        "Tool registered in server.ts as 'context-autoGather'",
+        "Safety classified as 'safe' in safety.ts",
+        "Test file context.test.ts with 4+ tests exists and passes"
+      ]
     },
     {
-      "id": "US-003",
-      "title": "MCP Server Core Types & Message Codec",
-      "description": "As a developer, I want TypeScript type definitions and message encoding/decoding so that all communication between layers is type-safe and testable.",
-      "acceptanceCriteria": [
-        "src/types/messages.ts defines WSMessage and WSResponse interfaces",
-        "src/types/ws-protocol.ts defines WebSocket envelope types",
-        "src/types/blueprint-schema.ts defines Blueprint AST TypeScript types matching JSON schema",
-        "src/types/compile-result.ts defines compilation result types",
-        "src/transport/message-codec.ts implements encode/decode with Zod validation",
-        "TESTS FIRST: tests/unit/transport/message-codec.test.ts written before implementation",
-        "Tests cover: round-trip encode/decode, malformed input rejection, all message types",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
+      "id": "US-2020",
+      "title": "Tool Manifest Generator",
       "priority": 3,
-      "passes": false
+      "passes": true,
+      "acceptanceCriteria": [
+        "TypeScript module at mcp-server/src/tools/context/tool-manifest.ts exists",
+        "Exports generateManifest() returning ToolManifest with all 172+ tools categorized by domain",
+        "Each tool entry has: name, domain, description, safety, relatedTools",
+        "Includes tool chain recipes (add-blueprint-logic, create-material-from-textures, setup-character)",
+        "MCP tool 'context-getManifest' registered in server.ts",
+        "Safety classified as 'safe' in safety.ts",
+        "Test in context.test.ts covers manifest generation"
+      ]
     },
     {
-      "id": "US-004",
-      "title": "MCP Server Skeleton with stdio Transport",
-      "description": "As a developer, I want the MCP server to boot via stdio transport and register with Claude Code so that tool discovery works end-to-end.",
-      "acceptanceCriteria": [
-        "src/index.ts creates McpServer with StdioServerTransport",
-        "src/server.ts wires tool registry",
-        "src/observability/logger.ts redirects ALL console.log to stderr (stdout is JSON-RPC only)",
-        "src/tools/registry.ts provides tool registration framework",
-        "src/tools/tool-schemas.ts has Zod schemas for initial tools",
-        "TESTS FIRST: test that logger blocks stdout, test that registry registers tools",
-        "Server starts via 'node dist/index.js' without errors",
-        ".claude/mcp.json configured correctly",
-        "Claude Code discovers server and lists available tools",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
+      "id": "US-2030",
+      "title": "Tool Chain Recipes & Error Recovery Patterns",
       "priority": 4,
-      "passes": false
+      "passes": true,
+      "acceptanceCriteria": [
+        "TypeScript module at mcp-server/src/tools/context/tool-chains.ts exists",
+        "Exports TOOL_CHAINS record with 8+ named workflow chains",
+        "Each chain has: name, description, steps array with {tool, purpose}",
+        "Error recovery patterns at mcp-server/src/tools/context/error-recovery.ts exists",
+        "Exports getRecoveryStrategy(errorType, context) returning suggested tools and actions",
+        "MCP tool 'context-getChains' registered in server.ts returning available chains",
+        "Safety classified as 'safe' in safety.ts",
+        "Tests in context.test.ts cover chains and error recovery"
+      ]
     },
     {
-      "id": "US-005",
-      "title": "WebSocket Bridge & Connection Manager",
-      "description": "As a developer, I want the MCP server to maintain a persistent WebSocket connection to the UE plugin with automatic reconnection so that communication is reliable.",
-      "acceptanceCriteria": [
-        "src/transport/websocket-bridge.ts implements WS server (Node.js listens, UE connects as client)",
-        "src/transport/connection-manager.ts implements exponential backoff reconnection (1s, 2s, 4s, 8s, max 30s)",
-        "Request/response correlation via Map<string, {resolve, reject, timeout}>",
-        "30-second timeout per request with proper cleanup",
-        "Heartbeat mechanism to detect stale connections",
-        "TESTS FIRST: tests/unit/transport/websocket-bridge.test.ts with mock client",
-        "Tests cover: connect, send/receive, timeout, reconnection on drop, heartbeat",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
+      "id": "US-2040",
+      "title": "Phase 5 Integration, Safety & Final Verification",
       "priority": 5,
-      "passes": false
-    },
-    {
-      "id": "US-006",
-      "title": "UE Plugin Module & WebSocket Client",
-      "description": "As a developer, I want the Unreal Engine plugin to load in the editor, connect to the MCP bridge as a WebSocket client, and route messages to handlers.",
+      "passes": true,
       "acceptanceCriteria": [
-        "UnrealMasterAgent.uplugin configured as Editor-only module",
-        "UnrealMasterAgent.Build.cs references required UE modules (WebSockets, Json, JsonUtilities, EditorSubsystem)",
-        "FUnrealMasterAgentModule starts WS client on module startup, stops on shutdown",
-        "UMAWebSocketServer.h/.cpp (renamed to UMAWebSocketClient) connects to Node.js WS server",
-        "UMAMessageHandler.h/.cpp routes incoming messages by 'method' field to handlers",
-        "UMAMessageTypes.h defines C++ structs matching ws-protocol schema",
-        "All WS message handlers dispatch to GameThread via AsyncTask(ENamedThreads::GameThread)",
-        "TESTS FIRST: UMAWebSocketServerTest.cpp (client connects, sends, receives, handles malformed JSON)",
-        "Plugin loads in UE 5.x editor without errors",
-        "All UE automation tests pass"
-      ],
-      "priority": 6,
-      "passes": false
-    },
-    {
-      "id": "US-007",
-      "title": "E2E Ping/Pong Verification",
-      "description": "As a developer, I want a complete end-to-end ping tool so that the full Claude Code → MCP Server → WebSocket → UE Plugin → Response pipeline is verified.",
-      "acceptanceCriteria": [
-        "MCP tool 'editor.ping' registered in tool registry",
-        "Tool sends ping via WS bridge, UE plugin responds with pong",
-        "TESTS FIRST: tests/integration/mcp-tool-roundtrip.test.ts with mock UE client",
-        "scripts/dev-start.sh starts MCP server in dev mode",
-        "Full E2E test: Claude Code calls 'editor.ping', receives 'pong' response",
-        "All tests pass",
-        "TypeScript compiles with zero errors"
-      ],
-      "priority": 7,
-      "passes": false
-    },
-    {
-      "id": "US-008",
-      "title": "Editor Query Tools (Level, Actors, Assets)",
-      "description": "As a developer, I want Claude to query UE editor state (current level, actors, asset info) so that the agent has situational awareness.",
-      "acceptanceCriteria": [
-        "MCP tools: editor.getLevelInfo, editor.listActors, editor.getAssetInfo",
-        "UMAEditorQueries.h/.cpp implements C++ handlers for each query",
-        "UMAEditorSubsystem.h/.cpp provides persistent editor-lifetime object for state",
-        "Results returned as structured JSON matching defined schemas",
-        "TESTS FIRST: unit tests for each tool handler, UE automation tests for each query",
-        "Claude can ask 'what level is open?', 'list actors', 'describe asset /Game/X'",
-        "All tests pass"
-      ],
-      "priority": 8,
-      "passes": false
-    },
-    {
-      "id": "US-009",
-      "title": "Blueprint JSON AST Schema & Fixtures",
-      "description": "As a developer, I want the Blueprint AST JSON schema finalized with test fixtures so that serialization/deserialization has a verified contract.",
-      "acceptanceCriteria": [
-        "docs/schemas/blueprint-ast.schema.json is complete and valid JSON Schema",
-        "Schema covers: blueprintPath, blueprintClass, parentClass, graphs[], nodes[], pins[], linkedTo[]",
-        "Pin types use short strings (int, float, bool, exec, object:ClassName)",
-        "src/types/blueprint-schema.ts TypeScript types match JSON schema exactly",
-        "tests/fixtures/sample-blueprint.json is a realistic sample conforming to schema",
-        "TESTS FIRST: tests/unit/tools/blueprint.test.ts validates sample against Zod schema",
-        "Schema supports partial serialization (single node, single graph)",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 9,
-      "passes": false
-    },
-    {
-      "id": "US-010",
-      "title": "Blueprint Serializer (C++)",
-      "description": "As a developer, I want the UE plugin to traverse UEdGraph and serialize Blueprints to the defined JSON AST format so that Claude can read Blueprint structures.",
-      "acceptanceCriteria": [
-        "UMABlueprintSerializer.h/.cpp traverses UBlueprint->UbergraphPages",
-        "Iterates Graph->Nodes and Node->Pins with full type information",
-        "Outputs JSON matching blueprint-ast.schema.json exactly",
-        "Handles EventGraph type initially (AnimGraph, MacroGraph deferred)",
-        "Pin types encoded as short strings from FEdGraphPinType",
-        "TESTS FIRST: UMABlueprintSerializerTest.cpp loads BP_TestActor, serializes, validates field counts",
-        "Test Blueprint fixture (BP_TestActor) created in Content/Tests/",
-        "All UE automation tests pass"
-      ],
-      "priority": 10,
-      "passes": false
-    },
-    {
-      "id": "US-011",
-      "title": "Blueprint Node Spawning & Pin Connection (C++)",
-      "description": "As a developer, I want the UE plugin to programmatically spawn Blueprint nodes and connect pins so that Claude can modify Blueprints.",
-      "acceptanceCriteria": [
-        "UMABlueprintManipulator.h/.cpp spawns nodes via FKismetEditorUtilities",
-        "Spawned nodes get AllocateDefaultPins() called and are added to graph",
-        "Pin connections use UEdGraphSchema_K2::TryCreateConnection (NOT raw MakeLinkTo)",
-        "Incompatible pin types rejected with descriptive error messages",
-        "FBlueprintEditorUtils::MarkBlueprintAsModified() called after modifications",
-        "TESTS FIRST: UMABlueprintManipulatorTest.cpp - spawn node assert exists, link pins assert LinkedTo",
-        "All UE automation tests pass"
-      ],
-      "priority": 11,
-      "passes": false
-    },
-    {
-      "id": "US-012",
-      "title": "Blueprint MCP Tools & Stateful Caching",
-      "description": "As a developer, I want MCP tools for Blueprint operations with server-side caching so that Claude can serialize, create nodes, connect pins, and modify properties without token waste.",
-      "acceptanceCriteria": [
-        "MCP tools: blueprint.serialize, blueprint.createNode, blueprint.connectPins, blueprint.modifyProperty, blueprint.deleteNode",
-        "src/state/cache-store.ts implements LRU cache (configurable max entries, 60s TTL)",
-        "Large Blueprint JSON cached server-side; only cache key + summary returned to Claude",
-        "Subsequent operations reference cache key for full data",
-        "TESTS FIRST: cache-store.test.ts (LRU eviction, TTL, hit/miss), blueprint tool handler tests",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 12,
-      "passes": false
-    },
-    {
-      "id": "US-013",
-      "title": "Slate Template RAG System",
-      "description": "As a developer, I want a local RAG system for Slate UI templates so that Claude gets relevant code examples injected into context when generating Slate widgets.",
-      "acceptanceCriteria": [
-        "docs/slate-templates/ contains: base-widget.md, list-view.md, tree-view.md, details-panel.md, toolbar.md, dialog.md, tab-widget.md",
-        "Each template follows Epic C++ coding conventions with SNew/SLATE_BEGIN_ARGS patterns",
-        "src/rag/embedding-store.ts generates embeddings via @xenova/transformers (all-MiniLM-L6-v2)",
-        "src/rag/semantic-search.ts implements vector similarity search",
-        "src/rag/slate-templates.ts loads and indexes templates",
-        "TESTS FIRST: tests/unit/rag/semantic-search.test.ts - 'create a list view' returns list-view.md with >0.8 relevance",
-        "Embeddings stored in flat JSON file (corpus < 100 docs)",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 13,
-      "passes": false
-    },
-    {
-      "id": "US-014",
-      "title": "Slate Widget Generation & Validation Tool",
-      "description": "As a developer, I want Claude to generate syntactically valid Slate C++ code with pre-validation so that LLM output errors are caught before compilation.",
-      "acceptanceCriteria": [
-        "src/tools/slate/generate-widget.ts uses RAG templates to augment generation context",
-        "src/tools/slate/validate-slate.ts pre-validates: balanced SNew brackets, SLATE_BEGIN/END_ARGS matching, TAttribute usage",
-        "Style guidelines enforced via system prompt injection",
-        "TESTS FIRST: tests/unit/tools/slate.test.ts - template retrieval, validation catches common errors",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 14,
-      "passes": false
-    },
-    {
-      "id": "US-015",
-      "title": "File Operations with Safety Gate",
-      "description": "As a developer, I want Claude to read/write source files in the UE project with human approval for destructive operations so that the agent can generate code safely.",
-      "acceptanceCriteria": [
-        "MCP tools: file.read, file.write, file.search",
-        "UMAFileOperations.h/.cpp implements file ops with path bounds checking",
-        "src/state/safety.ts classifies operations as safe/destructive",
-        "Destructive writes (overwrite existing, modify production BPs) trigger human-in-the-loop approval",
-        "Path traversal attacks blocked",
-        "60-second approval timeout defaults to reject",
-        "TESTS FIRST: safety.test.ts (destructive op detection, approval flow, timeout), file ops unit tests",
-        "tests/integration/safety-gate.test.ts for full approval flow",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 15,
-      "passes": false
-    },
-    {
-      "id": "US-016",
-      "title": "Live Coding Controller & Compile Log Parser (C++)",
-      "description": "As a developer, I want the UE plugin to programmatically trigger Live Coding and parse compile output into structured errors so that the agent can compile and understand errors.",
-      "acceptanceCriteria": [
-        "UMALiveCodingController.h/.cpp wraps ILiveCodingModule",
-        "Guarded with #if WITH_LIVE_CODING",
-        "Checks IsEnabledForSession() before Compile()",
-        "Binds to GetOnPatchCompleteDelegate() for completion callback",
-        "Fallback documented for macOS/Linux (full UnrealBuildTool compile)",
-        "UMACompileLogParser.h/.cpp hooks FOutputDevice to capture compile log",
-        "Parses MSVC/Clang error format into {file, line, column, severity, message, code}",
-        "Handles multi-line errors and template instantiation backtraces",
-        "TESTS FIRST: UMALiveCodingControllerTest.cpp, UMACompileLogParserTest.cpp with sample error strings",
-        "All UE automation tests pass"
-      ],
-      "priority": 16,
-      "passes": false
-    },
-    {
-      "id": "US-017",
-      "title": "Compilation MCP Tools",
-      "description": "As a developer, I want MCP tools for triggering compilation, polling status, and retrieving parsed errors so that Claude can compile and read results.",
-      "acceptanceCriteria": [
-        "MCP tools: compilation.trigger, compilation.getStatus, compilation.getErrors",
-        "Compile trigger sends command to UE plugin, returns immediately with status ID",
-        "Status polling returns: pending, compiling, success, failed",
-        "Error retrieval returns structured parse results from UMACompileLogParser",
-        "TESTS FIRST: tests/unit/tools/compilation.test.ts",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 17,
-      "passes": false
-    },
-    {
-      "id": "US-018",
-      "title": "Self-Healing Compile Loop",
-      "description": "As a developer, I want the agent to autonomously detect compile errors, read relevant source, fix code, and recompile so that compilation errors are self-correcting.",
-      "acceptanceCriteria": [
-        "Self-healing relies on Claude Code's reasoning to chain tool calls (NOT server-side state machine)",
-        "MCP server provides compilation.selfHeal meta-tool that orchestrates: getErrors → file.read → fix → file.write → compilation.trigger",
-        "Hard cap at 3 retry loops before requesting human help",
-        "Retry count tracked per session",
-        "TESTS FIRST: integration test with intentional compile error fixture",
-        "Given compile error, agent: reads error, reads source, generates fix, writes fix, recompiles, verifies success",
-        "All tests pass"
-      ],
-      "priority": 18,
-      "passes": false
-    },
-    {
-      "id": "US-019",
-      "title": "Observability & Tracing Integration",
-      "description": "As a developer, I want every tool call traced to LangSmith/Langfuse so that agent behavior can be monitored, debugged, and optimized.",
-      "acceptanceCriteria": [
-        "src/observability/tracer.ts emits OpenTelemetry-compatible trace spans",
-        "Each trace includes: tool name, duration_ms, success/failure, input summary, error details",
-        "src/observability/metrics.ts tracks tool call latency and success rates",
-        "Integration with LangSmith or Langfuse API",
-        "TESTS FIRST: unit test for trace emission format",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 19,
-      "passes": false
-    },
-    {
-      "id": "US-020",
-      "title": "Dynamic Tool Registry (Micro-Tools via RAG)",
-      "description": "As a developer, I want tools dynamically registered based on conversation context so that the context window is not bloated with all 30+ tool schemas.",
-      "acceptanceCriteria": [
-        "Core tools (10-15) registered statically at boot",
-        "Additional tools discovered via RAG semantic search on conversation context",
-        "Server emits notifications/tools/list_changed when tool set changes",
-        "src/tools/registry.ts supports dynamic add/remove",
-        "TESTS FIRST: tests/unit/rag/semantic-search.test.ts for tool retrieval accuracy",
-        "TypeScript compiles with zero errors",
-        "All tests pass"
-      ],
-      "priority": 20,
-      "passes": false
-    },
-    {
-      "id": "US-021",
-      "title": "Human-in-the-Loop Safety System (Full)",
-      "description": "As a developer, I want a complete safety system with in-editor approval dialogs so that destructive agent operations require explicit developer confirmation.",
-      "acceptanceCriteria": [
-        "UMAApprovalGate.h/.cpp spawns Slate dialog in UE editor for approval",
-        "Operations classified: safe (queries, reads), warn (writes to new files), dangerous (overwrites, deletes, modifies production BPs)",
-        "Dangerous operations blocked until approval received",
-        "60-second timeout = reject",
-        "Approval/rejection sent back through WS to MCP server to Claude",
-        "TESTS FIRST: UMAApprovalGate automation test, safety-gate integration test",
-        "All tests pass"
-      ],
-      "priority": 21,
-      "passes": false
-    },
-    {
-      "id": "US-022",
-      "title": "In-Editor Chat Panel",
-      "description": "As a developer, I want a dockable chat panel inside the UE editor so that I can interact with the agent without switching to a terminal.",
-      "acceptanceCriteria": [
-        "Custom Slate widget creates a dockable tab in UE editor",
-        "WebBrowser component renders chat interface",
-        "Messages routed to Claude Code, responses displayed in panel",
-        "Panel registered via UMAEditorSubsystem",
-        "TESTS FIRST: UMAEditorSubsystem test for panel registration",
-        "All UE automation tests pass"
-      ],
-      "priority": 22,
-      "passes": false
-    },
-    {
-      "id": "US-023",
-      "title": "Documentation & AGENTS.md Hierarchy Update",
-      "description": "As a developer, I want all documentation (AGENTS.md, README, ARCHITECTURE) updated at each phase completion so that AI agents and developers always have accurate project context.",
-      "acceptanceCriteria": [
-        "Root AGENTS.md updated with actual (not planned) directory structure",
-        "AGENTS.md files created for: mcp-server/, ue-plugin/, docs/, tests/ and their subdirectories",
-        "All AGENTS.md have correct <!-- Parent: --> references",
-        "README.md has setup instructions, development workflow, TDD guidelines",
-        "ARCHITECTURE.md matches actual implementation decisions",
-        "RAG docs (docs/) have accurate Slate templates and API references",
-        "Documentation is internally consistent and up-to-date"
-      ],
-      "priority": 23,
-      "passes": false
+        "safety.ts updated with context-autoGather, context-getManifest, context-getChains as safe",
+        "safety.test.ts updated with new safe tool classifications",
+        "server.ts log updated to 173 tools across 37 domains",
+        "npm run typecheck passes with 0 errors",
+        "npm test passes with all tests (750+)",
+        "All 3 new MCP tools callable via bridge pattern"
+      ]
     }
   ]
 }

@@ -31,6 +31,12 @@ Thumbs.db
 
 # OMC orchestration state
 .omc/
+.omc/prd.json
+.omc/progress.txt
 
 # Plan documents
 .omc/plans/
+
+.claude/
+TestProject/
+
