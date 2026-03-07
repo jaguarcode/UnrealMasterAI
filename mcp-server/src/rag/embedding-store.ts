@@ -15,6 +15,7 @@ export interface SearchResult {
   score: number;
 }
 
+// NOTE: Intentionally separate from utils/tokenize.ts — different regex for embedding/RAG purposes
 /**
  * Tokenize a string into lowercase words, stripping punctuation.
  */

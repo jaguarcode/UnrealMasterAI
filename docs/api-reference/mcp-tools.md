@@ -1589,7 +1589,7 @@ All tools are classified by risk level. Dangerous operations require human appro
 **Recovery:**
 1. Verify UE plugin is enabled in `.uproject`
 2. Check MCP server is running: `cd mcp-server && npm run dev`
-3. Verify WebSocket port (default 8765): check `.claude/mcp.json`
+3. Verify WebSocket port (default 9877): check `.claude/mcp.json`
 4. Retry `editor-ping`
 
 ### "2003: Pin type mismatch"

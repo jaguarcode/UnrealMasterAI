@@ -7,6 +7,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "Serialization/JsonWriter.h"
 #include "IPythonScriptPlugin.h"
+#include "Misc/Base64.h"
 #include "Misc/Paths.h"
 
 bool FUMAPythonBridge::IsPythonAvailable()
@@ -79,22 +80,25 @@ FUMAWSResponse FUMAPythonBridge::ExecutePython(
     FPaths::NormalizeDirectoryName(PythonContentDir);
     PythonContentDir = FPaths::ConvertRelativePathToFull(PythonContentDir);
 
+    // Encode params as base64 to prevent code injection via triple-quote sequences
+    FString ParamsBase64 = FBase64::Encode(ParamsJson);
+
     // Build Python code that imports and executes the script
-    // Use single-line JSON inside a raw triple-quoted string to avoid escaping issues
+    // Params are passed as a base64-encoded string to avoid any injection via special characters
     FString PythonCode = FString::Printf(
         TEXT(
-            "import sys, importlib.util, json\n"
+            "import sys, importlib.util, json, base64\n"
             "sys.path.insert(0, r'%s') if r'%s' not in sys.path else None\n"
             "spec = importlib.util.spec_from_file_location('uma_script', r'%s')\n"
             "mod = importlib.util.module_from_spec(spec)\n"
             "spec.loader.exec_module(mod)\n"
-            "_uma_result = mod.execute(r'''%s''')\n"
+            "_uma_result = mod.execute(json.loads(base64.b64decode('%s').decode('utf-8')))\n"
             "print('UMA_RESULT:' + _uma_result)\n"
         ),
         *PythonContentDir,
         *PythonContentDir,
         *ScriptPath,
-        *ParamsJson
+        *ParamsBase64
     );
 
     // Execute Python and capture output

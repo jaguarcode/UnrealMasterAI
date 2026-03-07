@@ -82,7 +82,7 @@ import { createLogger, installStdoutGuard } from './observability/logger.js';
 installStdoutGuard();
 const logger = createLogger(process.env.LOG_LEVEL || 'info');
 
-logger.info('Server starting on port 8765');
+logger.info('Server starting on port 9877');
 logger.error('Connection failed:', error);
 
 // Wrong
@@ -716,7 +716,7 @@ describe('WebSocketBridge', () => {
 
   it('connects and sends message', async () => {
     const bridge = new WebSocketBridge();
-    expect(mockWs).toHaveBeenCalledWith('ws://localhost:8765');
+    expect(mockWs).toHaveBeenCalledWith('ws://localhost:9877');
   });
 });
 ```
@@ -1019,7 +1019,7 @@ Integration tests that depend on real WebSocket connections become flaky and slo
 ```typescript
 // Wrong
 it('sends message to UE', async () => {
-  const bridge = new WebSocketBridge('ws://localhost:8765');
+  const bridge = new WebSocketBridge('ws://localhost:9877');
   // Test fails if UE is not running
 });
 

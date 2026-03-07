@@ -6,6 +6,7 @@
 
 import { getAllWorkflows, type Workflow } from './workflow-knowledge.js';
 import { getOutcomeStats } from './workflow-store.js';
+import { tokenize } from '../../utils/tokenize.js';
 
 export interface IntentMatch {
   workflow: Workflow;
@@ -96,17 +97,6 @@ const UE_SYNONYMS: Record<string, string[]> = {
   configure: ['set', 'adjust', 'modify', 'change', 'tweak'],
   delete: ['remove', 'destroy', 'clear', 'clean'],
 };
-
-/**
- * Tokenize a string into lowercase words, stripping punctuation.
- */
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .split(/\s+/)
-    .filter((w) => w.length > 1);
-}
 
 /**
  * Expand query tokens with UE synonyms for broader matching.

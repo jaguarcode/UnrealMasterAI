@@ -146,10 +146,11 @@ const WARN_TOOLS = new Set([
   'asset-import',
   'asset-setMetadata',
   // Actor (recoverable mutations)
-  'actor-spawn',
-  'actor-setTransform',
-  'actor-setProperty',
   'actor-addComponent',
+  'actor-setArrayRef',
+  'actor-setProperty',
+  'actor-setTransform',
+  'actor-spawn',
   // Level (recoverable mutations)
   'level-create',
   'level-open',

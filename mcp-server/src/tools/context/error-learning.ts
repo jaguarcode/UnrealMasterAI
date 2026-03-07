@@ -15,6 +15,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import type { McpToolResult } from '../editor/ping.js';
 import { getRecoveryStrategy, type RecoveryStrategy } from './error-recovery.js';
+import { tokenize } from '../../utils/tokenize.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
@@ -117,14 +118,6 @@ function saveResolutions(resolutions: ErrorResolution[]): void {
 }
 
 // ── Error Similarity Engine ──
-
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s_-]/g, ' ')
-    .split(/\s+/)
-    .filter((w) => w.length > 1);
-}
 
 /**
  * Compute similarity between two error messages.

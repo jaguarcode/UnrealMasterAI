@@ -101,7 +101,7 @@ Add the server to `.claude/mcp.json` (project root):
       "command": "node",
       "args": ["mcp-server/dist/index.js"],
       "env": {
-        "UMA_WS_PORT": "8765"
+        "UE_WS_PORT": "9877"
       }
     }
   }
@@ -264,8 +264,6 @@ cd mcp-server && npm run test:watch
 # Type check
 cd mcp-server && npm run typecheck
 
-# Lint
-cd mcp-server && npm run lint
 ```
 
 Test files live at `tests/unit/**/*.test.ts` and `tests/integration/**/*.test.ts`.
@@ -353,3 +351,9 @@ MIT License — see LICENSE file for details.
 ---
 
 *For the full architecture specification, threading model, data flow diagrams, and all Architecture Decision Records, see [ARCHITECTURE.md](./ARCHITECTURE.md).*
+
+---
+
+## Disclaimer
+
+Unreal Engine is a trademark of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.

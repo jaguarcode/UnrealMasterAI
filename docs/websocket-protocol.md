@@ -516,7 +516,7 @@ const validated = WSResponseSchema.parse(response); // Throws if invalid
 
 ```bash
 # Start MCP server on custom port
-UE_WS_PORT=8765 node mcp-server/dist/index.js
+UE_WS_PORT=9877 node mcp-server/dist/index.js
 ```
 
 ### WebSocket Bridge Options

@@ -1,37 +1,27 @@
-# Ralph Progress Log
-## Task: MCP Server Python API Enhancement
-## Started: 2026-03-05
+# Phase 0 Progress Log
+## Started: 2026-03-08
 
-### Iterations 1-2: Foundation + Core (US-100 through US-600) - 85 tools, 461 tests
-### Iteration 3 - Phase 1: Sequencer, AI/Nav, Widget, Editor Utils - 112 tools, 566 tests
-### Iteration 4 - Phase 2: Texture, Niagara, Audio, Landscape - 135 tools, 643 tests
-### Iteration 5 - Phase 3: Physics, World Partition, Foliage, Curves, PCG, GeoScript - 157 tools, 709 tests
+### Iteration 1
+- PRD created with 6 stories (US-P0-G1 through G6)
+- All 6 groups launched in parallel
 
-### Iteration 6 - Phase 4: Workflow Orchestration & Smart Tools (US-1000 through US-1020) - COMPLETE
-- US-1000: 8 Workflow tools (createCharacter, createUIScreen, setupLevel, createInteractable, createProjectile, setupMultiplayer, createInventorySystem, createDialogueSystem)
-- US-1010: 4 Analysis tools (blueprintComplexity, assetHealth, performanceHints, codeConventions) + 1 Refactor tool (renameChain)
-- US-1020: Safety & integration - 4 safe (analyze), 8 warn (workflow), 1 dangerous (refactor-renameChain)
-- 13 new TS handlers, 13 new Python scripts, 3 new test files
-- Fixed z.string() -> z.enum() for screenType in server.ts
-- Error codes: 9000-9099 (workflow), 9100-9199 (analyze/refactor)
-- Final: 170 tools across 36 domains, 51 test files, 748 tests all passing, 0 TS errors
+### Iteration 2 — All Stories Complete
+- **US-P0-G1**: Port fix (7 files, 8 occurrences of 8765→9877, UMA_WS_PORT→UE_WS_PORT), trademark disclaimer added, lint ref removed
+- **US-P0-G2**: engines field added to mcp-server/package.json
+- **US-P0-G3**: Python injection fixed via base64 encoding in UMAPythonBridge.cpp (FBase64::Encode + base64.b64decode)
+- **US-P0-G4**: actor-setArrayRef added to WARN_TOOLS in safety.ts
+- **US-P0-G5**: Version harmonized to 0.1.0 (root package.json 0.0.0→0.1.0, ARCHITECTURE.md 0.2.0→0.1.0)
+- **US-P0-G6**: Shared tokenize() extracted to mcp-server/src/utils/tokenize.ts, imports updated, embedding-store.ts comment added
 
-### Iteration 7 - Phase 5: Claude Intelligence Layer (US-2000 through US-2040) - COMPLETE
-- US-2000: Convention detection Python script (detect_conventions.py) - naming, folder org, BP style, base classes, input system, physics, rendering
-- US-2010: Context auto-gather MCP tool (context-autoGather) - TS handler + Python script gathering full project context
-- US-2020: Tool manifest generator (context-getManifest) - catalogs all 173 tools across 37 domains with safety, related tools, workflow chains
-- US-2030: Tool chains (10 workflow recipes) + error recovery patterns (8 strategies) - context-getChains tool
-- US-2040: Integration - safety.ts (3 new safe), safety.test.ts, server.ts (173 tools, 37 domains)
-- 4 new TS modules, 2 new Python scripts, 1 new test file (context.test.ts with 17 tests)
-- Error codes: 9200-9299 (context)
-- Final: 173 tools across 37 domains, 52 test files, 765 tests all passing, 0 TS errors
+### Verification
+- npm run typecheck: PASS
+- npm run test: 826 passed, 0 failed, 54 test files
+- Architect verification: APPROVED (21/21 criteria, high confidence)
 
-### All Phases Summary
-| Phase | Tools Added | Total | Tests |
-|-------|-----------|-------|-------|
-| Foundation | 85 | 85 | 461 |
-| Phase 1 | 27 | 112 | 566 |
-| Phase 2 | 23 | 135 | 643 |
-| Phase 3 | 22 | 157 | 709 |
-| Phase 4 | 13 | 170 | 748 |
-| Phase 5 | 3 | 173 | 765 |
+### Files Changed (16)
+- README.md, docs/index.html, docs/coding-conventions/README.md, docs/websocket-protocol.md, docs/api-reference/mcp-tools.md
+- mcp-server/package.json, mcp-server/src/state/safety.ts
+- mcp-server/src/utils/tokenize.ts (NEW), mcp-server/src/tools/context/intent-matcher.ts, mcp-server/src/tools/context/error-learning.ts
+- mcp-server/src/rag/embedding-store.ts
+- ue-plugin/Source/UnrealMasterAgent/Private/Python/UMAPythonBridge.cpp
+- package.json (root), ARCHITECTURE.md

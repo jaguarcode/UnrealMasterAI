@@ -1,77 +1,86 @@
 {
-  "title": "Phase 5: Claude Intelligence Layer - Context Engine, Tool Manifest, Convention Detection",
-  "description": "Add intelligent context gathering, tool manifest generation, convention detection, and tool chaining recipes to make Claude an expert UE assistant",
+  "title": "ROADMAP Phase 0: Critical Fixes",
+  "description": "Fix 8 critical issues blocking public release: port inconsistency, Python injection, safety gap, lint reference, version harmonization, engines field, tokenize dedup, trademark disclaimer",
   "stories": [
     {
-      "id": "US-2000",
-      "title": "Convention Detection Python Script",
+      "id": "US-P0-G1",
+      "title": "Group 1: Port fix + Trademark + Lint ref removal (README.md shared)",
       "priority": 1,
       "passes": true,
       "acceptanceCriteria": [
-        "Python script at ue-plugin/Content/Python/uma/detect_conventions.py exists",
-        "Script uses @execute_wrapper and returns naming patterns, folder org, BP vs C++ ratio",
-        "Detects UE prefixes (BP_, SM_, M_, T_, MI_, WBP_, ABP_), folder organization (by-type vs by-feature), blueprint style (heavy-BP, hybrid, cpp-heavy)",
-        "Returns JSON with keys: namingPattern, folderOrganization, blueprintStyle, commonBaseClasses, inputSystem, physicsProfile, renderingApproach"
+        "README.md uses UE_WS_PORT and 9877 in mcp.json example (not UMA_WS_PORT or 8765)",
+        "docs/index.html uses UE_WS_PORT and 9877 (not UMA_WS_PORT or 8765)",
+        "docs/coding-conventions/README.md has no references to 8765 (lines 85, 719, 1022 fixed to 9877)",
+        "docs/websocket-protocol.md line 519 uses 9877 (not 8765)",
+        "docs/api-reference/mcp-tools.md line 1592 uses 9877 (not 8765)",
+        "grep -rn 'UMA_WS_PORT' . --include='*.md' --include='*.html' --include='*.ts' returns zero results (excluding ROADMAP.md)",
+        "grep -rn '8765' . --include='*.md' --include='*.html' --include='*.ts' --include='*.json' returns zero results (excluding ROADMAP.md and node_modules)",
+        "README.md contains a Disclaimer section with 'Unreal Engine is a trademark of Epic Games, Inc.'",
+        "README.md does not reference npm run lint (line ~268 removed or updated)",
+        "npm run typecheck passes",
+        "npm run test passes (all 928+ tests)"
       ]
     },
     {
-      "id": "US-2010",
-      "title": "Context Auto-Gather MCP Tool",
+      "id": "US-P0-G2",
+      "title": "Group 2: Add engines field to mcp-server/package.json",
       "priority": 2,
       "passes": true,
       "acceptanceCriteria": [
-        "TypeScript handler at mcp-server/src/tools/context/auto-gather.ts exists",
-        "Handler calls bridge with python.execute for context_auto_gather script",
-        "Python script at ue-plugin/Content/Python/uma/context_auto_gather.py exists",
-        "Returns ProjectContext: project info, code stats, content summary, current state, detected conventions",
-        "Tool registered in server.ts as 'context-autoGather'",
-        "Safety classified as 'safe' in safety.ts",
-        "Test file context.test.ts with 4+ tests exists and passes"
+        "mcp-server/package.json contains engines field with node >=20.0.0",
+        "npm run typecheck passes",
+        "npm run test passes"
       ]
     },
     {
-      "id": "US-2020",
-      "title": "Tool Manifest Generator",
+      "id": "US-P0-G3",
+      "title": "Group 3: Fix Python code injection in UMAPythonBridge.cpp",
+      "priority": 1,
+      "passes": true,
+      "acceptanceCriteria": [
+        "UMAPythonBridge.cpp no longer contains r'''%s''' pattern for params (grep returns 0)",
+        "Python params are passed via base64 encoding: C++ encodes JSON string, Python decodes via base64.b64decode",
+        "The Python import line includes base64 module",
+        "No raw string interpolation of user-controlled content in Python exec code"
+      ]
+    },
+    {
+      "id": "US-P0-G4",
+      "title": "Group 4: Classify actor-setArrayRef in safety.ts",
+      "priority": 2,
+      "passes": true,
+      "acceptanceCriteria": [
+        "actor-setArrayRef is in the WARN_TOOLS set in mcp-server/src/state/safety.ts",
+        "classifyOperation('actor-setArrayRef', {}) returns reason 'Mutation operation' (not 'Unknown operation')",
+        "All existing safety tests pass",
+        "npm run test passes"
+      ]
+    },
+    {
+      "id": "US-P0-G5",
+      "title": "Group 5: Harmonize version numbers to 0.1.0",
+      "priority": 2,
+      "passes": true,
+      "acceptanceCriteria": [
+        "Root package.json version is 0.1.0 (was 0.0.0)",
+        "ARCHITECTURE.md Version line shows 0.1.0 (was 0.2.0)",
+        "mcp-server/package.json remains 0.1.0 (no change needed)",
+        "UnrealMasterAgent.uplugin remains 0.1.0 (no change needed)"
+      ]
+    },
+    {
+      "id": "US-P0-G6",
+      "title": "Group 6: Extract shared tokenize() utility",
       "priority": 3,
       "passes": true,
       "acceptanceCriteria": [
-        "TypeScript module at mcp-server/src/tools/context/tool-manifest.ts exists",
-        "Exports generateManifest() returning ToolManifest with all 172+ tools categorized by domain",
-        "Each tool entry has: name, domain, description, safety, relatedTools",
-        "Includes tool chain recipes (add-blueprint-logic, create-material-from-textures, setup-character)",
-        "MCP tool 'context-getManifest' registered in server.ts",
-        "Safety classified as 'safe' in safety.ts",
-        "Test in context.test.ts covers manifest generation"
-      ]
-    },
-    {
-      "id": "US-2030",
-      "title": "Tool Chain Recipes & Error Recovery Patterns",
-      "priority": 4,
-      "passes": true,
-      "acceptanceCriteria": [
-        "TypeScript module at mcp-server/src/tools/context/tool-chains.ts exists",
-        "Exports TOOL_CHAINS record with 8+ named workflow chains",
-        "Each chain has: name, description, steps array with {tool, purpose}",
-        "Error recovery patterns at mcp-server/src/tools/context/error-recovery.ts exists",
-        "Exports getRecoveryStrategy(errorType, context) returning suggested tools and actions",
-        "MCP tool 'context-getChains' registered in server.ts returning available chains",
-        "Safety classified as 'safe' in safety.ts",
-        "Tests in context.test.ts cover chains and error recovery"
-      ]
-    },
-    {
-      "id": "US-2040",
-      "title": "Phase 5 Integration, Safety & Final Verification",
-      "priority": 5,
-      "passes": true,
-      "acceptanceCriteria": [
-        "safety.ts updated with context-autoGather, context-getManifest, context-getChains as safe",
-        "safety.test.ts updated with new safe tool classifications",
-        "server.ts log updated to 173 tools across 37 domains",
-        "npm run typecheck passes with 0 errors",
-        "npm test passes with all tests (750+)",
-        "All 3 new MCP tools callable via bridge pattern"
+        "mcp-server/src/utils/tokenize.ts exists with exported tokenize() function",
+        "intent-matcher.ts imports tokenize from ../../utils/tokenize.js (no local function)",
+        "error-learning.ts imports tokenize from ../../utils/tokenize.js (no local function)",
+        "grep -rn 'function tokenize' mcp-server/src/tools/context/ returns zero results",
+        "embedding-store.ts retains its own tokenize with explanatory comment about why it is separate",
+        "npm run typecheck passes",
+        "npm run test passes (all 928+ tests)"
       ]
     }
   ]
