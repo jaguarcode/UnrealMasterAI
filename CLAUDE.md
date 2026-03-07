@@ -79,6 +79,6 @@ context-matchIntent(request)
 ## Project Stats
 - **183 MCP tools** across 37 domains
 - **826 tests** across 54 test files
-- **130+ Python scripts** in `ue-plugin/Content/Python/uma/`
+- **154 Python scripts** in `ue-plugin/Content/Python/uma/`
 - **20 built-in workflows** from Epic's official documentation
 - **60+ UE synonym groups** for intent matching

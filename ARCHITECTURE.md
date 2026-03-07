@@ -287,7 +287,7 @@ Receive WS frame
 
 **Rationale:** UE's Python API (`unreal` module) provides comprehensive access to editor operations including asset management, material editing, actor manipulation, level operations, and more. Python scripts are faster to iterate on than C++ and don't require recompilation.
 
-**Architecture:** 130+ Python scripts in `ue-plugin/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
+**Architecture:** 154 Python scripts in `ue-plugin/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
 
 **Updated from original:** The original decision to minimize Python was revised after discovering that UE's Python API is sufficient for the majority of editor automation tasks. C++ remains essential for Blueprint graph internals (UEdGraph, pin connections) and WebSocket transport.
 
@@ -471,7 +471,7 @@ Unreal Master/
 │
 ├── ue-plugin/               ← Layer 3: C++ UE Plugin + Python automation
 │   ├── UnrealMasterAgent.uplugin
-│   ├── Content/Python/uma/  130+ Python scripts (actor, material, level, sequencer, ai, etc.)
+│   ├── Content/Python/uma/  154 Python scripts (actor, material, level, sequencer, ai, etc.)
 │   └── Source/
 │       ├── UnrealMasterAgent/      Main module
 │       │   ├── UnrealMasterAgent.Build.cs

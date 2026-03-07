@@ -33,7 +33,7 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Build pipeline (lightmaps, content cooking, map check)
 - Source control integration (status, checkout, diff)
 - Gameplay systems (input actions, game mode)
-- Python script execution bridge (130+ scripts) for extensible UE automation
+- Python script execution bridge (154 scripts) for extensible UE automation
 - Sequencer/cinematics, AI/navigation, widget/UMG tools
 - Texture, Niagara VFX, audio, landscape pipelines
 - Physics, world partition, foliage, curves, PCG, geometry script tools
@@ -211,7 +211,7 @@ Unreal Master/
 │   └── docs/              Development guides
 │
 ├── ue-plugin/               Layer 3: C++ UE plugin
-│   ├── Content/Python/uma/  Python scripts for UE automation (130+ scripts)
+│   ├── Content/Python/uma/  Python scripts for UE automation (154 scripts)
 │   └── Source/
 │       ├── UnrealMasterAgent/        Main module
 │       │   ├── Safety/               UMAApprovalGate
@@ -331,7 +331,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 |-------|-------|--------|
 | MCP Server (TypeScript) | 826 tests across 54 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
-| Python Scripts | 130+ scripts in `ue-plugin/Content/Python/uma/` | Verified live |
+| Python Scripts | 154 scripts in `ue-plugin/Content/Python/uma/` | Verified live |
 
 ---
 

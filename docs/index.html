@@ -3,494 +3,321 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unreal Master Agent - AI-Powered Unreal Engine Development</title>
-<meta name="description" content="Open-source AI agent giving Claude Code bidirectional control over Unreal Engine. 183 tools across 37 domains with AI-powered workflow learning. Manipulate Blueprints, create materials, compile, and self-heal — all from natural language.">
+<title>Unreal Master Agent - AI-Powered Unreal Engine Automation</title>
+<meta name="description" content="Open-source MCP bridge giving Claude Code full control over Unreal Engine. 183 tools, 37 domains, 154 Python scripts. Blueprint manipulation, asset pipelines, materials, AI navigation, VFX, and self-learning workflows.">
 <link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/">
-<!-- Open Graph / Social -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/">
-<meta property="og:title" content="Unreal Master Agent - AI-Powered Unreal Engine Development">
-<meta property="og:description" content="Open-source MCP bridge giving Claude Code bidirectional control over Unreal Engine. 183 tools, 37 domains, AI-powered workflow learning.">
+<meta property="og:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
+<meta property="og:description" content="Open-source MCP bridge: 183 tools across 37 domains. From Blueprints to Niagara VFX, controlled by natural language through Claude Code.">
 <meta property="og:site_name" content="Unreal Master Agent">
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Unreal Master Agent - AI-Powered Unreal Engine Development">
-<meta name="twitter:description" content="Open-source MCP bridge giving Claude Code bidirectional control over Unreal Engine. 183 tools, 37 domains, AI-powered workflow learning.">
-<!-- Additional SEO -->
-<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI, Blueprint, automation, game development, open source, Model Context Protocol">
+<meta name="twitter:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
+<meta name="twitter:description" content="Open-source MCP bridge: 183 tools across 37 domains. Claude Code meets Unreal Engine.">
+<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI agent, Blueprint automation, game development, open source, Model Context Protocol, UE5, AI-powered development">
 <meta name="author" content="JaguarCode">
 <meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ============ RESET & BASE ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ue-blue:#0d7dff;
-  --ue-blue-dark:#0050b3;
-  --ue-purple:#6c3bff;
-  --ue-cyan:#00d4ff;
-  --ue-green:#00e68a;
-  --ue-orange:#ff6b35;
-  --ue-dark:#0a0e17;
-  --ue-darker:#060a12;
-  --ue-card:#0f1724;
-  --ue-card-hover:#141d2e;
-  --ue-border:#1a2540;
-  --ue-text:#c8d6e5;
-  --ue-text-bright:#edf2f7;
-  --ue-gradient:linear-gradient(135deg,var(--ue-blue),var(--ue-purple));
-  --ue-gradient2:linear-gradient(135deg,var(--ue-cyan),var(--ue-green));
-  --ue-gradient3:linear-gradient(135deg,var(--ue-orange),var(--ue-purple));
-  --font-main:'Inter',system-ui,-apple-system,sans-serif;
-  --font-mono:'JetBrains Mono','Fira Code',monospace;
+  --blue:#0d7dff;--blue-dark:#0050b3;--purple:#6c3bff;--cyan:#00d4ff;
+  --green:#00e68a;--orange:#ff6b35;--red:#ff5f57;--yellow:#febc2e;
+  --dark:#0a0e17;--darker:#060a12;--card:#0f1724;--card-hover:#141d2e;
+  --border:#1a2540;--text:#c8d6e5;--bright:#edf2f7;--muted:rgba(255,255,255,.4);
+  --grad1:linear-gradient(135deg,var(--blue),var(--purple));
+  --grad2:linear-gradient(135deg,var(--cyan),var(--green));
+  --grad3:linear-gradient(135deg,var(--orange),var(--purple));
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
 }
 html{scroll-behavior:smooth;font-size:16px}
-body{
-  font-family:var(--font-main);
-  background:var(--ue-darker);
-  color:var(--ue-text);
-  line-height:1.7;
-  overflow-x:hidden;
-}
-a{color:var(--ue-cyan);text-decoration:none;transition:color .2s}
-a:hover{color:var(--ue-blue)}
-img{max-width:100%;display:block}
-
-/* ============ UTILITIES ============ */
+body{font-family:var(--font);background:var(--darker);color:var(--text);line-height:1.7;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none;transition:color .2s}
+a:hover{color:var(--blue)}
 .container{max-width:1200px;margin:0 auto;padding:0 2rem}
 .section{padding:6rem 0}
-.text-gradient{background:var(--ue-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.text-gradient2{background:var(--ue-gradient2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.text-gradient3{background:var(--ue-gradient3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tg{background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tg2{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tg3{background:var(--grad3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-.badge-blue{background:rgba(13,125,255,.15);color:var(--ue-blue);border:1px solid rgba(13,125,255,.3)}
-.badge-green{background:rgba(0,230,138,.12);color:var(--ue-green);border:1px solid rgba(0,230,138,.3)}
-.badge-purple{background:rgba(108,59,255,.15);color:var(--ue-purple);border:1px solid rgba(108,59,255,.3)}
-.badge-orange{background:rgba(255,107,53,.12);color:var(--ue-orange);border:1px solid rgba(255,107,53,.3)}
+.b-blue{background:rgba(13,125,255,.15);color:var(--blue);border:1px solid rgba(13,125,255,.3)}
+.b-green{background:rgba(0,230,138,.12);color:var(--green);border:1px solid rgba(0,230,138,.3)}
+.b-purple{background:rgba(108,59,255,.15);color:var(--purple);border:1px solid rgba(108,59,255,.3)}
+.b-orange{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.3)}
+.b-cyan{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.3)}
 
-/* ============ ANIMATED BACKGROUND ============ */
-.bg-grid{
-  position:fixed;inset:0;z-index:-2;
-  background-image:
-    linear-gradient(rgba(13,125,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(13,125,255,.03) 1px,transparent 1px);
-  background-size:60px 60px;
-  animation:gridMove 20s linear infinite;
-}
+/* BG */
+.bg-grid{position:fixed;inset:0;z-index:-2;background-image:linear-gradient(rgba(13,125,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(13,125,255,.03) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 20s linear infinite}
 @keyframes gridMove{to{background-position:60px 60px}}
+.bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(13,125,255,.08),transparent),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(108,59,255,.06),transparent),radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,212,255,.04),transparent)}
 
-.bg-glow{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 40% at 20% 10%,rgba(13,125,255,.08),transparent),
-    radial-gradient(ellipse 50% 50% at 80% 80%,rgba(108,59,255,.06),transparent),
-    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,212,255,.04),transparent);
-}
-
-/* ============ NAV ============ */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:1rem 0;
-  background:rgba(6,10,18,.8);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--ue-border);
-  transition:padding .3s;
-}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 0;background:rgba(6,10,18,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:padding .3s}
 .nav.scrolled{padding:.5rem 0}
 .nav-inner{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{display:flex;align-items:center;gap:.75rem;font-weight:700;font-size:1.15rem;color:var(--ue-text-bright)}
+.nav-logo{display:flex;align-items:center;gap:.75rem;font-weight:700;font-size:1.15rem;color:var(--bright)}
 .nav-logo svg{width:32px;height:32px}
 .nav-links{display:flex;gap:2rem;align-items:center}
-.nav-links a{color:var(--ue-text);font-size:.9rem;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--ue-text-bright)}
-.btn{
-  display:inline-flex;align-items:center;gap:.5rem;
-  padding:.65rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;
-  transition:all .3s;cursor:pointer;border:none;
-}
-.btn-primary{background:var(--ue-gradient);color:#fff;box-shadow:0 4px 20px rgba(13,125,255,.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,125,255,.4);color:#fff}
-.btn-outline{background:transparent;color:var(--ue-text-bright);border:1px solid var(--ue-border)}
-.btn-outline:hover{border-color:var(--ue-blue);color:var(--ue-blue)}
+.nav-links a{color:var(--text);font-size:.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--bright)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .3s;cursor:pointer;border:none}
+.btn-p{background:var(--grad1);color:#fff;box-shadow:0 4px 20px rgba(13,125,255,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,125,255,.4);color:#fff}
+.btn-o{background:transparent;color:var(--bright);border:1px solid var(--border)}
+.btn-o:hover{border-color:var(--blue);color:var(--blue)}
+.btn-g{background:rgba(0,230,138,.12);color:var(--green);border:1px solid rgba(0,230,138,.3)}
+.btn-g:hover{background:rgba(0,230,138,.2);color:var(--green)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
-.hamburger span{width:24px;height:2px;background:var(--ue-text-bright);border-radius:2px;transition:.3s}
+.hamburger span{width:24px;height:2px;background:var(--bright);border-radius:2px;transition:.3s}
 
-/* ============ HERO ============ */
-.hero{
-  min-height:100vh;display:flex;align-items:center;
-  padding-top:6rem;position:relative;overflow:hidden;
-}
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:6rem;position:relative;overflow:hidden}
 .hero-content{position:relative;z-index:2;text-align:center;max-width:900px;margin:0 auto}
 .hero-badge{margin-bottom:1.5rem}
-.hero h1{
-  font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;
-  line-height:1.1;margin-bottom:1.5rem;color:var(--ue-text-bright);
-  letter-spacing:-.03em;
-}
-.hero p{font-size:1.25rem;color:var(--ue-text);max-width:700px;margin:0 auto 2.5rem;line-height:1.8}
-.hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-.hero-visual{margin-top:4rem;position:relative}
-
-/* Floating orbs */
-.orb{
-  position:absolute;border-radius:50%;filter:blur(60px);opacity:.4;
-  animation:float 6s ease-in-out infinite;
-}
-.orb-1{width:300px;height:300px;background:var(--ue-blue);top:-10%;left:-5%;animation-delay:0s}
-.orb-2{width:250px;height:250px;background:var(--ue-purple);bottom:10%;right:-5%;animation-delay:2s}
-.orb-3{width:200px;height:200px;background:var(--ue-cyan);top:50%;left:50%;animation-delay:4s}
+.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.08;margin-bottom:1.5rem;color:var(--bright);letter-spacing:-.03em}
+.hero p{font-size:1.2rem;color:var(--text);max-width:700px;margin:0 auto 2.5rem;line-height:1.8}
+.hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
+.hero-sub{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+.hero-sub code{background:rgba(255,255,255,.06);padding:.15rem .4rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.4;animation:float 6s ease-in-out infinite}
+.orb-1{width:300px;height:300px;background:var(--blue);top:-10%;left:-5%;animation-delay:0s}
+.orb-2{width:250px;height:250px;background:var(--purple);bottom:10%;right:-5%;animation-delay:2s}
+.orb-3{width:200px;height:200px;background:var(--cyan);top:50%;left:50%;animation-delay:4s}
 @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
 
-/* Terminal mockup */
-.terminal{
-  background:var(--ue-dark);border:1px solid var(--ue-border);
-  border-radius:12px;overflow:hidden;
-  box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);
-  text-align:left;max-width:800px;margin:0 auto;
-}
-.terminal-bar{
-  display:flex;align-items:center;gap:8px;padding:.75rem 1rem;
-  background:rgba(255,255,255,.03);border-bottom:1px solid var(--ue-border);
-}
+/* TERMINAL */
+.terminal{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);text-align:left;max-width:800px;margin:2rem auto 0}
+.terminal-bar{display:flex;align-items:center;gap:8px;padding:.75rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
 .terminal-dot{width:12px;height:12px;border-radius:50%}
 .terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#febc2e}.terminal-dot.g{background:#28c840}
-.terminal-title{flex:1;text-align:center;font-size:.8rem;color:rgba(255,255,255,.4);font-family:var(--font-mono)}
-.terminal-body{padding:1.5rem;font-family:var(--font-mono);font-size:.85rem;line-height:1.9;min-height:200px}
-.terminal-body .prompt{color:var(--ue-green)}
-.terminal-body .cmd{color:var(--ue-text-bright)}
+.terminal-title{flex:1;text-align:center;font-size:.8rem;color:var(--muted);font-family:var(--mono)}
+.terminal-body{padding:1.5rem;font-family:var(--mono);font-size:.85rem;line-height:1.9;min-height:220px}
+.terminal-body .prompt{color:var(--green)}
+.terminal-body .cmd{color:var(--bright)}
 .terminal-body .comment{color:rgba(255,255,255,.3)}
-.terminal-body .output{color:var(--ue-cyan)}
-.terminal-body .tool{color:var(--ue-orange)}
-.terminal-body .success{color:var(--ue-green)}
-.typing-cursor{
-  display:inline-block;width:8px;height:1.1em;background:var(--ue-green);
-  vertical-align:text-bottom;animation:blink 1s step-end infinite;
-}
+.terminal-body .output{color:var(--cyan)}
+.terminal-body .tool{color:var(--orange)}
+.terminal-body .success{color:var(--green)}
+.typing-cursor{display:inline-block;width:8px;height:1.1em;background:var(--green);vertical-align:text-bottom;animation:blink 1s step-end infinite}
 @keyframes blink{50%{opacity:0}}
 
-/* ============ STATS BAR ============ */
-.stats-bar{
-  padding:3rem 0;
-  background:linear-gradient(180deg,transparent,rgba(13,125,255,.03),transparent);
-  border-top:1px solid var(--ue-border);border-bottom:1px solid var(--ue-border);
-}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center}
+/* STATS */
+.stats-bar{padding:3rem 0;background:linear-gradient(180deg,transparent,rgba(13,125,255,.03),transparent);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2rem;text-align:center}
 .stat-item h3{font-size:2.5rem;font-weight:800;margin-bottom:.25rem}
-.stat-item p{font-size:.85rem;color:var(--ue-text);text-transform:uppercase;letter-spacing:.1em}
-.stat-num{display:inline-block}
+.stat-item p{font-size:.8rem;color:var(--text);text-transform:uppercase;letter-spacing:.1em}
 
-/* ============ ARCHITECTURE ============ */
-.arch-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
-.section-header{text-align:center;margin-bottom:4rem}
-.section-header h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ue-text-bright);margin-bottom:1rem}
-.section-header p{font-size:1.1rem;color:var(--ue-text);max-width:600px;margin:0 auto}
+/* SECTION HEADER */
+.sh{text-align:center;margin-bottom:4rem}
+.sh h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--bright);margin-bottom:1rem}
+.sh p{font-size:1.1rem;color:var(--text);max-width:600px;margin:0 auto}
 
-.arch-diagram{
-  display:grid;grid-template-columns:1fr;gap:0;max-width:700px;margin:0 auto;
-  position:relative;
-}
-.arch-layer{
-  display:flex;align-items:center;gap:1.5rem;
-  padding:1.5rem 2rem;
-  background:var(--ue-card);border:1px solid var(--ue-border);
-  border-radius:12px;position:relative;
-  transition:all .3s;
-}
-.arch-layer:hover{transform:translateX(8px);border-color:var(--ue-blue);box-shadow:0 0 30px rgba(13,125,255,.1)}
+/* QUICK START */
+.qs-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
+.qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.qs-steps{display:flex;flex-direction:column;gap:1.5rem}
+.qs-step{display:flex;gap:1.25rem;align-items:flex-start}
+.qs-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;flex-shrink:0;background:var(--card);border:2px solid var(--blue);color:var(--blue)}
+.qs-info h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
+.qs-info p{font-size:.85rem;color:var(--text);line-height:1.6}
+.qs-info code{background:rgba(255,255,255,.06);padding:.1rem .35rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
+.qs-code{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;font-family:var(--mono);font-size:.85rem;line-height:2;overflow-x:auto;position:sticky;top:6rem}
+.qs-code .cmt{color:rgba(255,255,255,.3)}
+.qs-code .kw{color:var(--purple)}
+.qs-code .str{color:var(--green)}
+.qs-code .fn{color:var(--blue)}
+
+/* ARCHITECTURE */
+.arch-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
+.arch-diagram{display:grid;grid-template-columns:1fr;gap:0;max-width:700px;margin:0 auto;position:relative}
+.arch-layer{display:flex;align-items:center;gap:1.5rem;padding:1.5rem 2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;position:relative;transition:all .3s}
+.arch-layer:hover{transform:translateX(8px);border-color:var(--blue);box-shadow:0 0 30px rgba(13,125,255,.1)}
 .arch-layer + .arch-layer{margin-top:-1px}
-.arch-icon{
-  width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;font-size:1.2rem;
-}
-.arch-icon.l1{background:rgba(13,125,255,.15);color:var(--ue-blue)}
-.arch-icon.l2{background:rgba(0,212,255,.15);color:var(--ue-cyan)}
-.arch-icon.l3{background:rgba(108,59,255,.15);color:var(--ue-purple)}
-.arch-icon.l4{background:rgba(0,230,138,.15);color:var(--ue-green)}
-.arch-info h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
-.arch-info p{font-size:.85rem;color:var(--ue-text)}
-.arch-connector{
-  width:2px;height:30px;margin:0 auto;
-  background:linear-gradient(180deg,var(--ue-blue),var(--ue-purple));
-  position:relative;
-}
-.arch-connector::after{
-  content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
-  width:8px;height:8px;border-radius:50%;background:var(--ue-purple);
-}
-.arch-protocol{
-  text-align:center;padding:.4rem .8rem;font-size:.7rem;font-family:var(--font-mono);
-  color:var(--ue-cyan);letter-spacing:.05em;
-}
+.arch-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
+.arch-icon.l1{background:rgba(13,125,255,.15);color:var(--blue)}
+.arch-icon.l2{background:rgba(0,212,255,.15);color:var(--cyan)}
+.arch-icon.l3{background:rgba(108,59,255,.15);color:var(--purple)}
+.arch-icon.l4{background:rgba(0,230,138,.15);color:var(--green)}
+.arch-info h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
+.arch-info p{font-size:.85rem;color:var(--text)}
+.arch-connector{width:2px;height:30px;margin:0 auto;background:linear-gradient(180deg,var(--blue),var(--purple));position:relative}
+.arch-connector::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--purple)}
+.arch-protocol{text-align:center;padding:.4rem .8rem;font-size:.7rem;font-family:var(--mono);color:var(--cyan);letter-spacing:.05em}
 
-/* ============ FEATURES ============ */
+/* FEATURES */
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.feature-card{
-  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:16px;
-  padding:2rem;position:relative;overflow:hidden;
-  transition:all .4s cubic-bezier(.165,.84,.44,1);
-}
-.feature-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--ue-gradient);opacity:0;transition:opacity .3s;
-}
-.feature-card:hover{transform:translateY(-4px);border-color:rgba(13,125,255,.3);background:var(--ue-card-hover)}
-.feature-card:hover::before{opacity:1}
-.feature-icon{
-  width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  margin-bottom:1.25rem;font-size:1.3rem;
-}
-.feature-card h3{font-size:1.1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
-.feature-card p{font-size:.9rem;line-height:1.7;color:var(--ue-text)}
-.fi-blue{background:rgba(13,125,255,.12);color:var(--ue-blue)}
-.fi-cyan{background:rgba(0,212,255,.12);color:var(--ue-cyan)}
-.fi-purple{background:rgba(108,59,255,.12);color:var(--ue-purple)}
-.fi-green{background:rgba(0,230,138,.12);color:var(--ue-green)}
-.fi-orange{background:rgba(255,107,53,.12);color:var(--ue-orange)}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.165,.84,.44,1)}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad1);opacity:0;transition:opacity .3s}
+.fc:hover{transform:translateY(-4px);border-color:rgba(13,125,255,.3);background:var(--card-hover)}
+.fc:hover::before{opacity:1}
+.fi{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.3rem}
+.fc h3{font-size:1.05rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
+.fc p{font-size:.88rem;line-height:1.7;color:var(--text)}
+.fi-b{background:rgba(13,125,255,.12);color:var(--blue)}
+.fi-c{background:rgba(0,212,255,.12);color:var(--cyan)}
+.fi-p{background:rgba(108,59,255,.12);color:var(--purple)}
+.fi-g{background:rgba(0,230,138,.12);color:var(--green)}
+.fi-o{background:rgba(255,107,53,.12);color:var(--orange)}
 
-/* ============ TOOL DOMAINS ============ */
-.domains-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
-.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
-.domain-chip{
-  display:flex;align-items:center;gap:.75rem;
-  padding:1rem 1.25rem;background:var(--ue-card);border:1px solid var(--ue-border);
-  border-radius:10px;transition:all .3s;cursor:default;
-}
-.domain-chip:hover{border-color:var(--ue-blue);transform:translateY(-2px)}
-.domain-chip .count{
-  font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:6px;
-  background:rgba(13,125,255,.12);color:var(--ue-blue);font-family:var(--font-mono);
-}
-.domain-chip span{font-size:.9rem;font-weight:600;color:var(--ue-text-bright)}
+/* DOMAINS */
+.domains-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
+.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem}
+.dc{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;transition:all .3s;cursor:default}
+.dc:hover{border-color:var(--blue);transform:translateY(-2px)}
+.dc .ct{font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:6px;background:rgba(13,125,255,.12);color:var(--blue);font-family:var(--mono)}
+.dc span:last-child{font-size:.88rem;font-weight:600;color:var(--bright)}
 
-/* ============ DEMO / WORKFLOW ============ */
-.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
-.workflow-step{text-align:center;position:relative}
-.workflow-step::after{
-  content:'';position:absolute;top:28px;left:calc(50% + 30px);
-  width:calc(100% - 60px);height:2px;
-  background:linear-gradient(90deg,var(--ue-blue),var(--ue-purple));
-}
-.workflow-step:last-child::after{display:none}
-.step-num{
-  width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:1.25rem;font-weight:800;margin:0 auto 1rem;position:relative;z-index:2;
-  background:var(--ue-card);border:2px solid var(--ue-blue);color:var(--ue-blue);
-  transition:all .3s;
-}
-.workflow-step:hover .step-num{background:var(--ue-blue);color:#fff;box-shadow:0 0 30px rgba(13,125,255,.4)}
-.workflow-step h4{font-size:.95rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
-.workflow-step p{font-size:.8rem;color:var(--ue-text);line-height:1.6}
+/* WORKFLOW */
+.wf-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
+.wf-step{text-align:center;position:relative}
+.wf-step::after{content:'';position:absolute;top:28px;left:calc(50% + 30px);width:calc(100% - 60px);height:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
+.wf-step:last-child::after{display:none}
+.wf-num{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:800;margin:0 auto 1rem;position:relative;z-index:2;background:var(--card);border:2px solid var(--blue);color:var(--blue);transition:all .3s}
+.wf-step:hover .wf-num{background:var(--blue);color:#fff;box-shadow:0 0 30px rgba(13,125,255,.4)}
+.wf-step h4{font-size:.95rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
+.wf-step p{font-size:.8rem;color:var(--text);line-height:1.6}
 
-/* ============ SAFETY ============ */
+/* SAFETY */
 .safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.safety-card{
-  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:14px;
-  padding:1.75rem;text-align:center;transition:all .3s;
-}
-.safety-card:hover{transform:translateY(-3px);border-color:rgba(0,230,138,.3)}
-.safety-icon{font-size:2rem;margin-bottom:1rem}
-.safety-card h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.5rem}
-.safety-card p{font-size:.85rem;color:var(--ue-text)}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;text-align:center;transition:all .3s}
+.sc:hover{transform:translateY(-3px);border-color:rgba(0,230,138,.3)}
+.sc-icon{font-size:2rem;margin-bottom:1rem}
+.sc h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
+.sc p{font-size:.85rem;color:var(--text)}
 
-/* ============ CODE EXAMPLE ============ */
-.code-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
+/* CODE TABS */
+.code-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
 .code-tabs{display:flex;gap:.5rem;margin-bottom:0}
-.code-tab{
-  padding:.6rem 1.2rem;border-radius:8px 8px 0 0;font-size:.85rem;font-weight:600;
-  cursor:pointer;border:1px solid var(--ue-border);border-bottom:none;
-  background:var(--ue-darker);color:var(--ue-text);transition:all .2s;
-}
-.code-tab.active{background:var(--ue-card);color:var(--ue-text-bright);border-color:var(--ue-blue)}
-.code-panel{
-  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:0 12px 12px 12px;
-  padding:2rem;font-family:var(--font-mono);font-size:.85rem;line-height:2;
-  display:none;overflow-x:auto;
-}
+.code-tab{padding:.6rem 1.2rem;border-radius:8px 8px 0 0;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--border);border-bottom:none;background:var(--darker);color:var(--text);transition:all .2s}
+.code-tab.active{background:var(--card);color:var(--bright);border-color:var(--blue)}
+.code-panel{background:var(--card);border:1px solid var(--border);border-radius:0 12px 12px 12px;padding:2rem;font-family:var(--mono);font-size:.85rem;line-height:2;display:none;overflow-x:auto}
 .code-panel.active{display:block}
-.code-panel .kw{color:var(--ue-purple)}
-.code-panel .fn{color:var(--ue-blue)}
-.code-panel .str{color:var(--ue-green)}
+.code-panel .kw{color:var(--purple)}
+.code-panel .fn{color:var(--blue)}
+.code-panel .str{color:var(--green)}
 .code-panel .cmt{color:rgba(255,255,255,.3)}
-.code-panel .var{color:var(--ue-orange)}
-.code-panel .op{color:var(--ue-cyan)}
+.code-panel .var{color:var(--orange)}
+.code-panel .op{color:var(--cyan)}
 
-/* ============ CTA ============ */
-.cta-section{
-  background:linear-gradient(135deg,rgba(13,125,255,.08),rgba(108,59,255,.08));
-  border-top:1px solid var(--ue-border);border-bottom:1px solid var(--ue-border);
-  text-align:center;
-}
-.cta-section h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ue-text-bright);margin-bottom:1rem}
-.cta-section p{font-size:1.1rem;color:var(--ue-text);max-width:600px;margin:0 auto 2rem}
+/* USE CASES */
+.uc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.uc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;transition:all .3s}
+.uc:hover{transform:translateY(-3px);border-color:rgba(13,125,255,.3)}
+.uc h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.uc p{font-size:.88rem;color:var(--text);line-height:1.7}
+.uc code{background:rgba(255,255,255,.06);padding:.1rem .35rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
+
+/* ROADMAP */
+.roadmap-timeline{position:relative;max-width:800px;margin:0 auto}
+.roadmap-timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--green),var(--blue),var(--purple),var(--border))}
+.rm-item{display:flex;gap:1.5rem;padding-bottom:2rem;position:relative}
+.rm-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:.4rem;position:relative;left:19px;z-index:2}
+.rd-g{background:var(--green);box-shadow:0 0 12px rgba(0,230,138,.4)}
+.rd-o{background:var(--orange);box-shadow:0 0 12px rgba(255,107,53,.4)}
+.rd-b{background:var(--blue);box-shadow:0 0 12px rgba(13,125,255,.3)}
+.rm-content{flex:1;padding-left:1rem}
+.rm-content h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
+.rm-content p{font-size:.85rem;color:var(--text);line-height:1.7}
+.rm-date{font-size:.75rem;color:var(--muted);font-family:var(--mono);margin-bottom:.3rem}
+
+/* DOCS */
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.doc-card{display:flex;align-items:flex-start;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:all .3s;text-decoration:none}
+.doc-card:hover{border-color:var(--cyan);transform:translateY(-2px);background:var(--card-hover)}
+.doc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.doc-card h4{font-size:.9rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
+.doc-card p{font-size:.8rem;color:var(--text);line-height:1.5}
+.di-b{background:rgba(13,125,255,.12);color:var(--blue)}
+.di-g{background:rgba(0,230,138,.12);color:var(--green)}
+.di-p{background:rgba(108,59,255,.12);color:var(--purple)}
+.di-c{background:rgba(0,212,255,.12);color:var(--cyan)}
+.di-o{background:rgba(255,107,53,.12);color:var(--orange)}
+
+/* COMPAT */
+.compat-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem}
+.cb{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;background:var(--card);border:1px solid var(--border);color:var(--bright)}
+.cb svg{width:18px;height:18px}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,rgba(13,125,255,.08),rgba(108,59,255,.08));border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
+.cta h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--bright);margin-bottom:1rem}
+.cta p{font-size:1.1rem;color:var(--text);max-width:600px;margin:0 auto 2rem}
 .cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
-/* ============ FOOTER ============ */
-.footer{padding:3rem 0;border-top:1px solid var(--ue-border);text-align:center}
-.footer p{font-size:.85rem;color:rgba(255,255,255,.4)}
-.footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem}
-.footer-links a{font-size:.85rem;color:var(--ue-text);transition:color .2s}
-.footer-links a:hover{color:var(--ue-text-bright)}
+/* FOOTER */
+.footer{padding:3rem 0;border-top:1px solid var(--border);text-align:center}
+.footer p{font-size:.85rem;color:var(--muted)}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.footer-links a{font-size:.85rem;color:var(--text);transition:color .2s}
+.footer-links a:hover{color:var(--bright)}
 
-/* ============ SCROLL ANIMATIONS ============ */
+/* REVEAL */
 .reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.165,.84,.44,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
 
-/* ============ PARTICLES ============ */
+/* PARTICLES */
 .particles-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
 
-/* ============ STATUS ============ */
-.status-section{background:linear-gradient(180deg,var(--ue-darker),var(--ue-dark),var(--ue-darker))}
-.status-banner{
-  display:flex;align-items:center;gap:1rem;justify-content:center;
-  padding:1rem 2rem;border-radius:12px;margin-bottom:3rem;
-  background:linear-gradient(135deg,rgba(0,230,138,.08),rgba(0,212,255,.08));
-  border:1px solid rgba(0,230,138,.2);
-}
-.status-dot{width:10px;height:10px;border-radius:50%;background:var(--ue-green);animation:pulse-dot 2s ease-in-out infinite}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(0,230,138,.4)}50%{box-shadow:0 0 0 8px rgba(0,230,138,0)}}
-.status-banner span{font-size:.95rem;font-weight:600;color:var(--ue-text-bright)}
-.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.phase-card{
-  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:14px;
-  padding:1.5rem;position:relative;overflow:hidden;transition:all .3s;
-}
-.phase-card:hover{transform:translateY(-3px);border-color:rgba(13,125,255,.3)}
-.phase-card.completed{border-left:3px solid var(--ue-green)}
-.phase-card.in-progress{border-left:3px solid var(--ue-orange)}
-.phase-card.planned{border-left:3px solid var(--ue-border)}
-.phase-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-.phase-card h4{font-size:.95rem;font-weight:700;color:var(--ue-text-bright)}
-.phase-card p{font-size:.8rem;color:var(--ue-text);line-height:1.6}
-.progress-bar{height:4px;border-radius:4px;background:rgba(255,255,255,.06);margin-top:1rem;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;transition:width 1s ease}
-.pf-green{background:var(--ue-green)}.pf-orange{background:var(--ue-orange)}.pf-blue{background:var(--ue-blue)}
-
-/* ============ ROADMAP ============ */
-.roadmap-timeline{position:relative;max-width:800px;margin:0 auto}
-.roadmap-timeline::before{
-  content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;
-  background:linear-gradient(180deg,var(--ue-green),var(--ue-blue),var(--ue-purple),var(--ue-border));
-}
-.roadmap-item{display:flex;gap:1.5rem;padding-bottom:2rem;position:relative}
-.roadmap-dot{
-  width:12px;height:12px;border-radius:50%;flex-shrink:0;
-  margin-top:.4rem;position:relative;left:19px;z-index:2;
-}
-.rd-green{background:var(--ue-green);box-shadow:0 0 12px rgba(0,230,138,.4)}
-.rd-orange{background:var(--ue-orange);box-shadow:0 0 12px rgba(255,107,53,.4)}
-.rd-blue{background:var(--ue-blue);box-shadow:0 0 12px rgba(13,125,255,.3)}
-.rd-gray{background:var(--ue-border)}
-.roadmap-content{flex:1;padding-left:1rem}
-.roadmap-content h4{font-size:1rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
-.roadmap-content p{font-size:.85rem;color:var(--ue-text);line-height:1.7}
-.roadmap-content .rm-date{font-size:.75rem;color:rgba(255,255,255,.35);font-family:var(--font-mono);margin-bottom:.3rem}
-
-/* ============ DOCS ============ */
-.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.doc-card{
-  display:flex;align-items:flex-start;gap:1rem;
-  background:var(--ue-card);border:1px solid var(--ue-border);border-radius:12px;
-  padding:1.25rem;transition:all .3s;text-decoration:none;
-}
-.doc-card:hover{border-color:var(--ue-cyan);transform:translateY(-2px);background:var(--ue-card-hover)}
-.doc-icon{
-  width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;font-size:1rem;
-}
-.doc-card h4{font-size:.9rem;font-weight:700;color:var(--ue-text-bright);margin-bottom:.25rem}
-.doc-card p{font-size:.8rem;color:var(--ue-text);line-height:1.5}
-.di-blue{background:rgba(13,125,255,.12);color:var(--ue-blue)}
-.di-green{background:rgba(0,230,138,.12);color:var(--ue-green)}
-.di-purple{background:rgba(108,59,255,.12);color:var(--ue-purple)}
-.di-cyan{background:rgba(0,212,255,.12);color:var(--ue-cyan)}
-.di-orange{background:rgba(255,107,53,.12);color:var(--ue-orange)}
-
-/* ============ COMPAT ============ */
-.compat-row{
-  display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem;
-}
-.compat-badge{
-  display:flex;align-items:center;gap:.5rem;
-  padding:.5rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;
-  background:var(--ue-card);border:1px solid var(--ue-border);color:var(--ue-text-bright);
-}
-.compat-badge svg{width:18px;height:18px}
-
-/* ============ RESPONSIVE ============ */
+/* RESPONSIVE */
 @media(max-width:1024px){
-  .features-grid{grid-template-columns:repeat(2,1fr)}
-  .workflow-steps{grid-template-columns:repeat(2,1fr)}
-  .workflow-step::after{display:none}
+  .features-grid,.uc-grid{grid-template-columns:repeat(2,1fr)}
+  .wf-steps{grid-template-columns:repeat(2,1fr)}
+  .wf-step::after{display:none}
   .safety-grid{grid-template-columns:repeat(2,1fr)}
+  .qs-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:768px){
   .nav-links{display:none}
   .hamburger{display:flex}
-  .nav-links.open{
-    display:flex;flex-direction:column;position:absolute;
-    top:100%;left:0;right:0;background:rgba(6,10,18,.95);
-    padding:1.5rem;gap:1rem;border-bottom:1px solid var(--ue-border);
-    backdrop-filter:blur(20px);
-  }
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(6,10,18,.95);padding:1.5rem;gap:1rem;border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
-  .features-grid{grid-template-columns:1fr}
-  .workflow-steps{grid-template-columns:1fr}
+  .features-grid,.uc-grid{grid-template-columns:1fr}
+  .wf-steps{grid-template-columns:1fr}
   .safety-grid{grid-template-columns:1fr}
   .domains-grid{grid-template-columns:repeat(2,1fr)}
   .hero h1{font-size:2.2rem}
   .section{padding:4rem 0}
 }
 @media(max-width:480px){
-  .stats-grid{grid-template-columns:1fr}
-  .domains-grid{grid-template-columns:1fr}
+  .stats-grid,.domains-grid{grid-template-columns:1fr}
 }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- Background effects -->
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
 <canvas class="particles-canvas" id="particles"></canvas>
 
-<!-- Navigation -->
+<!-- NAV -->
 <nav class="nav" id="nav">
   <div class="container nav-inner">
     <a href="#" class="nav-logo">
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
-        <path d="M8 16L13 8L18 16L13 24L8 16Z" fill="white" fill-opacity="0.9"/>
-        <path d="M16 12L21 8L26 16L21 24L16 20" fill="white" fill-opacity="0.6"/>
-        <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0d7dff"/><stop offset="1" stop-color="#6c3bff"/></linearGradient></defs>
-      </svg>
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 16L13 8L18 16L13 24L8 16Z" fill="#fff" fill-opacity=".9"/><path d="M16 12L21 8L26 16L21 24L16 20" fill="#fff" fill-opacity=".6"/><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0d7dff"/><stop offset="1" stop-color="#6c3bff"/></linearGradient></defs></svg>
       Unreal Master Agent
     </a>
     <div class="nav-links" id="navLinks">
+      <a href="#quickstart">Quick Start</a>
       <a href="#features">Features</a>
       <a href="#architecture">Architecture</a>
       <a href="#tools">Tools</a>
-      <a href="#workflow">Workflow</a>
-      <a href="#safety">Safety</a>
+      <a href="#use-cases">Use Cases</a>
       <a href="#docs">Docs</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-outline" target="_blank" rel="noopener">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         GitHub
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
     </div>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero" id="hero">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -498,342 +325,303 @@ img{max-width:100%;display:block}
   <div class="container">
     <div class="hero-content">
       <div class="hero-badge">
-        <span class="badge badge-blue">Open Source MCP Bridge</span>
+        <span class="badge b-green">Open Source</span>&nbsp;
+        <span class="badge b-blue">MCP Protocol</span>
       </div>
-      <h1>AI-Powered<br><span class="text-gradient">Unreal Engine</span><br>Development</h1>
-      <p>Give Claude Code bidirectional control over Unreal Engine internals. 183 tools across 37 domains &mdash; from Blueprints and materials to AI-powered workflow learning that gets smarter with every interaction.</p>
+      <h1>Control <span class="tg">Unreal Engine</span><br>With Natural Language</h1>
+      <p>The open-source MCP bridge that gives Claude Code bidirectional control over every corner of Unreal Engine &mdash; Blueprints, materials, VFX, AI, levels, and 37 more domains. Just describe what you want.</p>
       <div class="hero-buttons">
-        <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">
+        <a href="#quickstart" class="btn btn-p">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Get Started
         </a>
-        <a href="#roadmap" class="btn btn-outline">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          View Roadmap
+        <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="#docs" class="btn btn-o">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Documentation
         </a>
       </div>
-      <div class="hero-visual">
-        <div class="terminal" id="heroTerminal">
-          <div class="terminal-bar">
-            <div class="terminal-dot r"></div>
-            <div class="terminal-dot y"></div>
-            <div class="terminal-dot g"></div>
-            <div class="terminal-title">claude &mdash; Unreal Master Agent</div>
-          </div>
-          <div class="terminal-body" id="terminalBody">
-            <div class="comment"><!-- lines typed by JS --></div>
-          </div>
+      <p class="hero-sub">Works with <code>UE 5.4</code> <code>5.5</code> <code>5.6</code> <code>5.7</code> &middot; MIT Licensed &middot; Production Ready</p>
+      <div class="terminal" id="heroTerminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <div class="terminal-title">claude &mdash; Unreal Master Agent</div>
         </div>
+        <div class="terminal-body" id="terminalBody"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats Bar -->
+<!-- STATS -->
 <section class="stats-bar">
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item reveal">
-        <h3 class="text-gradient"><span class="stat-num" data-target="183">0</span>+</h3>
+        <h3 class="tg"><span class="stat-num" data-target="183">0</span></h3>
         <p>MCP Tools</p>
       </div>
-      <div class="stat-item reveal reveal-delay-1">
-        <h3 class="text-gradient2"><span class="stat-num" data-target="37">0</span></h3>
-        <p>Tool Domains</p>
+      <div class="stat-item reveal reveal-d1">
+        <h3 class="tg2"><span class="stat-num" data-target="37">0</span></h3>
+        <p>Domains</p>
       </div>
-      <div class="stat-item reveal reveal-delay-2">
-        <h3 class="text-gradient3"><span class="stat-num" data-target="130">0</span></h3>
+      <div class="stat-item reveal reveal-d2">
+        <h3 class="tg3"><span class="stat-num" data-target="154">0</span></h3>
         <p>Python Scripts</p>
       </div>
-      <div class="stat-item reveal reveal-delay-3">
-        <h3 class="text-gradient"><span class="stat-num" data-target="826">0</span>+</h3>
-        <p>Passing Tests</p>
+      <div class="stat-item reveal reveal-d3">
+        <h3 class="tg"><span class="stat-num" data-target="826">0</span></h3>
+        <p>Tests Passing</p>
+      </div>
+      <div class="stat-item reveal reveal-d4">
+        <h3 class="tg2"><span class="stat-num" data-target="15">0</span></h3>
+        <p>Phases Complete</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Project Status -->
-<section class="section status-section" id="status">
+<!-- QUICK START -->
+<section class="section qs-section" id="quickstart">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-green">Project Status</span>
-      <h2>Development <span class="text-gradient2">Progress</span></h2>
-      <p>All 15 phases complete. Production-ready with 183 tools, 826 tests, and AI-powered workflow intelligence.</p>
+    <div class="sh reveal">
+      <span class="badge b-green">5-Minute Setup</span>
+      <h2>Get Started in <span class="tg2">Three Commands</span></h2>
+      <p>From zero to controlling Unreal Engine with natural language.</p>
     </div>
-    <div class="status-banner reveal">
-      <div class="status-dot"></div>
-      <span>Active Development &mdash; UE 5.4, 5.5, 5.6, 5.7 Supported</span>
-    </div>
-    <div class="phase-grid">
-      <div class="phase-card completed reveal">
-        <div class="phase-header">
-          <h4>Phase 0-2: Foundation</h4>
-          <span class="badge badge-green">Complete</span>
+    <div class="qs-grid">
+      <div class="qs-steps">
+        <div class="qs-step reveal">
+          <div class="qs-num">1</div>
+          <div class="qs-info">
+            <h4>Install &amp; Build the MCP Server</h4>
+            <p>Clone the repo and build the TypeScript MCP bridge server. Requires <code>Node.js 20+</code>.</p>
+          </div>
         </div>
-        <p>WebSocket bridge, message codec, connection manager, JSON-RPC 2.0 protocol, MCP SDK integration.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+        <div class="qs-step reveal reveal-d1">
+          <div class="qs-num">2</div>
+          <div class="qs-info">
+            <h4>Configure Claude Code</h4>
+            <p>Add the server to <code>.claude/mcp.json</code>. Claude Code auto-discovers all 183 tools on startup.</p>
+          </div>
+        </div>
+        <div class="qs-step reveal reveal-d2">
+          <div class="qs-num">3</div>
+          <div class="qs-info">
+            <h4>Enable the UE Plugin</h4>
+            <p>Copy <code>ue-plugin/</code> into your project's <code>Plugins/</code> directory. The plugin auto-connects to the MCP server on editor launch.</p>
+          </div>
+        </div>
+        <div class="qs-step reveal reveal-d3">
+          <div class="qs-num">4</div>
+          <div class="qs-info">
+            <h4>Start Building</h4>
+            <p>Open Claude Code and describe what you want: <em>"Add a health system to BP_Enemy"</em>. The agent handles the rest.</p>
+          </div>
+        </div>
       </div>
-      <div class="phase-card completed reveal reveal-delay-1">
-        <div class="phase-header">
-          <h4>Phase 3-4: Blueprint R/W</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>Blueprint serialization to JSON AST, node creation, pin connection via TryCreateConnection, property modification.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal reveal-delay-2">
-        <div class="phase-header">
-          <h4>Phase 5-6: Compilation</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>Live Coding trigger, MSVC/Clang/Linker error parsing, self-healing loop with max 3 retries, session tracking.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal">
-        <div class="phase-header">
-          <h4>Phase 7: Safety &amp; Slate</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>3-tier safety classification, approval gate with Slate dialog, RAG-assisted Slate UI generation, 7 widget templates.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal reveal-delay-1">
-        <div class="phase-header">
-          <h4>Python API Expansion</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>130+ Python scripts across 37 domains: actors, assets, materials, levels, animation, meshes, gameplay, build, debug, sequencer, AI, widgets, and more.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal reveal-delay-2">
-        <div class="phase-header">
-          <h4>Phase 8: Polish &amp; Scale</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>Registry refactor, safety gate centralization, per-tool timeouts, tool discovery optimization, documentation refinement.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal">
-        <div class="phase-header">
-          <h4>Full UE API Coverage</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>112 new tools: Sequencer, AI/Nav, Widgets, Niagara, Audio, Landscape, Physics, World Partition, PCG, Workflows, Analysis, Context Intelligence.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
-      </div>
-      <div class="phase-card completed reveal reveal-delay-1">
-        <div class="phase-header">
-          <h4>Workflow &amp; Error Intelligence</h4>
-          <span class="badge badge-green">Complete</span>
-        </div>
-        <p>Persistent workflow learning from Epic docs, intent matching with UE synonym expansion, outcome tracking, error resolution learning, confidence-weighted recommendations.</p>
-        <div class="progress-bar"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      <div class="qs-code reveal">
+<span class="cmt"># 1. Clone &amp; build</span>
+git clone https://github.com/jaguarcode/UnrealMasterAI
+cd UnrealMasterAI/mcp-server
+npm install &amp;&amp; npm run build
+
+<span class="cmt"># 2. Add to .claude/mcp.json</span>
+{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"unreal-master"</span>: {
+      <span class="str">"command"</span>: <span class="str">"node"</span>,
+      <span class="str">"args"</span>: [<span class="str">"mcp-server/dist/index.js"</span>],
+      <span class="str">"env"</span>: { <span class="str">"UMA_WS_PORT"</span>: <span class="str">"8765"</span> }
+    }
+  }
+}
+
+<span class="cmt"># 3. Copy plugin to your UE project</span>
+cp -r ue-plugin/ YourProject/Plugins/UnrealMasterAgent
+
+<span class="cmt"># 4. Verify connection</span>
+claude <span class="str">"ping the editor"</span>
+<span class="fn">{ "status": "ok", "ueVersion": "5.4.x" }</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Features -->
+<!-- FEATURES -->
 <section class="section" id="features">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-green">Capabilities</span>
-      <h2>Everything You Need to<br><span class="text-gradient">Automate Unreal Engine</span></h2>
-      <p>From Blueprint graph manipulation to asset pipelines, materials, and gameplay systems.</p>
+    <div class="sh reveal">
+      <span class="badge b-cyan">Capabilities</span>
+      <h2>Everything You Need to<br><span class="tg">Automate Unreal Engine</span></h2>
+      <p>From Blueprint graphs to Niagara VFX, controlled entirely by natural language.</p>
     </div>
     <div class="features-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon fi-blue">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-2.93-7.07l-2.83 2.83m-8.48 8.48l-2.83 2.83m0-14.14l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
-        </div>
+      <div class="fc reveal">
+        <div class="fi fi-b"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-2.93-7.07l-2.83 2.83m-8.48 8.48l-2.83 2.83m0-14.14l2.83 2.83m8.48 8.48l2.83 2.83"/></svg></div>
         <h3>Blueprint Graph Manipulation</h3>
-        <p>Serialize Blueprints to structured JSON AST, create nodes, connect pins, modify properties, and delete nodes &mdash; all programmatically via C++ engine APIs.</p>
+        <p>Serialize Blueprints to structured JSON AST, create nodes, connect pins, modify properties &mdash; all via C++ engine APIs with TryCreateConnection.</p>
       </div>
-      <div class="feature-card reveal reveal-delay-1">
-        <div class="feature-icon fi-cyan">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-        </div>
+      <div class="fc reveal reveal-d1">
+        <div class="fi fi-c"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
         <h3>Self-Healing Compilation</h3>
-        <p>Trigger Live Coding, capture structured compile errors, apply fixes, and retry automatically. Max 3 iterations of the heal loop with full error context.</p>
+        <p>Trigger Live Coding, capture structured compile errors, apply fixes, and retry automatically up to 3 iterations with full error context.</p>
       </div>
-      <div class="feature-card reveal reveal-delay-2">
-        <div class="feature-icon fi-purple">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </div>
-        <h3>Asset Pipeline</h3>
-        <p>Create, import, export, duplicate, rename, and delete assets. Query references and dependency graphs. Set metadata tags. Full content lifecycle management.</p>
+      <div class="fc reveal reveal-d2">
+        <div class="fi fi-p"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <h3>Complete Asset Pipeline</h3>
+        <p>Create, import, export, duplicate, rename, delete assets. Query references, dependency graphs, metadata tags. Full content lifecycle.</p>
       </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon fi-green">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-        </div>
+      <div class="fc reveal">
+        <div class="fi fi-g"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
         <h3>Level &amp; Actor Management</h3>
         <p>Create levels, spawn actors, set transforms, edit properties, add components, manage sublevels and world settings. Full scene graph control.</p>
       </div>
-      <div class="feature-card reveal reveal-delay-1">
-        <div class="feature-icon fi-orange">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2a5 5 0 010 10"/><circle cx="6.5" cy="17.5" r="2.5"/><path d="M3 22a5 5 0 010-10"/><line x1="15.5" y1="9" x2="8.5" y2="15"/></svg>
-        </div>
+      <div class="fc reveal reveal-d1">
+        <div class="fi fi-o"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2a5 5 0 010 10"/><circle cx="6.5" cy="17.5" r="2.5"/><path d="M3 22a5 5 0 010-10"/><line x1="15.5" y1="9" x2="8.5" y2="15"/></svg></div>
         <h3>Materials &amp; Rendering</h3>
-        <p>Create materials and instances, set scalar/vector/texture parameters, inspect material graph nodes. Build complete material pipelines from code.</p>
+        <p>Create materials and instances, set scalar/vector/texture parameters, inspect material graph nodes. Complete material pipelines from code.</p>
       </div>
-      <div class="feature-card reveal reveal-delay-2">
-        <div class="feature-icon fi-blue">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <h3>Python Script Bridge</h3>
-        <p>130+ bundled Python scripts across 37 domains. Extensible framework with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
+      <div class="fc reveal reveal-d2">
+        <div class="fi fi-b"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <h3>154 Python Scripts</h3>
+        <p>Extensible automation across 37 domains with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
       </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon fi-cyan">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-        </div>
-        <h3>Workflow Learning</h3>
-        <p>20 built-in workflows from Epic's official docs. Learn new workflows at runtime from documentation or experience. Intent matching with 60+ UE synonym groups and outcome-weighted confidence scoring.</p>
+      <div class="fc reveal">
+        <div class="fi fi-c"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+        <h3>Workflow Intelligence</h3>
+        <p>20 built-in workflows from Epic's docs. Learn new workflows at runtime. Intent matching with 60+ UE synonym groups and outcome-weighted confidence scoring.</p>
       </div>
-      <div class="feature-card reveal reveal-delay-1">
-        <div class="feature-icon fi-orange">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
+      <div class="fc reveal reveal-d1">
+        <div class="fi fi-o"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <h3>Error Resolution Learning</h3>
-        <p>Captures troubleshooting outcomes including failed approaches. When similar errors occur, recommends proven fixes with confidence scores and warns against dead-end approaches.</p>
+        <p>Captures troubleshooting outcomes including failed approaches. Recommends proven fixes with confidence scores and warns against dead-end approaches.</p>
+      </div>
+      <div class="fc reveal reveal-d2">
+        <div class="fi fi-g"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>3-Tier Safety System</h3>
+        <p>Every tool classified by risk level. Destructive operations require explicit human approval via Slate dialog with 60-second timeout.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Architecture -->
+<!-- ARCHITECTURE -->
 <section class="section arch-section" id="architecture">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-purple">System Design</span>
-      <h2>4-Layer <span class="text-gradient">Architecture</span></h2>
-      <p>Clean separation between AI reasoning, protocol bridging, engine execution, and direct API access.</p>
+    <div class="sh reveal">
+      <span class="badge b-purple">System Design</span>
+      <h2>4-Layer <span class="tg">Architecture</span></h2>
+      <p>Clean separation between AI reasoning, protocol bridging, engine execution, and API access.</p>
     </div>
     <div class="arch-diagram reveal">
       <div class="arch-layer">
-        <div class="arch-icon l1">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        </div>
-        <div class="arch-info">
-          <h4>Layer 1 &mdash; Claude Code</h4>
-          <p>AI reasoning, natural language understanding, tool orchestration</p>
-        </div>
+        <div class="arch-icon l1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div class="arch-info"><h4>Layer 1 &mdash; Claude Code</h4><p>AI reasoning, natural language understanding, tool orchestration, self-healing retry logic</p></div>
       </div>
       <div class="arch-protocol">stdio &middot; JSON-RPC 2.0</div>
       <div class="arch-connector"></div>
       <div class="arch-layer">
-        <div class="arch-icon l2">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <div class="arch-info">
-          <h4>Layer 2 &mdash; MCP Bridge Server</h4>
-          <p>Node.js/TypeScript &middot; Tool registry, safety gates, caching, Zod validation</p>
-        </div>
+        <div class="arch-icon l2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <div class="arch-info"><h4>Layer 2 &mdash; MCP Bridge Server</h4><p>Node.js/TypeScript &middot; 183 tools, Zod validation, safety gates, LRU caching, observability</p></div>
       </div>
       <div class="arch-protocol">WebSocket &middot; RFC 6455</div>
       <div class="arch-connector"></div>
       <div class="arch-layer">
-        <div class="arch-icon l3">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="arch-info">
-          <h4>Layer 3 &mdash; UE Agent Plugin</h4>
-          <p>C++ &middot; Blueprint manipulation, Python bridge, Live Coding, approval gates</p>
-        </div>
+        <div class="arch-icon l3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="arch-info"><h4>Layer 3 &mdash; UE Agent Plugin</h4><p>C++ &middot; Blueprint manipulation, 154 Python scripts, Live Coding, approval gates</p></div>
       </div>
       <div class="arch-protocol">Direct C++ API Calls</div>
       <div class="arch-connector"></div>
       <div class="arch-layer">
-        <div class="arch-icon l4">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
-        </div>
-        <div class="arch-info">
-          <h4>Layer 4 &mdash; Unreal Engine APIs</h4>
-          <p>UEdGraph, UEdGraphNode, ILiveCodingModule, FAssetRegistryModule, Python Runtime</p>
-        </div>
+        <div class="arch-icon l4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
+        <div class="arch-info"><h4>Layer 4 &mdash; Unreal Engine APIs</h4><p>UEdGraph, FKismetEditorUtilities, ILiveCodingModule, FAssetRegistryModule, Python Runtime</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Tool Domains -->
+<!-- TOOL DOMAINS -->
 <section class="section domains-section" id="tools">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-orange">Tool Ecosystem</span>
-      <h2><span class="text-gradient3">183 Tools</span> Across 37 Domains</h2>
-      <p>Complete UE editor coverage: Blueprints, rendering, animation, level design, AI, VFX, audio, physics, and AI-powered workflow intelligence.</p>
+    <div class="sh reveal">
+      <span class="badge b-orange">Tool Ecosystem</span>
+      <h2><span class="tg3">183 Tools</span> Across 37 Domains</h2>
+      <p>Complete UE editor coverage from Blueprints to PCG, with AI-powered workflow intelligence.</p>
     </div>
     <div class="domains-grid reveal">
-      <div class="domain-chip"><span class="count">9</span><span>Actors</span></div>
-      <div class="domain-chip"><span class="count">8</span><span>Assets</span></div>
-      <div class="domain-chip"><span class="count">8</span><span>Workflow</span></div>
-      <div class="domain-chip"><span class="count">7</span><span>Sequencer</span></div>
-      <div class="domain-chip"><span class="count">6</span><span>Materials</span></div>
-      <div class="domain-chip"><span class="count">6</span><span>Project</span></div>
-      <div class="domain-chip"><span class="count">6</span><span>AI/Nav</span></div>
-      <div class="domain-chip"><span class="count">6</span><span>Widget</span></div>
-      <div class="domain-chip"><span class="count">6</span><span>Editor</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Blueprint</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Levels</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Animation</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Audio</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Landscape</span></div>
-      <div class="domain-chip"><span class="count">5</span><span>Texture</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Content</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Mesh</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>DataTables</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Gameplay</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Compilation</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Niagara</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Physics</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>World Part.</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Foliage</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>Analyze</span></div>
-      <div class="domain-chip"><span class="count">4</span><span>PCG</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>Slate UI</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>File Ops</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>Source Ctrl</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>Build</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>Debug</span></div>
-      <div class="domain-chip"><span class="count">3</span><span>Curve</span></div>
-      <div class="domain-chip"><span class="count">13</span><span>Context AI</span></div>
-      <div class="domain-chip"><span class="count">2</span><span>GeoScript</span></div>
-      <div class="domain-chip"><span class="count">1</span><span>Python</span></div>
-      <div class="domain-chip"><span class="count">1</span><span>Refactor</span></div>
-      <div class="domain-chip"><span class="count">1</span><span>Chat</span></div>
+      <div class="dc"><span class="ct">13</span><span>Context AI</span></div>
+      <div class="dc"><span class="ct">9</span><span>Actors</span></div>
+      <div class="dc"><span class="ct">8</span><span>Assets</span></div>
+      <div class="dc"><span class="ct">8</span><span>Workflow</span></div>
+      <div class="dc"><span class="ct">7</span><span>Sequencer</span></div>
+      <div class="dc"><span class="ct">6</span><span>Materials</span></div>
+      <div class="dc"><span class="ct">6</span><span>Project</span></div>
+      <div class="dc"><span class="ct">6</span><span>AI / Nav</span></div>
+      <div class="dc"><span class="ct">6</span><span>Widget / UMG</span></div>
+      <div class="dc"><span class="ct">6</span><span>Editor</span></div>
+      <div class="dc"><span class="ct">5</span><span>Blueprint</span></div>
+      <div class="dc"><span class="ct">5</span><span>Levels</span></div>
+      <div class="dc"><span class="ct">5</span><span>Animation</span></div>
+      <div class="dc"><span class="ct">5</span><span>Audio</span></div>
+      <div class="dc"><span class="ct">5</span><span>Landscape</span></div>
+      <div class="dc"><span class="ct">5</span><span>Texture</span></div>
+      <div class="dc"><span class="ct">4</span><span>Content</span></div>
+      <div class="dc"><span class="ct">4</span><span>Mesh</span></div>
+      <div class="dc"><span class="ct">4</span><span>DataTables</span></div>
+      <div class="dc"><span class="ct">4</span><span>Gameplay</span></div>
+      <div class="dc"><span class="ct">4</span><span>Compilation</span></div>
+      <div class="dc"><span class="ct">4</span><span>Niagara VFX</span></div>
+      <div class="dc"><span class="ct">4</span><span>Physics</span></div>
+      <div class="dc"><span class="ct">4</span><span>World Partition</span></div>
+      <div class="dc"><span class="ct">4</span><span>Foliage</span></div>
+      <div class="dc"><span class="ct">4</span><span>Analyze</span></div>
+      <div class="dc"><span class="ct">4</span><span>PCG</span></div>
+      <div class="dc"><span class="ct">3</span><span>Slate UI</span></div>
+      <div class="dc"><span class="ct">3</span><span>File Ops</span></div>
+      <div class="dc"><span class="ct">3</span><span>Source Control</span></div>
+      <div class="dc"><span class="ct">3</span><span>Build</span></div>
+      <div class="dc"><span class="ct">3</span><span>Debug</span></div>
+      <div class="dc"><span class="ct">3</span><span>Curves</span></div>
+      <div class="dc"><span class="ct">2</span><span>GeoScript</span></div>
+      <div class="dc"><span class="ct">1</span><span>Python Bridge</span></div>
+      <div class="dc"><span class="ct">1</span><span>Refactor</span></div>
+      <div class="dc"><span class="ct">1</span><span>Chat</span></div>
     </div>
   </div>
 </section>
 
-<!-- Workflow -->
+<!-- WORKFLOW -->
 <section class="section" id="workflow">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-blue">How It Works</span>
-      <h2>From <span class="text-gradient">Natural Language</span> to Engine Changes</h2>
+    <div class="sh reveal">
+      <span class="badge b-blue">How It Works</span>
+      <h2>From <span class="tg">Natural Language</span> to Engine Changes</h2>
       <p>Describe your intent. Claude orchestrates the tools. Unreal executes in real time.</p>
     </div>
-    <div class="workflow-steps">
-      <div class="workflow-step reveal">
-        <div class="step-num">1</div>
+    <div class="wf-steps">
+      <div class="wf-step reveal">
+        <div class="wf-num">1</div>
         <h4>Describe Intent</h4>
         <p>"Add a PrintString node to BP_TestActor after BeginPlay, set the message to Hello World."</p>
       </div>
-      <div class="workflow-step reveal reveal-delay-1">
-        <div class="step-num">2</div>
+      <div class="wf-step reveal reveal-d1">
+        <div class="wf-num">2</div>
         <h4>Serialize &amp; Plan</h4>
-        <p>Claude calls <code>blueprint-serialize</code> to understand the current graph, then plans the node creation sequence.</p>
+        <p>Claude serializes the Blueprint to JSON AST, analyzes the graph, and plans the optimal tool sequence.</p>
       </div>
-      <div class="workflow-step reveal reveal-delay-2">
-        <div class="step-num">3</div>
+      <div class="wf-step reveal reveal-d2">
+        <div class="wf-num">3</div>
         <h4>Execute Changes</h4>
-        <p>Creates the PrintString node, connects exec pins, sets the default value &mdash; all via C++ engine APIs on the GameThread.</p>
+        <p>Creates nodes, connects exec pins, sets values &mdash; all dispatched to the GameThread via C++ engine APIs.</p>
       </div>
-      <div class="workflow-step reveal reveal-delay-3">
-        <div class="step-num">4</div>
+      <div class="wf-step reveal reveal-d3">
+        <div class="wf-num">4</div>
         <h4>Compile &amp; Heal</h4>
         <p>Triggers Live Coding. If compilation fails, parses errors, applies fix, and retries up to 3 times automatically.</p>
       </div>
@@ -841,12 +629,49 @@ img{max-width:100%;display:block}
   </div>
 </section>
 
-<!-- Code Example -->
-<section class="section code-section" id="code">
+<!-- USE CASES -->
+<section class="section code-section" id="use-cases">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-green">Developer Experience</span>
-      <h2>Simple to <span class="text-gradient2">Integrate &amp; Extend</span></h2>
+    <div class="sh reveal">
+      <span class="badge b-green">Use Cases</span>
+      <h2>What Developers <span class="tg2">Build With It</span></h2>
+      <p>Real workflows that developers use daily across game, simulation, and XR projects.</p>
+    </div>
+    <div class="uc-grid">
+      <div class="uc reveal">
+        <h4><span style="color:var(--blue)">&#9670;</span> Rapid Prototyping</h4>
+        <p>"Create a third-person character with health, stamina, and dash ability" &mdash; generates the Blueprint, spawns the actor, sets up input bindings, and compiles in seconds.</p>
+      </div>
+      <div class="uc reveal reveal-d1">
+        <h4><span style="color:var(--green)">&#9670;</span> Level Design Automation</h4>
+        <p>"Build a patrol route with 5 waypoints in a circle, spawn an enemy, and wire up the behavior tree" &mdash; actors, AI, and navigation in one command.</p>
+      </div>
+      <div class="uc reveal reveal-d2">
+        <h4><span style="color:var(--purple)">&#9670;</span> Material Pipeline</h4>
+        <p>"Create a PBR material with roughness 0.3, metallic 1.0, apply it to all meshes in /Game/Props" &mdash; material creation, parameter setting, and batch assignment.</p>
+      </div>
+      <div class="uc reveal reveal-d3">
+        <h4><span style="color:var(--orange)">&#9670;</span> Asset Auditing</h4>
+        <p>"Analyze Blueprint complexity for all BPs in /Game/Characters, find unused assets, check naming conventions" &mdash; full project health analysis.</p>
+      </div>
+      <div class="uc reveal">
+        <h4><span style="color:var(--cyan)">&#9670;</span> Cinematic Sequences</h4>
+        <p>"Create a 10-second camera flythrough from point A to B, add a fade-in, render to MP4" &mdash; sequencer, tracks, keyframes, and rendering automated.</p>
+      </div>
+      <div class="uc reveal reveal-d1">
+        <h4><span style="color:var(--green)">&#9670;</span> VFX &amp; Audio</h4>
+        <p>"Create a fire particle system with embers, attach to the torch actor, add a crackling sound cue with distance attenuation" &mdash; Niagara + audio in one go.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CODE EXAMPLE -->
+<section class="section" id="code">
+  <div class="container">
+    <div class="sh reveal">
+      <span class="badge b-purple">Developer Experience</span>
+      <h2>Simple to <span class="tg">Integrate &amp; Extend</span></h2>
       <p>Clean Python scripts, standardized patterns, and a factory-based tool registry.</p>
     </div>
     <div class="reveal">
@@ -913,253 +738,174 @@ img{max-width:100%;display:block}
   </div>
 </section>
 
-<!-- Safety -->
+<!-- SAFETY -->
 <section class="section" id="safety">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-purple">Trust &amp; Safety</span>
-      <h2>3-Tier <span class="text-gradient">Safety System</span></h2>
-      <p>Every tool is classified by risk level. Destructive operations require explicit human approval.</p>
+    <div class="sh reveal">
+      <span class="badge b-purple">Trust &amp; Safety</span>
+      <h2>3-Tier <span class="tg">Safety System</span></h2>
+      <p>Every tool classified by risk. Destructive operations require explicit human approval.</p>
     </div>
     <div class="safety-grid">
-      <div class="safety-card reveal">
-        <div class="safety-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e68a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </div>
+      <div class="sc reveal">
+        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e68a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <h4>Safe</h4>
-        <p><strong>31 tools</strong> &mdash; Read-only operations. Query data, list assets, inspect Blueprints. No approval needed.</p>
+        <p><strong>Read-only queries.</strong> List assets, inspect Blueprints, query project structure. No approval needed.</p>
       </div>
-      <div class="safety-card reveal reveal-delay-1">
-        <div class="safety-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#febc2e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
+      <div class="sc reveal reveal-d1">
+        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#febc2e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <h4>Warn</h4>
-        <p><strong>26 tools</strong> &mdash; Recoverable mutations. Create assets, spawn actors, modify properties. Logged but not gated.</p>
+        <p><strong>Recoverable mutations.</strong> Create assets, spawn actors, modify properties. Logged and auto-approved.</p>
       </div>
-      <div class="safety-card reveal reveal-delay-2">
-        <div class="safety-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ff5f57" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><line x1="12" y1="16" x2="12" y2="19"/></svg>
-        </div>
+      <div class="sc reveal reveal-d2">
+        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ff5f57" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><line x1="12" y1="16" x2="12" y2="19"/></svg></div>
         <h4>Dangerous</h4>
-        <p><strong>7 tools</strong> &mdash; Destructive operations. Delete assets, cook content, exec console commands. Requires Slate dialog approval with 60s timeout.</p>
+        <p><strong>Destructive operations.</strong> Delete assets, cook content, exec console commands. Requires Slate dialog approval with 60s timeout.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Roadmap -->
-<section class="section" id="roadmap">
+<!-- ROADMAP -->
+<section class="section arch-section" id="roadmap">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-purple">Roadmap</span>
-      <h2>The Path to <span class="text-gradient">Full Coverage</span></h2>
-      <p>183 tools with AI-powered learning. Every interaction makes the system smarter.</p>
+    <div class="sh reveal">
+      <span class="badge b-cyan">Roadmap</span>
+      <h2>Built to <span class="tg2">Keep Growing</span></h2>
+      <p>All 15 phases complete. The learning system gets smarter with every interaction.</p>
     </div>
     <div class="roadmap-timeline reveal">
-      <div class="roadmap-item">
-        <div class="roadmap-dot rd-green"></div>
-        <div class="roadmap-content">
-          <div class="rm-date">Completed</div>
+      <div class="rm-item">
+        <div class="rm-dot rd-g"></div>
+        <div class="rm-content">
+          <div class="rm-date">Phase 0-9 &mdash; Complete</div>
           <h4>Foundation &amp; Core Tools (85 tools)</h4>
-          <p>Blueprint manipulation, self-healing compilation, asset pipeline, actor management, materials, levels, animation, meshes, DataTables, gameplay, source control, build pipeline, debug tools, Python bridge with 130+ scripts.</p>
+          <p>Blueprint manipulation, self-healing compilation, asset pipeline, actors, materials, levels, animation, meshes, DataTables, gameplay, source control, build pipeline, debug tools, Python bridge with 154 scripts.</p>
         </div>
       </div>
-      <div class="roadmap-item">
-        <div class="roadmap-dot rd-green"></div>
-        <div class="roadmap-content">
-          <div class="rm-date">Completed</div>
-          <h4>Full UE API Coverage (170 tools)</h4>
-          <p>Sequencer/Cinematics, AI/Navigation, UMG Widgets, Texture pipeline, Niagara VFX, Audio, Landscape, Physics, World Partition, Foliage, Curves, PCG, Geometry Script. Complete UE editor automation.</p>
+      <div class="rm-item">
+        <div class="rm-dot rd-g"></div>
+        <div class="rm-content">
+          <div class="rm-date">Phase 10-12 &mdash; Complete</div>
+          <h4>Full UE API Coverage (157 tools)</h4>
+          <p>Sequencer, AI/Navigation, UMG Widgets, Texture pipeline, Niagara VFX, Audio, Landscape, Physics, World Partition, Foliage, Curves, PCG, Geometry Script.</p>
         </div>
       </div>
-      <div class="roadmap-item">
-        <div class="roadmap-dot rd-green"></div>
-        <div class="roadmap-content">
-          <div class="rm-date">Completed</div>
+      <div class="rm-item">
+        <div class="rm-dot rd-g"></div>
+        <div class="rm-content">
+          <div class="rm-date">Phase 13-14 &mdash; Complete</div>
           <h4>Workflow &amp; Analysis Intelligence (176 tools)</h4>
-          <p>8 workflow templates (character, UI, level, multiplayer, inventory, dialogue), Blueprint complexity analysis, asset health audits, performance hints, code conventions, refactoring tools, context intelligence engine.</p>
+          <p>8 workflow templates, Blueprint complexity analysis, asset health audits, performance hints, code conventions, refactoring tools, context intelligence engine.</p>
         </div>
       </div>
-      <div class="roadmap-item">
-        <div class="roadmap-dot rd-green"></div>
-        <div class="roadmap-content">
-          <div class="rm-date">Completed &mdash; Latest</div>
+      <div class="rm-item">
+        <div class="rm-dot rd-g"></div>
+        <div class="rm-content">
+          <div class="rm-date">Phase 15 &mdash; Complete (Current)</div>
           <h4>AI-Powered Learning System (183 tools)</h4>
-          <p>Persistent workflow learning from Epic docs, intent matching with 60+ UE synonym groups, outcome tracking with confidence scoring, error resolution learning that captures troubleshooting journeys and replays fixes for similar errors. The system gets smarter with every interaction.</p>
+          <p>Persistent workflow learning from Epic docs, intent matching with 60+ UE synonym groups, outcome tracking, error resolution learning. The system gets smarter with every interaction.</p>
         </div>
       </div>
-      <div class="roadmap-item">
-        <div class="roadmap-dot rd-orange"></div>
-        <div class="roadmap-content">
+      <div class="rm-item">
+        <div class="rm-dot rd-o"></div>
+        <div class="rm-content">
           <div class="rm-date">Coming Next</div>
           <h4>Community &amp; Ecosystem</h4>
-          <p>Shared workflow marketplace, community-contributed error resolutions, UE version-specific workflow variants, plugin ecosystem for custom tool domains, and real-time editor event streaming.</p>
+          <p>Shared workflow marketplace, community-contributed error resolutions, UE version-specific variants, plugin ecosystem for custom tool domains, real-time editor event streaming.</p>
         </div>
       </div>
     </div>
     <div class="compat-row reveal">
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        UE 5.4
-      </div>
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        UE 5.5
-      </div>
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        UE 5.6
-      </div>
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        UE 5.7
-      </div>
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-cyan)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Node.js 20+
-      </div>
-      <div class="compat-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ue-purple)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-        TypeScript 5.5+
-      </div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.4</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.5</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.6</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.7</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Node.js 20+</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>TypeScript 5.5+</div>
+      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Claude Code</div>
     </div>
   </div>
 </section>
 
-<!-- Documentation -->
+<!-- DOCS -->
 <section class="section" id="docs">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="badge badge-blue">Documentation</span>
-      <h2>Comprehensive <span class="text-gradient">Guides &amp; References</span></h2>
+    <div class="sh reveal">
+      <span class="badge b-blue">Documentation</span>
+      <h2>Comprehensive <span class="tg">Guides &amp; References</span></h2>
       <p>Everything you need to get started, extend, and understand the system.</p>
     </div>
     <div class="docs-grid">
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/setup-guide.md" class="doc-card reveal" target="_blank" rel="noopener">
-        <div class="doc-icon di-green">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div>
-          <h4>Setup Guide</h4>
-          <p>Installation, configuration, and first connection walkthrough for both the MCP server and UE plugin.</p>
-        </div>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="doc-card reveal" target="_blank" rel="noopener">
+        <div class="doc-icon di-g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <div><h4>Quick Start Guide</h4><p>Installation, configuration, and first connection walkthrough for MCP server and UE plugin.</p></div>
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
-        <div class="doc-icon di-blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div>
-          <h4>MCP Tools API Reference</h4>
-          <p>Complete reference for all 183 tools across 37 domains: parameters, return values, safety levels, and usage examples.</p>
-        </div>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md" class="doc-card reveal reveal-d1" target="_blank" rel="noopener">
+        <div class="doc-icon di-b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div><h4>MCP Tools API Reference</h4><p>Complete reference for all 183 tools: parameters, return values, safety levels, examples.</p></div>
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="doc-card reveal reveal-delay-2">
-        <div class="doc-icon di-purple">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div>
-          <h4>Architecture Guide</h4>
-          <p>4-layer design, ADRs, threading model, caching strategy, error taxonomy, and data flow diagrams.</p>
-        </div>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="doc-card reveal reveal-d2" target="_blank" rel="noopener">
+        <div class="doc-icon di-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div><h4>Architecture Guide</h4><p>4-layer design, ADRs, threading model, caching strategy, error taxonomy, data flow diagrams.</p></div>
       </a>
       <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/websocket-protocol.md" class="doc-card reveal" target="_blank" rel="noopener">
-        <div class="doc-icon di-cyan">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        </div>
-        <div>
-          <h4>WebSocket Protocol</h4>
-          <p>Message envelopes, request/response correlation, error codes (1000-6099), and connection lifecycle.</p>
-        </div>
+        <div class="doc-icon di-c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div><h4>WebSocket Protocol</h4><p>Message envelopes, request/response correlation, error codes (1000-9299), connection lifecycle.</p></div>
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/safety-architecture.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
-        <div class="doc-icon di-orange">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        </div>
-        <div>
-          <h4>Safety Architecture</h4>
-          <p>3-tier classification system, approval workflow, path sandboxing, and the human-in-the-loop gate.</p>
-        </div>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/safety-architecture.md" class="doc-card reveal reveal-d1" target="_blank" rel="noopener">
+        <div class="doc-icon di-o"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div><h4>Safety Architecture</h4><p>3-tier classification, approval workflow, path sandboxing, human-in-the-loop gate.</p></div>
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/coding-conventions/README.md" class="doc-card reveal reveal-delay-2" target="_blank" rel="noopener">
-        <div class="doc-icon di-green">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        </div>
-        <div>
-          <h4>Coding Conventions</h4>
-          <p>TypeScript and C++ style guides, naming conventions, testing patterns, and contribution guidelines.</p>
-        </div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/IMPROVEMENT-PLAN.md" class="doc-card reveal" target="_blank" rel="noopener">
-        <div class="doc-icon di-blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-        </div>
-        <div>
-          <h4>Improvement Plan</h4>
-          <p>Python API expansion roadmap: 60+ new tools across 14 categories with implementation timeline.</p>
-        </div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/PHASE2-IMPROVEMENT-PLAN.md" class="doc-card reveal reveal-delay-1" target="_blank" rel="noopener">
-        <div class="doc-icon di-purple">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        </div>
-        <div>
-          <h4>Editor Integration Plan</h4>
-          <p>Context engine, Claude orchestrator, streaming UI, viewport/content browser context menus.</p>
-        </div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/FULL-UE-PYTHON-API-ENHANCEMENT-PLAN.md" class="doc-card reveal reveal-delay-2" target="_blank" rel="noopener">
-        <div class="doc-icon di-cyan">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        </div>
-        <div>
-          <h4>Full UE API Enhancement Plan</h4>
-          <p>Full UE Python API coverage achieved with 183 tools. Includes workflow learning and error resolution intelligence.</p>
-        </div>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/coding-conventions/README.md" class="doc-card reveal reveal-d2" target="_blank" rel="noopener">
+        <div class="doc-icon di-g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div><h4>Coding Conventions</h4><p>TypeScript and C++ style guides, naming conventions, testing patterns, contribution guidelines.</p></div>
       </a>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="section cta-section">
+<section class="section cta">
   <div class="container reveal">
-    <h2>Ready to <span class="text-gradient">Transform</span> Your Workflow?</h2>
+    <h2>Ready to <span class="tg">Automate</span> Unreal Engine?</h2>
     <p>Stop clicking through menus. Start describing what you want. Let Claude and Unreal Engine handle the rest.</p>
     <div class="cta-buttons">
-      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-primary" target="_blank" rel="noopener">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-p" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Get Started
+        Get Started Free
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-outline" target="_blank" rel="noopener">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        GitHub Repo
+        Star on GitHub
       </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="btn btn-outline" target="_blank" rel="noopener">
+      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="btn btn-o" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Architecture
+        Read Architecture
       </a>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
     <div class="footer-links">
-      <a href="#status">Status</a>
+      <a href="#quickstart">Quick Start</a>
       <a href="#features">Features</a>
       <a href="#architecture">Architecture</a>
       <a href="#tools">Tools</a>
-      <a href="#roadmap">Roadmap</a>
+      <a href="#use-cases">Use Cases</a>
       <a href="#docs">Docs</a>
-      <a href="#safety">Safety</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <p>Unreal Master Agent &middot; Built with Claude Code &middot; Powered by Model Context Protocol &middot; UE 5.4 - 5.7 &middot; MIT License &middot; Open Source</p>
+    <p>Unreal Master Agent &middot; Built with Claude Code &middot; Model Context Protocol &middot; UE 5.4 - 5.7 &middot; MIT License</p>
   </div>
 </footer>
 
 <script>
-/* ============ PARTICLES ============ */
+/* PARTICLES */
 (function(){
   const c=document.getElementById('particles'),ctx=c.getContext('2d');
   let w,h,particles=[];
@@ -1167,142 +913,94 @@ img{max-width:100%;display:block}
   resize();window.addEventListener('resize',resize);
   class P{
     constructor(){this.reset()}
-    reset(){
-      this.x=Math.random()*w;this.y=Math.random()*h;
-      this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;
-      this.r=Math.random()*1.5+.5;this.a=Math.random()*.4+.1;
-      this.color=(['#0d7dff','#6c3bff','#00d4ff','#00e68a'])[Math.random()*4|0];
-    }
-    update(){
-      this.x+=this.vx;this.y+=this.vy;
-      if(this.x<0||this.x>w||this.y<0||this.y>h)this.reset();
-    }
-    draw(){
-      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-      ctx.fillStyle=this.color;ctx.globalAlpha=this.a;ctx.fill();
-    }
+    reset(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.r=Math.random()*1.5+.5;this.a=Math.random()*.4+.1;this.color=(['#0d7dff','#6c3bff','#00d4ff','#00e68a'])[Math.random()*4|0]}
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w||this.y<0||this.y>h)this.reset()}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=this.a;ctx.fill()}
   }
   for(let i=0;i<80;i++)particles.push(new P);
   function loop(){
     ctx.clearRect(0,0,w,h);
     particles.forEach(p=>{p.update();p.draw()});
-    // connections
     ctx.globalAlpha=.05;ctx.strokeStyle='#0d7dff';ctx.lineWidth=.5;
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
-        if(dx*dx+dy*dy<15000){
-          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();
-        }
-      }
+    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      if(dx*dx+dy*dy<15000){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}
     }
-    ctx.globalAlpha=1;
-    requestAnimationFrame(loop);
+    ctx.globalAlpha=1;requestAnimationFrame(loop);
   }
   loop();
 })();
 
-/* ============ TERMINAL TYPING ============ */
+/* TERMINAL TYPING */
 (function(){
   const body=document.getElementById('terminalBody');
   const lines=[
     {type:'prompt',text:'$ '},
-    {type:'cmd',text:'claude "Add a health component to BP_Enemy with max HP 100"'},
+    {type:'cmd',text:'claude "Create a castle with 4 towers, add torches with fire VFX"'},
     {type:'br'},
-    {type:'tool',text:'  [tool] blueprint-serialize '},
-    {type:'output',text:'  Serialized BP_Enemy EventGraph: 12 nodes, 24 pins'},
-    {type:'tool',text:'  [tool] blueprint-createNode '},
-    {type:'output',text:'  Created HealthComponent variable node (id: a3f8...)'},
-    {type:'tool',text:'  [tool] blueprint-modifyProperty '},
-    {type:'output',text:'  Set MaxHP = 100 on HealthComponent'},
-    {type:'tool',text:'  [tool] blueprint-connectPins '},
-    {type:'output',text:'  Connected BeginPlay.exec -> SetMaxHP.exec'},
-    {type:'tool',text:'  [tool] compilation-trigger '},
-    {type:'success',text:'  Compilation successful (0 errors, 0 warnings, 1.2s)'},
+    {type:'tool',text:'  [context] matchIntent '},
+    {type:'output',text:'  Matched workflow: level-building (confidence: 0.92)'},
+    {type:'tool',text:'  [tool] actor-spawn '},
+    {type:'output',text:'  Spawned: Castle_Main, Tower_N, Tower_S, Tower_E, Tower_W'},
+    {type:'tool',text:'  [tool] actor-setTransform '},
+    {type:'output',text:'  Positioned 4 towers at castle corners'},
+    {type:'tool',text:'  [tool] niagara-createSystem '},
+    {type:'output',text:'  Created: NS_TorchFire with ember emitter'},
+    {type:'tool',text:'  [tool] actor-spawn '},
+    {type:'output',text:'  Spawned 8 torches, attached fire VFX to each'},
+    {type:'tool',text:'  [context] recordOutcome '},
+    {type:'success',text:'  Workflow complete (success, 6 tools, 2.4s)'},
     {type:'br'},
-    {type:'output',text:'  Done! Added HealthComponent to BP_Enemy with MaxHP=100,'},
-    {type:'output',text:'  connected to BeginPlay. Blueprint compiled successfully.'},
+    {type:'output',text:'  Done! Castle with 4 towers and 8 lit torches.'},
+    {type:'output',text:'  Workflow learned for future castle-building requests.'},
   ];
-  let lineIdx=0,charIdx=0;
-  body.innerHTML='';
+  let lineIdx=0,charIdx=0;body.innerHTML='';
   function typeLine(){
-    if(lineIdx>=lines.length){
-      // add cursor at end
-      const cursor=document.createElement('span');
-      cursor.className='typing-cursor';
-      body.appendChild(cursor);
-      return;
-    }
+    if(lineIdx>=lines.length){const cursor=document.createElement('span');cursor.className='typing-cursor';body.appendChild(cursor);return}
     const line=lines[lineIdx];
-    if(line.type==='br'){
-      body.appendChild(document.createElement('br'));
-      lineIdx++;setTimeout(typeLine,200);return;
-    }
-    if(!body.querySelector(`[data-line="${lineIdx}"]`)){
-      const span=document.createElement('span');
-      span.className=line.type;span.dataset.line=lineIdx;
-      body.appendChild(span);charIdx=0;
-    }
+    if(line.type==='br'){body.appendChild(document.createElement('br'));lineIdx++;setTimeout(typeLine,200);return}
+    if(!body.querySelector(`[data-line="${lineIdx}"]`)){const span=document.createElement('span');span.className=line.type;span.dataset.line=lineIdx;body.appendChild(span);charIdx=0}
     const el=body.querySelector(`[data-line="${lineIdx}"]`);
-    if(charIdx<line.text.length){
-      el.textContent+=line.text[charIdx];charIdx++;
-      const speed=line.type==='cmd'?35:line.type==='prompt'?0:12;
-      setTimeout(typeLine,speed);
-      body.parentElement.scrollTop=body.parentElement.scrollHeight;
-    }else{
-      body.appendChild(document.createElement('br'));
-      lineIdx++;
-      const delay=line.type==='tool'?400:line.type==='success'?600:150;
-      setTimeout(typeLine,delay);
-    }
+    if(charIdx<line.text.length){el.textContent+=line.text[charIdx];charIdx++;setTimeout(typeLine,line.type==='cmd'?30:10);body.parentElement.scrollTop=body.parentElement.scrollHeight}
+    else{body.appendChild(document.createElement('br'));lineIdx++;setTimeout(typeLine,line.type==='tool'?350:line.type==='success'?500:120)}
   }
-  // start after a small delay
   setTimeout(typeLine,1500);
 })();
 
-/* ============ NAV SCROLL ============ */
+/* NAV SCROLL */
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>50)});
 
-/* ============ HAMBURGER ============ */
-document.getElementById('hamburger').addEventListener('click',()=>{
-  document.getElementById('navLinks').classList.toggle('open');
-});
+/* HAMBURGER */
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
 
-/* ============ CODE TABS ============ */
+/* CODE TABS */
 document.querySelectorAll('.code-tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.code-tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.code-panel').forEach(p=>p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+    tab.classList.add('active');document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
   });
 });
 
-/* ============ SCROLL REVEAL ============ */
-const observer=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
-},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
+/* SCROLL REVEAL */
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-/* ============ STAT COUNTER ============ */
-const statObserver=new IntersectionObserver((entries)=>{
+/* STAT COUNTER */
+const statObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
-    const el=e.target;
-    const target=+el.dataset.target;
-    let current=0;
+    const el=e.target,target=+el.dataset.target;let current=0;
     const step=Math.max(1,Math.floor(target/40));
-    const interval=setInterval(()=>{
-      current+=step;
-      if(current>=target){current=target;clearInterval(interval)}
-      el.textContent=current;
-    },30);
-    statObserver.unobserve(el);
+    const iv=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(iv)}el.textContent=current},30);
+    statObs.unobserve(el);
   });
 },{threshold:.5});
-document.querySelectorAll('.stat-num').forEach(el=>statObserver.observe(el));
+document.querySelectorAll('.stat-num').forEach(el=>statObs.observe(el));
+
+/* SMOOTH NAV CLOSE ON LINK CLICK */
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(a=>{a.addEventListener('click',()=>{document.getElementById('navLinks').classList.remove('open')})});
 </script>
 </body>
 </html>
