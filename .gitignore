@@ -29,6 +29,9 @@ Thumbs.db
 *.log
 *.bak
 
+# Test coverage
+coverage/
+
 # Environment
 .env
 .env.local
