@@ -18,11 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: mcp-server/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
@@ -34,11 +32,12 @@ jobs:
         run: npm run test:coverage
 
       - name: Upload coverage report
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: mcp-server/coverage/
+          if-no-files-found: ignore
           retention-days: 14
 
       - name: Security audit
