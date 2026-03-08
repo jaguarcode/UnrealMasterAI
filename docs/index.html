@@ -4,1003 +4,897 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unreal Master Agent - AI-Powered Unreal Engine Automation</title>
-<meta name="description" content="Open-source MCP bridge giving Claude Code full control over Unreal Engine. 183 tools, 37 domains, 154 Python scripts. Blueprint manipulation, asset pipelines, materials, AI navigation, VFX, and self-learning workflows.">
+<meta name="description" content="Open-source MCP bridge giving Claude Code full control over Unreal Engine. 183 tools, 37 domains, 154 Python scripts.">
 <link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/">
 <meta property="og:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
-<meta property="og:description" content="Open-source MCP bridge: 183 tools across 37 domains. From Blueprints to Niagara VFX, controlled by natural language through Claude Code.">
+<meta property="og:description" content="Open-source MCP bridge: 183 tools across 37 domains. Claude Code meets Unreal Engine.">
 <meta property="og:site_name" content="Unreal Master Agent">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
 <meta name="twitter:description" content="Open-source MCP bridge: 183 tools across 37 domains. Claude Code meets Unreal Engine.">
-<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI agent, Blueprint automation, game development, open source, Model Context Protocol, UE5, AI-powered development">
+<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI agent, Blueprint automation, game development, open source, Model Context Protocol, UE5">
 <meta name="author" content="JaguarCode">
 <meta name="robots" content="index, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
 :root{
-  --blue:#0d7dff;--blue-dark:#0050b3;--purple:#6c3bff;--cyan:#00d4ff;
-  --green:#00e68a;--orange:#ff6b35;--red:#ff5f57;--yellow:#febc2e;
-  --dark:#0a0e17;--darker:#060a12;--card:#0f1724;--card-hover:#141d2e;
-  --border:#1a2540;--text:#c8d6e5;--bright:#edf2f7;--muted:rgba(255,255,255,.4);
-  --grad1:linear-gradient(135deg,var(--blue),var(--purple));
-  --grad2:linear-gradient(135deg,var(--cyan),var(--green));
-  --grad3:linear-gradient(135deg,var(--orange),var(--purple));
+  --black:#000000;
+  --near-black:#0a0a0a;
+  --card-bg:#141414;
+  --card-bg-alt:#1a1a1a;
+  --border-subtle:#222222;
+  --border-alt:#2a2a2a;
+  --white:#ffffff;
+  --gray-light:#a0a0a0;
+  --gray-mid:#666666;
+  --gray-dark:#444444;
+  --blue:#0d6efd;
   --font:'Inter',system-ui,-apple-system,sans-serif;
-  --mono:'JetBrains Mono','Fira Code',monospace;
+  --mono:'JetBrains Mono',monospace;
 }
+
 html{scroll-behavior:smooth;font-size:16px}
-body{font-family:var(--font);background:var(--darker);color:var(--text);line-height:1.7;overflow-x:hidden}
-a{color:var(--cyan);text-decoration:none;transition:color .2s}
-a:hover{color:var(--blue)}
-.container{max-width:1200px;margin:0 auto;padding:0 2rem}
-.section{padding:6rem 0}
-.tg{background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.tg2{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.tg3{background:var(--grad3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-.b-blue{background:rgba(13,125,255,.15);color:var(--blue);border:1px solid rgba(13,125,255,.3)}
-.b-green{background:rgba(0,230,138,.12);color:var(--green);border:1px solid rgba(0,230,138,.3)}
-.b-purple{background:rgba(108,59,255,.15);color:var(--purple);border:1px solid rgba(108,59,255,.3)}
-.b-orange{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.3)}
-.b-cyan{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.3)}
+body{font-family:var(--font);background:var(--black);color:var(--white);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* BG */
-.bg-grid{position:fixed;inset:0;z-index:-2;background-image:linear-gradient(rgba(13,125,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(13,125,255,.03) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 20s linear infinite}
-@keyframes gridMove{to{background-position:60px 60px}}
-.bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(13,125,255,.08),transparent),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(108,59,255,.06),transparent),radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,212,255,.04),transparent)}
+a{color:inherit;text-decoration:none}
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 0;background:rgba(6,10,18,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:padding .3s}
-.nav.scrolled{padding:.5rem 0}
-.nav-inner{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{display:flex;align-items:center;gap:.75rem;font-weight:700;font-size:1.15rem;color:var(--bright)}
-.nav-logo svg{width:32px;height:32px}
-.nav-links{display:flex;gap:2rem;align-items:center}
-.nav-links a{color:var(--text);font-size:.9rem;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--bright)}
-.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .3s;cursor:pointer;border:none}
-.btn-p{background:var(--grad1);color:#fff;box-shadow:0 4px 20px rgba(13,125,255,.3)}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,125,255,.4);color:#fff}
-.btn-o{background:transparent;color:var(--bright);border:1px solid var(--border)}
-.btn-o:hover{border-color:var(--blue);color:var(--blue)}
-.btn-g{background:rgba(0,230,138,.12);color:var(--green);border:1px solid rgba(0,230,138,.3)}
-.btn-g:hover{background:rgba(0,230,138,.2);color:var(--green)}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
-.hamburger span{width:24px;height:2px;background:var(--bright);border-radius:2px;transition:.3s}
+.container{max-width:1400px;margin:0 auto;padding:0 2rem}
 
-/* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;padding-top:6rem;position:relative;overflow:hidden}
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;margin:0 auto}
-.hero-badge{margin-bottom:1.5rem}
-.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.08;margin-bottom:1.5rem;color:var(--bright);letter-spacing:-.03em}
-.hero p{font-size:1.2rem;color:var(--text);max-width:700px;margin:0 auto 2.5rem;line-height:1.8}
-.hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
-.hero-sub{font-size:.85rem;color:var(--muted);margin-top:.5rem}
-.hero-sub code{background:rgba(255,255,255,.06);padding:.15rem .4rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
-.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.4;animation:float 6s ease-in-out infinite}
-.orb-1{width:300px;height:300px;background:var(--blue);top:-10%;left:-5%;animation-delay:0s}
-.orb-2{width:250px;height:250px;background:var(--purple);bottom:10%;right:-5%;animation-delay:2s}
-.orb-3{width:200px;height:200px;background:var(--cyan);top:50%;left:50%;animation-delay:4s}
-@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+/* ─── FADE-UP ANIMATION ─── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.fade-up.delay-1{transition-delay:0.1s}
+.fade-up.delay-2{transition-delay:0.2s}
+.fade-up.delay-3{transition-delay:0.3s}
+.fade-up.delay-4{transition-delay:0.4s}
+.fade-up.delay-5{transition-delay:0.5s}
 
-/* TERMINAL */
-.terminal{background:var(--dark);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);text-align:left;max-width:800px;margin:2rem auto 0}
-.terminal-bar{display:flex;align-items:center;gap:8px;padding:.75rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
-.terminal-dot{width:12px;height:12px;border-radius:50%}
-.terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#febc2e}.terminal-dot.g{background:#28c840}
-.terminal-title{flex:1;text-align:center;font-size:.8rem;color:var(--muted);font-family:var(--mono)}
-.terminal-body{padding:1.5rem;font-family:var(--mono);font-size:.85rem;line-height:1.9;min-height:220px}
-.terminal-body .prompt{color:var(--green)}
-.terminal-body .cmd{color:var(--bright)}
-.terminal-body .comment{color:rgba(255,255,255,.3)}
-.terminal-body .output{color:var(--cyan)}
-.terminal-body .tool{color:var(--orange)}
-.terminal-body .success{color:var(--green)}
-.typing-cursor{display:inline-block;width:8px;height:1.1em;background:var(--green);vertical-align:text-bottom;animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-
-/* STATS */
-.stats-bar{padding:3rem 0;background:linear-gradient(180deg,transparent,rgba(13,125,255,.03),transparent);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2rem;text-align:center}
-.stat-item h3{font-size:2.5rem;font-weight:800;margin-bottom:.25rem}
-.stat-item p{font-size:.8rem;color:var(--text);text-transform:uppercase;letter-spacing:.1em}
-
-/* SECTION HEADER */
-.sh{text-align:center;margin-bottom:4rem}
-.sh h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--bright);margin-bottom:1rem}
-.sh p{font-size:1.1rem;color:var(--text);max-width:600px;margin:0 auto}
-
-/* QUICK START */
-.qs-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
-.qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
-.qs-steps{display:flex;flex-direction:column;gap:1.5rem}
-.qs-step{display:flex;gap:1.25rem;align-items:flex-start}
-.qs-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;flex-shrink:0;background:var(--card);border:2px solid var(--blue);color:var(--blue)}
-.qs-info h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
-.qs-info p{font-size:.85rem;color:var(--text);line-height:1.6}
-.qs-info code{background:rgba(255,255,255,.06);padding:.1rem .35rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
-.qs-code{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;font-family:var(--mono);font-size:.85rem;line-height:2;overflow-x:auto;position:sticky;top:6rem}
-.qs-code .cmt{color:rgba(255,255,255,.3)}
-.qs-code .kw{color:var(--purple)}
-.qs-code .str{color:var(--green)}
-.qs-code .fn{color:var(--blue)}
-
-/* ARCHITECTURE */
-.arch-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
-.arch-diagram{display:grid;grid-template-columns:1fr;gap:0;max-width:700px;margin:0 auto;position:relative}
-.arch-layer{display:flex;align-items:center;gap:1.5rem;padding:1.5rem 2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;position:relative;transition:all .3s}
-.arch-layer:hover{transform:translateX(8px);border-color:var(--blue);box-shadow:0 0 30px rgba(13,125,255,.1)}
-.arch-layer + .arch-layer{margin-top:-1px}
-.arch-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
-.arch-icon.l1{background:rgba(13,125,255,.15);color:var(--blue)}
-.arch-icon.l2{background:rgba(0,212,255,.15);color:var(--cyan)}
-.arch-icon.l3{background:rgba(108,59,255,.15);color:var(--purple)}
-.arch-icon.l4{background:rgba(0,230,138,.15);color:var(--green)}
-.arch-info h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
-.arch-info p{font-size:.85rem;color:var(--text)}
-.arch-connector{width:2px;height:30px;margin:0 auto;background:linear-gradient(180deg,var(--blue),var(--purple));position:relative}
-.arch-connector::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--purple)}
-.arch-protocol{text-align:center;padding:.4rem .8rem;font-size:.7rem;font-family:var(--mono);color:var(--cyan);letter-spacing:.05em}
-
-/* FEATURES */
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.fc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.165,.84,.44,1)}
-.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad1);opacity:0;transition:opacity .3s}
-.fc:hover{transform:translateY(-4px);border-color:rgba(13,125,255,.3);background:var(--card-hover)}
-.fc:hover::before{opacity:1}
-.fi{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.3rem}
-.fc h3{font-size:1.05rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
-.fc p{font-size:.88rem;line-height:1.7;color:var(--text)}
-.fi-b{background:rgba(13,125,255,.12);color:var(--blue)}
-.fi-c{background:rgba(0,212,255,.12);color:var(--cyan)}
-.fi-p{background:rgba(108,59,255,.12);color:var(--purple)}
-.fi-g{background:rgba(0,230,138,.12);color:var(--green)}
-.fi-o{background:rgba(255,107,53,.12);color:var(--orange)}
-
-/* DOMAINS */
-.domains-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
-.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem}
-.dc{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;transition:all .3s;cursor:default}
-.dc:hover{border-color:var(--blue);transform:translateY(-2px)}
-.dc .ct{font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:6px;background:rgba(13,125,255,.12);color:var(--blue);font-family:var(--mono)}
-.dc span:last-child{font-size:.88rem;font-weight:600;color:var(--bright)}
-
-/* WORKFLOW */
-.wf-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
-.wf-step{text-align:center;position:relative}
-.wf-step::after{content:'';position:absolute;top:28px;left:calc(50% + 30px);width:calc(100% - 60px);height:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
-.wf-step:last-child::after{display:none}
-.wf-num{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:800;margin:0 auto 1rem;position:relative;z-index:2;background:var(--card);border:2px solid var(--blue);color:var(--blue);transition:all .3s}
-.wf-step:hover .wf-num{background:var(--blue);color:#fff;box-shadow:0 0 30px rgba(13,125,255,.4)}
-.wf-step h4{font-size:.95rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
-.wf-step p{font-size:.8rem;color:var(--text);line-height:1.6}
-
-/* SAFETY */
-.safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;text-align:center;transition:all .3s}
-.sc:hover{transform:translateY(-3px);border-color:rgba(0,230,138,.3)}
-.sc-icon{font-size:2rem;margin-bottom:1rem}
-.sc h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.5rem}
-.sc p{font-size:.85rem;color:var(--text)}
-
-/* CODE TABS */
-.code-section{background:linear-gradient(180deg,var(--darker),var(--dark),var(--darker))}
-.code-tabs{display:flex;gap:.5rem;margin-bottom:0}
-.code-tab{padding:.6rem 1.2rem;border-radius:8px 8px 0 0;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--border);border-bottom:none;background:var(--darker);color:var(--text);transition:all .2s}
-.code-tab.active{background:var(--card);color:var(--bright);border-color:var(--blue)}
-.code-panel{background:var(--card);border:1px solid var(--border);border-radius:0 12px 12px 12px;padding:2rem;font-family:var(--mono);font-size:.85rem;line-height:2;display:none;overflow-x:auto}
-.code-panel.active{display:block}
-.code-panel .kw{color:var(--purple)}
-.code-panel .fn{color:var(--blue)}
-.code-panel .str{color:var(--green)}
-.code-panel .cmt{color:rgba(255,255,255,.3)}
-.code-panel .var{color:var(--orange)}
-.code-panel .op{color:var(--cyan)}
-
-/* USE CASES */
-.uc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
-.uc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;transition:all .3s}
-.uc:hover{transform:translateY(-3px);border-color:rgba(13,125,255,.3)}
-.uc h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
-.uc p{font-size:.88rem;color:var(--text);line-height:1.7}
-.uc code{background:rgba(255,255,255,.06);padding:.1rem .35rem;border-radius:4px;font-family:var(--mono);font-size:.8rem;color:var(--cyan)}
-
-/* ROADMAP */
-.roadmap-timeline{position:relative;max-width:800px;margin:0 auto}
-.roadmap-timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--green),var(--blue),var(--purple),var(--border))}
-.rm-item{display:flex;gap:1.5rem;padding-bottom:2rem;position:relative}
-.rm-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:.4rem;position:relative;left:19px;z-index:2}
-.rd-g{background:var(--green);box-shadow:0 0 12px rgba(0,230,138,.4)}
-.rd-o{background:var(--orange);box-shadow:0 0 12px rgba(255,107,53,.4)}
-.rd-b{background:var(--blue);box-shadow:0 0 12px rgba(13,125,255,.3)}
-.rm-content{flex:1;padding-left:1rem}
-.rm-content h4{font-size:1rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
-.rm-content p{font-size:.85rem;color:var(--text);line-height:1.7}
-.rm-date{font-size:.75rem;color:var(--muted);font-family:var(--mono);margin-bottom:.3rem}
-
-/* DOCS */
-.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.doc-card{display:flex;align-items:flex-start;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:all .3s;text-decoration:none}
-.doc-card:hover{border-color:var(--cyan);transform:translateY(-2px);background:var(--card-hover)}
-.doc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
-.doc-card h4{font-size:.9rem;font-weight:700;color:var(--bright);margin-bottom:.25rem}
-.doc-card p{font-size:.8rem;color:var(--text);line-height:1.5}
-.di-b{background:rgba(13,125,255,.12);color:var(--blue)}
-.di-g{background:rgba(0,230,138,.12);color:var(--green)}
-.di-p{background:rgba(108,59,255,.12);color:var(--purple)}
-.di-c{background:rgba(0,212,255,.12);color:var(--cyan)}
-.di-o{background:rgba(255,107,53,.12);color:var(--orange)}
-
-/* COMPAT */
-.compat-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem}
-.cb{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;background:var(--card);border:1px solid var(--border);color:var(--bright)}
-.cb svg{width:18px;height:18px}
-
-/* CTA */
-.cta{background:linear-gradient(135deg,rgba(13,125,255,.08),rgba(108,59,255,.08));border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
-.cta h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--bright);margin-bottom:1rem}
-.cta p{font-size:1.1rem;color:var(--text);max-width:600px;margin:0 auto 2rem}
-.cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-
-/* FOOTER */
-.footer{padding:3rem 0;border-top:1px solid var(--border);text-align:center}
-.footer p{font-size:.85rem;color:var(--muted)}
-.footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.footer-links a{font-size:.85rem;color:var(--text);transition:color .2s}
-.footer-links a:hover{color:var(--bright)}
-
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.165,.84,.44,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
-
-/* PARTICLES */
-.particles-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
-
-/* RESPONSIVE */
-@media(max-width:1024px){
-  .features-grid,.uc-grid{grid-template-columns:repeat(2,1fr)}
-  .wf-steps{grid-template-columns:repeat(2,1fr)}
-  .wf-step::after{display:none}
-  .safety-grid{grid-template-columns:repeat(2,1fr)}
-  .qs-grid{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:repeat(3,1fr)}
+/* ─── NAV ─── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
 }
+.nav-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+  height:100%;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  letter-spacing:-0.01em;white-space:nowrap;
+}
+.nav-links{
+  display:flex;align-items:center;gap:2rem;
+  list-style:none;
+}
+.nav-links a{
+  font-size:0.875rem;font-weight:500;color:var(--gray-light);
+  transition:color 0.3s ease;
+}
+.nav-links a:hover{color:var(--blue)}
+.nav-links .nav-github{
+  color:var(--white);
+  border:1px solid var(--border-alt);
+  padding:0.4rem 1rem;
+  border-radius:100px;
+  font-size:0.8rem;
+  transition:border-color 0.3s,color 0.3s;
+}
+.nav-links .nav-github:hover{border-color:var(--white);color:var(--white)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);transition:0.3s}
+
+.mobile-menu{
+  display:none;
+  position:fixed;top:60px;left:0;right:0;z-index:99;
+  background:rgba(0,0,0,0.97);
+  border-bottom:1px solid var(--border-subtle);
+  padding:1.5rem 2rem;
+}
+.mobile-menu.open{display:block}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:1rem}
+.mobile-menu a{font-size:1rem;color:var(--gray-light);font-weight:500}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  padding:8rem 2rem 6rem;
+  background:var(--black);
+}
+.hero-inner{max-width:900px;margin:0 auto}
+.hero-label{
+  display:inline-block;
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);
+  margin-bottom:1.75rem;
+}
+.hero-headline{
+  font-size:clamp(2.8rem,6vw,5rem);
+  font-weight:900;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  color:var(--white);
+  margin-bottom:1.5rem;
+}
+.hero-sub{
+  font-size:1.15rem;
+  color:var(--gray-light);
+  line-height:1.7;
+  max-width:640px;
+  margin:0 auto 2.5rem;
+  font-weight:400;
+}
+.hero-actions{
+  display:flex;align-items:center;justify-content:center;gap:1rem;
+  flex-wrap:wrap;margin-bottom:2rem;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;
+  background:var(--white);color:var(--black);
+  font-family:var(--font);font-size:0.9rem;font-weight:600;
+  padding:14px 32px;border-radius:100px;
+  border:none;cursor:pointer;
+  transition:background 0.3s,color 0.3s;
+  text-decoration:none;
+}
+.btn-primary:hover{background:var(--blue);color:var(--white)}
+.btn-outline{
+  display:inline-flex;align-items:center;
+  background:transparent;color:var(--white);
+  font-family:var(--font);font-size:0.9rem;font-weight:600;
+  padding:14px 32px;border-radius:100px;
+  border:1px solid var(--white);
+  cursor:pointer;
+  transition:background 0.3s,color 0.3s;
+  text-decoration:none;
+}
+.btn-outline:hover{background:var(--white);color:var(--black)}
+.hero-code{
+  display:inline-block;
+  font-family:var(--mono);font-size:0.85rem;
+  color:var(--gray-light);
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  padding:0.5rem 1.25rem;
+  border-radius:6px;
+}
+
+/* ─── STATS BAR ─── */
+.stats-bar{
+  background:var(--near-black);
+  border-top:1px solid var(--border-subtle);
+  border-bottom:1px solid var(--border-subtle);
+  padding:2rem 0;
+}
+.stats-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-around;
+  flex-wrap:wrap;gap:2rem;
+}
+.stat-item{text-align:center}
+.stat-number{
+  display:block;
+  font-size:2rem;font-weight:900;
+  letter-spacing:-0.03em;color:var(--white);
+  line-height:1;margin-bottom:0.35rem;
+}
+.stat-label{
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gray-mid);
+}
+
+/* ─── SECTION SHARED ─── */
+.section{padding:8rem 0}
+.section-alt{background:var(--near-black)}
+.section-border-top{border-top:1px solid var(--border-subtle)}
+.section-label{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);margin-bottom:1rem;
+}
+.section-headline{
+  font-size:clamp(2rem,4vw,3.25rem);
+  font-weight:900;letter-spacing:-0.03em;
+  color:var(--white);line-height:1.1;
+  margin-bottom:1rem;
+}
+.section-sub{
+  font-size:1.1rem;color:var(--gray-light);
+  line-height:1.7;max-width:560px;
+}
+
+/* ─── FEATURES ─── */
+.features-header{margin-bottom:4rem}
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+}
+.feature-card{
+  background:var(--card-bg);
+  padding:2rem;
+  transition:background 0.3s;
+}
+.feature-card:hover{background:var(--card-bg-alt)}
+.feature-icon{
+  width:36px;height:36px;
+  border-radius:8px;
+  background:var(--border-alt);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;
+  font-size:1rem;
+}
+.feature-title{
+  font-size:1rem;font-weight:700;
+  color:var(--white);margin-bottom:0.6rem;
+  letter-spacing:-0.01em;
+}
+.feature-desc{
+  font-size:0.9rem;color:var(--gray-light);
+  line-height:1.65;
+}
+
+/* ─── ARCHITECTURE ─── */
+.arch-stack{
+  display:flex;flex-direction:column;gap:0;
+  max-width:800px;margin:4rem auto 0;
+}
+.arch-layer{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  padding:1.75rem 2rem;
+  transition:background 0.3s,transform 0.3s;
+}
+.arch-layer:hover{background:var(--card-bg-alt);transform:translateX(4px)}
+.arch-layer-num{
+  font-size:0.7rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--gray-mid);margin-bottom:0.5rem;
+}
+.arch-layer-title{
+  font-size:1.05rem;font-weight:700;
+  color:var(--white);margin-bottom:0.4rem;
+  letter-spacing:-0.01em;
+}
+.arch-layer-desc{
+  font-size:0.875rem;color:var(--gray-light);line-height:1.6;
+}
+.arch-connector{
+  display:flex;align-items:center;justify-content:center;
+  padding:0.6rem 0;
+  gap:0.5rem;
+}
+.arch-connector-line{
+  width:1px;height:24px;background:var(--border-alt);
+}
+.arch-connector-label{
+  font-family:var(--mono);font-size:0.72rem;
+  color:var(--gray-dark);letter-spacing:0.05em;
+  background:var(--black);
+  padding:0.2rem 0.65rem;
+  border:1px solid var(--border-subtle);
+  border-radius:4px;
+}
+
+/* ─── TOOLS ─── */
+.tools-header{margin-bottom:4rem}
+.tools-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+}
+.tool-card{
+  background:var(--card-bg);
+  padding:1.25rem 1.5rem;
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:0.75rem;
+  transition:background 0.3s;
+}
+.tool-card:hover{background:var(--card-bg-alt)}
+.tool-name{
+  font-size:0.875rem;font-weight:600;
+  color:var(--white);letter-spacing:-0.01em;
+}
+.tool-count{
+  font-family:var(--mono);font-size:0.75rem;
+  color:var(--gray-mid);white-space:nowrap;
+}
+
+/* ─── CHANGELOG ─── */
+.changelog-list{
+  display:flex;flex-direction:column;gap:1px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+  max-width:900px;
+  margin:4rem auto 0;
+}
+.changelog-entry{
+  background:var(--card-bg);
+  padding:2rem 2.5rem;
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:2rem;
+  align-items:start;
+  transition:background 0.3s;
+}
+.changelog-entry:hover{background:var(--card-bg-alt)}
+.changelog-version{
+  font-family:var(--mono);font-size:0.9rem;
+  font-weight:500;color:var(--white);
+  padding-top:0.1rem;
+}
+.changelog-tag{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gray-mid);margin-bottom:0.5rem;
+}
+.changelog-title{
+  font-size:1rem;font-weight:700;
+  color:var(--white);margin-bottom:0.5rem;
+  letter-spacing:-0.01em;
+}
+.changelog-desc{
+  font-size:0.875rem;color:var(--gray-light);line-height:1.65;
+}
+
+/* ─── INSTALL ─── */
+.install-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  align-items:start;
+  margin-top:4rem;
+}
+.install-desc{
+  font-size:1rem;color:var(--gray-light);line-height:1.75;
+  margin-bottom:2rem;
+}
+.install-steps{
+  list-style:none;display:flex;flex-direction:column;gap:1rem;
+}
+.install-step{
+  display:flex;align-items:flex-start;gap:1rem;
+}
+.install-step-num{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid var(--border-alt);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:600;color:var(--gray-mid);
+  flex-shrink:0;margin-top:0.1rem;
+}
+.install-step-text{
+  font-size:0.9rem;color:var(--gray-light);line-height:1.5;
+}
+.install-step-text code{
+  font-family:var(--mono);font-size:0.82rem;
+  color:var(--white);
+  background:var(--border-subtle);
+  padding:0.1rem 0.4rem;border-radius:3px;
+}
+.code-block{
+  background:var(--card-bg);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+}
+.code-block-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.875rem 1.25rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.code-block-title{
+  font-size:0.75rem;font-weight:500;color:var(--gray-mid);
+  font-family:var(--mono);
+}
+.code-block-copy{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.05em;text-transform:uppercase;
+  color:var(--gray-mid);cursor:pointer;
+  background:none;border:none;font-family:var(--font);
+  transition:color 0.2s;
+}
+.code-block-copy:hover{color:var(--white)}
+.code-block pre{
+  padding:1.5rem;
+  font-family:var(--mono);font-size:0.82rem;
+  line-height:1.7;color:var(--gray-light);
+  overflow-x:auto;
+}
+.code-block pre .key{color:#fff}
+.code-block pre .str{color:#a8d8a8}
+.code-block pre .pun{color:var(--gray-mid)}
+
+/* ─── FOOTER ─── */
+.footer{
+  background:var(--near-black);
+  border-top:1px solid var(--border-subtle);
+  padding:3rem 0;
+}
+.footer-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+}
+.footer-main{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  margin-bottom:2rem;
+  padding-bottom:2rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.footer-brand-name{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  margin-bottom:0.4rem;
+}
+.footer-brand-license{
+  font-size:0.8rem;color:var(--gray-mid);
+}
+.footer-links{
+  display:flex;gap:1.75rem;align-items:center;flex-wrap:wrap;
+}
+.footer-links a{
+  font-size:0.85rem;color:var(--gray-light);
+  transition:color 0.3s;
+}
+.footer-links a:hover{color:var(--white)}
+.footer-disclaimer{
+  font-size:0.78rem;color:var(--gray-dark);line-height:1.6;
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .tools-grid{grid-template-columns:repeat(3,1fr)}
+  .install-layout{grid-template-columns:1fr;gap:2.5rem}
+  .changelog-entry{grid-template-columns:100px 1fr;gap:1.5rem}
+}
+
 @media(max-width:768px){
+  .section{padding:5rem 0}
   .nav-links{display:none}
   .hamburger{display:flex}
-  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(6,10,18,.95);padding:1.5rem;gap:1rem;border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
-  .features-grid,.uc-grid{grid-template-columns:1fr}
-  .wf-steps{grid-template-columns:1fr}
-  .safety-grid{grid-template-columns:1fr}
-  .domains-grid{grid-template-columns:repeat(2,1fr)}
-  .hero h1{font-size:2.2rem}
-  .section{padding:4rem 0}
+  .features-grid{grid-template-columns:1fr}
+  .tools-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-inner{gap:1.5rem}
+  .stat-number{font-size:1.6rem}
+  .changelog-entry{grid-template-columns:1fr;gap:0.75rem}
+  .footer-main{flex-direction:column;gap:1.5rem}
 }
+
 @media(max-width:480px){
-  .stats-grid,.domains-grid{grid-template-columns:1fr}
+  .container{padding:0 1.25rem}
+  .tools-grid{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .btn-primary,.btn-outline{justify-content:center}
+  .section-headline{font-size:2rem}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
-<canvas class="particles-canvas" id="particles"></canvas>
-
 <!-- NAV -->
-<nav class="nav" id="nav">
-  <div class="container nav-inner">
-    <a href="#" class="nav-logo">
-      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 16L13 8L18 16L13 24L8 16Z" fill="#fff" fill-opacity=".9"/><path d="M16 12L21 8L26 16L21 24L16 20" fill="#fff" fill-opacity=".6"/><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0d7dff"/><stop offset="1" stop-color="#6c3bff"/></linearGradient></defs></svg>
-      Unreal Master Agent
-    </a>
-    <div class="nav-links" id="navLinks">
-      <a href="#quickstart">Quick Start</a>
-      <a href="#features">Features</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#tools">Tools</a>
-      <a href="#use-cases">Use Cases</a>
-      <a href="#docs">Docs</a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        GitHub
-      </a>
-    </div>
-    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Unreal Master Agent</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener" class="nav-github">GitHub</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu(this)">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
+<div class="mobile-menu" id="mobileMenu" role="navigation">
+  <ul>
+    <li><a href="#features" onclick="closeMobile()">Features</a></li>
+    <li><a href="#architecture" onclick="closeMobile()">Architecture</a></li>
+    <li><a href="#tools" onclick="closeMobile()">Tools</a></li>
+    <li><a href="#install" onclick="closeMobile()">Install</a></li>
+    <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a></li>
+  </ul>
+</div>
+
 <!-- HERO -->
-<section class="hero" id="hero">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="container">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge b-green">Open Source</span>&nbsp;
-        <span class="badge b-blue">MCP Protocol</span>
-      </div>
-      <h1>Control <span class="tg">Unreal Engine</span><br>With Natural Language</h1>
-      <p>The open-source MCP bridge that gives Claude Code bidirectional control over every corner of Unreal Engine &mdash; Blueprints, materials, VFX, AI, levels, and 37 more domains. Just describe what you want.</p>
-      <div class="hero-buttons">
-        <a href="#quickstart" class="btn btn-p">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Get Started
-        </a>
-        <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-        <a href="#docs" class="btn btn-o">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-          Documentation
-        </a>
-      </div>
-      <p class="hero-sub">Works with <code>UE 5.4</code> <code>5.5</code> <code>5.6</code> <code>5.7</code> &middot; MIT Licensed &middot; Production Ready</p>
-      <div class="terminal" id="heroTerminal">
-        <div class="terminal-bar">
-          <div class="terminal-dot r"></div>
-          <div class="terminal-dot y"></div>
-          <div class="terminal-dot g"></div>
-          <div class="terminal-title">claude &mdash; Unreal Master Agent</div>
-        </div>
-        <div class="terminal-body" id="terminalBody"></div>
-      </div>
+<section class="hero" aria-label="Hero">
+  <div class="hero-inner">
+    <div class="hero-label fade-up">Open Source</div>
+    <h1 class="hero-headline fade-up delay-1">AI-Powered Unreal<br>Engine Automation</h1>
+    <p class="hero-sub fade-up delay-2">183 tools across 37 domains. Give Claude full control over Blueprints, materials, levels, sequencer, AI, and more — through natural language.</p>
+    <div class="hero-actions fade-up delay-3">
+      <a href="#install" class="btn-primary">Get Started</a>
+      <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener" class="btn-outline">View on GitHub</a>
+    </div>
+    <div class="fade-up delay-4">
+      <span class="hero-code">npx unreal-master-mcp-server</span>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<section class="stats-bar">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item reveal">
-        <h3 class="tg"><span class="stat-num" data-target="183">0</span></h3>
-        <p>MCP Tools</p>
-      </div>
-      <div class="stat-item reveal reveal-d1">
-        <h3 class="tg2"><span class="stat-num" data-target="37">0</span></h3>
-        <p>Domains</p>
-      </div>
-      <div class="stat-item reveal reveal-d2">
-        <h3 class="tg3"><span class="stat-num" data-target="154">0</span></h3>
-        <p>Python Scripts</p>
-      </div>
-      <div class="stat-item reveal reveal-d3">
-        <h3 class="tg"><span class="stat-num" data-target="826">0</span></h3>
-        <p>Tests Passing</p>
-      </div>
-      <div class="stat-item reveal reveal-d4">
-        <h3 class="tg2"><span class="stat-num" data-target="15">0</span></h3>
-        <p>Phases Complete</p>
-      </div>
+<!-- STATS BAR -->
+<div class="stats-bar" aria-label="Project statistics">
+  <div class="stats-inner">
+    <div class="stat-item fade-up">
+      <span class="stat-number">183</span>
+      <span class="stat-label">Tools</span>
+    </div>
+    <div class="stat-item fade-up delay-1">
+      <span class="stat-number">37</span>
+      <span class="stat-label">Domains</span>
+    </div>
+    <div class="stat-item fade-up delay-2">
+      <span class="stat-number">999</span>
+      <span class="stat-label">Tests</span>
+    </div>
+    <div class="stat-item fade-up delay-3">
+      <span class="stat-number">154</span>
+      <span class="stat-label">Scripts</span>
+    </div>
+    <div class="stat-item fade-up delay-4">
+      <span class="stat-number">v0.4.1</span>
+      <span class="stat-label">Version</span>
+    </div>
+    <div class="stat-item fade-up delay-5">
+      <span class="stat-number">UE 5.4–5.7</span>
+      <span class="stat-label">Compatibility</span>
     </div>
   </div>
-</section>
-
-<!-- QUICK START -->
-<section class="section qs-section" id="quickstart">
-  <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-green">5-Minute Setup</span>
-      <h2>Get Started in <span class="tg2">Three Commands</span></h2>
-      <p>From zero to controlling Unreal Engine with natural language.</p>
-    </div>
-    <div class="qs-grid">
-      <div class="qs-steps">
-        <div class="qs-step reveal">
-          <div class="qs-num">1</div>
-          <div class="qs-info">
-            <h4>Install &amp; Build the MCP Server</h4>
-            <p>Clone the repo and build the TypeScript MCP bridge server. Requires <code>Node.js 20+</code>.</p>
-          </div>
-        </div>
-        <div class="qs-step reveal reveal-d1">
-          <div class="qs-num">2</div>
-          <div class="qs-info">
-            <h4>Configure Claude Code</h4>
-            <p>Add the server to <code>.claude/mcp.json</code>. Claude Code auto-discovers all 183 tools on startup.</p>
-          </div>
-        </div>
-        <div class="qs-step reveal reveal-d2">
-          <div class="qs-num">3</div>
-          <div class="qs-info">
-            <h4>Enable the UE Plugin</h4>
-            <p>Copy <code>ue-plugin/</code> into your project's <code>Plugins/</code> directory. The plugin auto-connects to the MCP server on editor launch.</p>
-          </div>
-        </div>
-        <div class="qs-step reveal reveal-d3">
-          <div class="qs-num">4</div>
-          <div class="qs-info">
-            <h4>Start Building</h4>
-            <p>Open Claude Code and describe what you want: <em>"Add a health system to BP_Enemy"</em>. The agent handles the rest.</p>
-          </div>
-        </div>
-      </div>
-      <div class="qs-code reveal">
-<span class="cmt"># 1. Clone &amp; build</span>
-git clone https://github.com/jaguarcode/UnrealMasterAI
-cd UnrealMasterAI/mcp-server
-npm install &amp;&amp; npm run build
-
-<span class="cmt"># 2. Add to .claude/mcp.json</span>
-{
-  <span class="str">"mcpServers"</span>: {
-    <span class="str">"unreal-master"</span>: {
-      <span class="str">"command"</span>: <span class="str">"node"</span>,
-      <span class="str">"args"</span>: [<span class="str">"mcp-server/dist/index.js"</span>],
-      <span class="str">"env"</span>: { <span class="str">"UE_WS_PORT"</span>: <span class="str">"9877"</span> }
-    }
-  }
-}
-
-<span class="cmt"># 3. Copy plugin to your UE project</span>
-cp -r ue-plugin/ YourProject/Plugins/UnrealMasterAgent
-
-<span class="cmt"># 4. Verify connection</span>
-claude <span class="str">"ping the editor"</span>
-<span class="fn">{ "status": "ok", "ueVersion": "5.4.x" }</span>
-      </div>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- FEATURES -->
-<section class="section" id="features">
+<section class="section" id="features" aria-labelledby="features-heading">
   <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-cyan">Capabilities</span>
-      <h2>Everything You Need to<br><span class="tg">Automate Unreal Engine</span></h2>
-      <p>From Blueprint graphs to Niagara VFX, controlled entirely by natural language.</p>
+    <div class="features-header fade-up">
+      <p class="section-label">Features</p>
+      <h2 class="section-headline" id="features-heading">Production-Grade Reliability</h2>
+      <p class="section-sub">Built for real game development workflows — not just demos. Every failure mode has a recovery path.</p>
     </div>
     <div class="features-grid">
-      <div class="fc reveal">
-        <div class="fi fi-b"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-2.93-7.07l-2.83 2.83m-8.48 8.48l-2.83 2.83m0-14.14l2.83 2.83m8.48 8.48l2.83 2.83"/></svg></div>
-        <h3>Blueprint Graph Manipulation</h3>
-        <p>Serialize Blueprints to structured JSON AST, create nodes, connect pins, modify properties &mdash; all via C++ engine APIs with TryCreateConnection.</p>
+      <div class="feature-card fade-up">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#666" stroke-width="1.5"/><path d="M5 8h6M8 5v6" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Structured Error Codes</h3>
+        <p class="feature-desc">13 typed UMA_E_* codes replace raw string errors. Every failure includes error code, tool name, and structured details for reliable programmatic handling.</p>
       </div>
-      <div class="fc reveal reveal-d1">
-        <div class="fi fi-c"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
-        <h3>Self-Healing Compilation</h3>
-        <p>Trigger Live Coding, capture structured compile errors, apply fixes, and retry automatically up to 3 iterations with full error context.</p>
+      <div class="feature-card fade-up delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#666" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Circuit Breaker</h3>
+        <p class="feature-desc">Auto-disables tools after 5 consecutive failures. Self-heals after a 60-second cooldown. A ping command resets the circuit without a restart.</p>
       </div>
-      <div class="fc reveal reveal-d2">
-        <div class="fi fi-p"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-        <h3>Complete Asset Pipeline</h3>
-        <p>Create, import, export, duplicate, rename, delete assets. Query references, dependency graphs, metadata tags. Full content lifecycle.</p>
+      <div class="feature-card fade-up delay-2">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Per-Tool Timeouts</h3>
+        <p class="feature-desc">30-second default, up to 5 minutes for builds and long workflows. 16 long-running tools receive extended timeouts automatically — no configuration needed.</p>
       </div>
-      <div class="fc reveal">
-        <div class="fi fi-g"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
-        <h3>Level &amp; Actor Management</h3>
-        <p>Create levels, spawn actors, set transforms, edit properties, add components, manage sublevels and world settings. Full scene graph control.</p>
+      <div class="feature-card fade-up delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" stroke="#666" stroke-width="1.5" stroke-linecap="round"/><path d="M4 12l-1 1M4 12l1 1" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Self-Healing Compilation</h3>
+        <p class="feature-desc">Parse errors trigger automatic fix-and-retry cycles. Up to 3 attempts before reporting to the developer — most compilation failures resolve without human intervention.</p>
       </div>
-      <div class="fc reveal reveal-d1">
-        <div class="fi fi-o"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2a5 5 0 010 10"/><circle cx="6.5" cy="17.5" r="2.5"/><path d="M3 22a5 5 0 010-10"/><line x1="15.5" y1="9" x2="8.5" y2="15"/></svg></div>
-        <h3>Materials &amp; Rendering</h3>
-        <p>Create materials and instances, set scalar/vector/texture parameters, inspect material graph nodes. Complete material pipelines from code.</p>
+      <div class="feature-card fade-up delay-2">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 6v4l6 4 6-4V6L8 2z" stroke="#666" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Safety Gate</h3>
+        <p class="feature-desc">Destructive operations require explicit human approval via UE editor dialog. 60-second timeout with auto-reject on no response keeps your project safe.</p>
       </div>
-      <div class="fc reveal reveal-d2">
-        <div class="fi fi-b"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-        <h3>154 Python Scripts</h3>
-        <p>Extensible automation across 37 domains with standardized error handling, path validation, and the full UE Python API at your fingertips.</p>
-      </div>
-      <div class="fc reveal">
-        <div class="fi fi-c"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
-        <h3>Workflow Intelligence</h3>
-        <p>20 built-in workflows from Epic's docs. Learn new workflows at runtime. Intent matching with 60+ UE synonym groups and outcome-weighted confidence scoring.</p>
-      </div>
-      <div class="fc reveal reveal-d1">
-        <div class="fi fi-o"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <h3>Error Resolution Learning</h3>
-        <p>Captures troubleshooting outcomes including failed approaches. Recommends proven fixes with confidence scores and warns against dead-end approaches.</p>
-      </div>
-      <div class="fc reveal reveal-d2">
-        <div class="fi fi-g"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3>3-Tier Safety System</h3>
-        <p>Every tool classified by risk level. Destructive operations require explicit human approval via Slate dialog with 60-second timeout.</p>
+      <div class="feature-card fade-up delay-3">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5" r="2" stroke="#666" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="#666" stroke-width="1.5"/><path d="M7 5h2.5a1.5 1.5 0 011.5 1.5V9" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Context Intelligence</h3>
+        <p class="feature-desc">Intent matching with 60+ UE synonym groups. Learns from workflow outcomes and error resolutions — gets smarter with every session.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ARCHITECTURE -->
-<section class="section arch-section" id="architecture">
+<section class="section section-alt section-border-top" id="architecture" aria-labelledby="arch-heading">
   <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-purple">System Design</span>
-      <h2>4-Layer <span class="tg">Architecture</span></h2>
-      <p>Clean separation between AI reasoning, protocol bridging, engine execution, and API access.</p>
+    <div class="fade-up">
+      <p class="section-label">Architecture</p>
+      <h2 class="section-headline" id="arch-heading">4-Layer Design</h2>
+      <p class="section-sub">A clean separation between AI reasoning, protocol bridging, engine interfacing, and API execution.</p>
     </div>
-    <div class="arch-diagram reveal">
-      <div class="arch-layer">
-        <div class="arch-icon l1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-        <div class="arch-info"><h4>Layer 1 &mdash; Claude Code</h4><p>AI reasoning, natural language understanding, tool orchestration, self-healing retry logic</p></div>
+    <div class="arch-stack">
+      <div class="arch-layer fade-up delay-1">
+        <p class="arch-layer-num">Layer 01</p>
+        <h3 class="arch-layer-title">Claude Code — MCP Host</h3>
+        <p class="arch-layer-desc">Interprets natural language, decides tool sequences, applies context intelligence for workflow matching and error recovery.</p>
       </div>
-      <div class="arch-protocol">stdio &middot; JSON-RPC 2.0</div>
-      <div class="arch-connector"></div>
-      <div class="arch-layer">
-        <div class="arch-icon l2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <div class="arch-info"><h4>Layer 2 &mdash; MCP Bridge Server</h4><p>Node.js/TypeScript &middot; 183 tools, Zod validation, safety gates, LRU caching, observability</p></div>
+      <div class="arch-connector fade-up delay-1">
+        <div class="arch-connector-line"></div>
+        <span class="arch-connector-label">stdio / JSON-RPC</span>
+        <div class="arch-connector-line"></div>
       </div>
-      <div class="arch-protocol">WebSocket &middot; RFC 6455</div>
-      <div class="arch-connector"></div>
-      <div class="arch-layer">
-        <div class="arch-icon l3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-        <div class="arch-info"><h4>Layer 3 &mdash; UE Agent Plugin</h4><p>C++ &middot; Blueprint manipulation, 154 Python scripts, Live Coding, approval gates</p></div>
+      <div class="arch-layer fade-up delay-2">
+        <p class="arch-layer-num">Layer 02</p>
+        <h3 class="arch-layer-title">MCP Bridge Server — Node.js / TypeScript</h3>
+        <p class="arch-layer-desc">183 registered tools across 37 domains. Handles structured errors, circuit breaker logic, per-tool timeout enforcement, and reconnection tracking.</p>
       </div>
-      <div class="arch-protocol">Direct C++ API Calls</div>
-      <div class="arch-connector"></div>
-      <div class="arch-layer">
-        <div class="arch-icon l4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
-        <div class="arch-info"><h4>Layer 4 &mdash; Unreal Engine APIs</h4><p>UEdGraph, FKismetEditorUtilities, ILiveCodingModule, FAssetRegistryModule, Python Runtime</p></div>
+      <div class="arch-connector fade-up delay-2">
+        <div class="arch-connector-line"></div>
+        <span class="arch-connector-label">WebSocket · port 9877</span>
+        <div class="arch-connector-line"></div>
+      </div>
+      <div class="arch-layer fade-up delay-3">
+        <p class="arch-layer-num">Layer 03</p>
+        <h3 class="arch-layer-title">UE Agent Plugin — C++ / Python</h3>
+        <p class="arch-layer-desc">Blueprint graph serializer, Python bridge for 154 automation scripts, human approval gate for destructive operations, and Live Coding integration.</p>
+      </div>
+      <div class="arch-connector fade-up delay-3">
+        <div class="arch-connector-line"></div>
+        <span class="arch-connector-label">Direct API calls</span>
+        <div class="arch-connector-line"></div>
+      </div>
+      <div class="arch-layer fade-up delay-4">
+        <p class="arch-layer-num">Layer 04</p>
+        <h3 class="arch-layer-title">Unreal Engine 5.4–5.7</h3>
+        <p class="arch-layer-desc">Direct C++ and Python API calls into the engine. All editor API calls dispatched via GameThread to satisfy UE's thread-safety requirements.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TOOL DOMAINS -->
-<section class="section domains-section" id="tools">
+<!-- TOOLS -->
+<section class="section section-border-top" id="tools" aria-labelledby="tools-heading">
   <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-orange">Tool Ecosystem</span>
-      <h2><span class="tg3">183 Tools</span> Across 37 Domains</h2>
-      <p>Complete UE editor coverage from Blueprints to PCG, with AI-powered workflow intelligence.</p>
+    <div class="tools-header fade-up">
+      <p class="section-label">Tools</p>
+      <h2 class="section-headline" id="tools-heading">37 Domains, One Interface</h2>
+      <p class="section-sub">Every major Unreal Engine system exposed through a single natural language interface.</p>
     </div>
-    <div class="domains-grid reveal">
-      <div class="dc"><span class="ct">13</span><span>Context AI</span></div>
-      <div class="dc"><span class="ct">9</span><span>Actors</span></div>
-      <div class="dc"><span class="ct">8</span><span>Assets</span></div>
-      <div class="dc"><span class="ct">8</span><span>Workflow</span></div>
-      <div class="dc"><span class="ct">7</span><span>Sequencer</span></div>
-      <div class="dc"><span class="ct">6</span><span>Materials</span></div>
-      <div class="dc"><span class="ct">6</span><span>Project</span></div>
-      <div class="dc"><span class="ct">6</span><span>AI / Nav</span></div>
-      <div class="dc"><span class="ct">6</span><span>Widget / UMG</span></div>
-      <div class="dc"><span class="ct">6</span><span>Editor</span></div>
-      <div class="dc"><span class="ct">5</span><span>Blueprint</span></div>
-      <div class="dc"><span class="ct">5</span><span>Levels</span></div>
-      <div class="dc"><span class="ct">5</span><span>Animation</span></div>
-      <div class="dc"><span class="ct">5</span><span>Audio</span></div>
-      <div class="dc"><span class="ct">5</span><span>Landscape</span></div>
-      <div class="dc"><span class="ct">5</span><span>Texture</span></div>
-      <div class="dc"><span class="ct">4</span><span>Content</span></div>
-      <div class="dc"><span class="ct">4</span><span>Mesh</span></div>
-      <div class="dc"><span class="ct">4</span><span>DataTables</span></div>
-      <div class="dc"><span class="ct">4</span><span>Gameplay</span></div>
-      <div class="dc"><span class="ct">4</span><span>Compilation</span></div>
-      <div class="dc"><span class="ct">4</span><span>Niagara VFX</span></div>
-      <div class="dc"><span class="ct">4</span><span>Physics</span></div>
-      <div class="dc"><span class="ct">4</span><span>World Partition</span></div>
-      <div class="dc"><span class="ct">4</span><span>Foliage</span></div>
-      <div class="dc"><span class="ct">4</span><span>Analyze</span></div>
-      <div class="dc"><span class="ct">4</span><span>PCG</span></div>
-      <div class="dc"><span class="ct">3</span><span>Slate UI</span></div>
-      <div class="dc"><span class="ct">3</span><span>File Ops</span></div>
-      <div class="dc"><span class="ct">3</span><span>Source Control</span></div>
-      <div class="dc"><span class="ct">3</span><span>Build</span></div>
-      <div class="dc"><span class="ct">3</span><span>Debug</span></div>
-      <div class="dc"><span class="ct">3</span><span>Curves</span></div>
-      <div class="dc"><span class="ct">2</span><span>GeoScript</span></div>
-      <div class="dc"><span class="ct">1</span><span>Python Bridge</span></div>
-      <div class="dc"><span class="ct">1</span><span>Refactor</span></div>
-      <div class="dc"><span class="ct">1</span><span>Chat</span></div>
+    <div class="tools-grid" role="list">
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Blueprint</span><span class="tool-count">5 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Actor</span><span class="tool-count">9 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Material</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Level</span><span class="tool-count">5 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Asset</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Animation</span><span class="tool-count">5 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Sequencer</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">AI / Nav</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Widget / UMG</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Niagara VFX</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Landscape</span><span class="tool-count">5 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Physics</span><span class="tool-count">5 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Texture</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Audio</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Mesh</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">DataTable</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Build</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Debug</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Gameplay</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Source Control</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Editor</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Content</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">File</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Compilation</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Project</span><span class="tool-count">6 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Workflow</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Context</span><span class="tool-count">15 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Python</span><span class="tool-count">1 tool</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Slate</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Chat</span><span class="tool-count">1 tool</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Refactor</span><span class="tool-count">1 tool</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Analyze</span><span class="tool-count">4 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">World Partition</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Foliage</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Curve</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">PCG</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Geometry Script</span><span class="tool-count">3 tools</span></div>
     </div>
   </div>
 </section>
 
-<!-- WORKFLOW -->
-<section class="section" id="workflow">
+<!-- CHANGELOG -->
+<section class="section section-alt section-border-top" id="changelog" aria-labelledby="changelog-heading">
   <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-blue">How It Works</span>
-      <h2>From <span class="tg">Natural Language</span> to Engine Changes</h2>
-      <p>Describe your intent. Claude orchestrates the tools. Unreal executes in real time.</p>
+    <div class="fade-up">
+      <p class="section-label">Changelog</p>
+      <h2 class="section-headline" id="changelog-heading">What's New</h2>
     </div>
-    <div class="wf-steps">
-      <div class="wf-step reveal">
-        <div class="wf-num">1</div>
-        <h4>Describe Intent</h4>
-        <p>"Add a PrintString node to BP_TestActor after BeginPlay, set the message to Hello World."</p>
-      </div>
-      <div class="wf-step reveal reveal-d1">
-        <div class="wf-num">2</div>
-        <h4>Serialize &amp; Plan</h4>
-        <p>Claude serializes the Blueprint to JSON AST, analyzes the graph, and plans the optimal tool sequence.</p>
-      </div>
-      <div class="wf-step reveal reveal-d2">
-        <div class="wf-num">3</div>
-        <h4>Execute Changes</h4>
-        <p>Creates nodes, connects exec pins, sets values &mdash; all dispatched to the GameThread via C++ engine APIs.</p>
-      </div>
-      <div class="wf-step reveal reveal-d3">
-        <div class="wf-num">4</div>
-        <h4>Compile &amp; Heal</h4>
-        <p>Triggers Live Coding. If compilation fails, parses errors, applies fix, and retries up to 3 times automatically.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- USE CASES -->
-<section class="section code-section" id="use-cases">
-  <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-green">Use Cases</span>
-      <h2>What Developers <span class="tg2">Build With It</span></h2>
-      <p>Real workflows that developers use daily across game, simulation, and XR projects.</p>
-    </div>
-    <div class="uc-grid">
-      <div class="uc reveal">
-        <h4><span style="color:var(--blue)">&#9670;</span> Rapid Prototyping</h4>
-        <p>"Create a third-person character with health, stamina, and dash ability" &mdash; generates the Blueprint, spawns the actor, sets up input bindings, and compiles in seconds.</p>
-      </div>
-      <div class="uc reveal reveal-d1">
-        <h4><span style="color:var(--green)">&#9670;</span> Level Design Automation</h4>
-        <p>"Build a patrol route with 5 waypoints in a circle, spawn an enemy, and wire up the behavior tree" &mdash; actors, AI, and navigation in one command.</p>
-      </div>
-      <div class="uc reveal reveal-d2">
-        <h4><span style="color:var(--purple)">&#9670;</span> Material Pipeline</h4>
-        <p>"Create a PBR material with roughness 0.3, metallic 1.0, apply it to all meshes in /Game/Props" &mdash; material creation, parameter setting, and batch assignment.</p>
-      </div>
-      <div class="uc reveal reveal-d3">
-        <h4><span style="color:var(--orange)">&#9670;</span> Asset Auditing</h4>
-        <p>"Analyze Blueprint complexity for all BPs in /Game/Characters, find unused assets, check naming conventions" &mdash; full project health analysis.</p>
-      </div>
-      <div class="uc reveal">
-        <h4><span style="color:var(--cyan)">&#9670;</span> Cinematic Sequences</h4>
-        <p>"Create a 10-second camera flythrough from point A to B, add a fade-in, render to MP4" &mdash; sequencer, tracks, keyframes, and rendering automated.</p>
-      </div>
-      <div class="uc reveal reveal-d1">
-        <h4><span style="color:var(--green)">&#9670;</span> VFX &amp; Audio</h4>
-        <p>"Create a fire particle system with embers, attach to the torch actor, add a crackling sound cue with distance attenuation" &mdash; Niagara + audio in one go.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CODE EXAMPLE -->
-<section class="section" id="code">
-  <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-purple">Developer Experience</span>
-      <h2>Simple to <span class="tg">Integrate &amp; Extend</span></h2>
-      <p>Clean Python scripts, standardized patterns, and a factory-based tool registry.</p>
-    </div>
-    <div class="reveal">
-      <div class="code-tabs">
-        <div class="code-tab active" data-tab="python">Python Script</div>
-        <div class="code-tab" data-tab="tool">Tool Definition</div>
-        <div class="code-tab" data-tab="usage">Claude Usage</div>
-      </div>
-      <div class="code-panel active" id="tab-python">
-<span class="cmt"># ue-plugin/Content/Python/uma/actor_spawn.py</span>
-<span class="kw">import</span> unreal
-<span class="kw">from</span> uma.utils <span class="kw">import</span> execute_wrapper, make_result, get_required_param
-
-<span class="op">@</span><span class="fn">execute_wrapper</span>
-<span class="kw">def</span> <span class="fn">execute</span>(<span class="var">params</span>):
-    class_path = <span class="fn">get_required_param</span>(params, <span class="str">"className"</span>, str)
-    location   = params.get(<span class="str">"location"</span>, {<span class="str">"x"</span>: <span class="var">0</span>, <span class="str">"y"</span>: <span class="var">0</span>, <span class="str">"z"</span>: <span class="var">0</span>})
-
-    actor_class = unreal.<span class="fn">load_class</span>(<span class="kw">None</span>, class_path)
-    loc = unreal.<span class="fn">Vector</span>(location[<span class="str">"x"</span>], location[<span class="str">"y"</span>], location[<span class="str">"z"</span>])
-    actor = unreal.EditorLevelLibrary.<span class="fn">spawn_actor_from_class</span>(actor_class, loc)
-
-    <span class="kw">return</span> <span class="fn">make_result</span>(
-        name=actor.<span class="fn">get_actor_label</span>(),
-        className=actor.<span class="fn">get_class</span>().<span class="fn">get_name</span>()
-    )
-      </div>
-      <div class="code-panel" id="tab-tool">
-<span class="cmt">// mcp-server/src/tools/actor/index.ts</span>
-<span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">"zod"</span>;
-<span class="kw">import</span> { <span class="fn">createPythonToolHandler</span> } <span class="kw">from</span> <span class="str">"../registry"</span>;
-
-<span class="kw">export const</span> <span class="var">tools</span> = [
-  {
-    name: <span class="str">"actor-spawn"</span>,
-    description: <span class="str">"Spawn an actor in the current level"</span>,
-    safety: <span class="str">"warn"</span>,
-    inputSchema: z.<span class="fn">object</span>({
-      className: z.<span class="fn">string</span>().<span class="fn">describe</span>(<span class="str">"UClass path"</span>),
-      location:  z.<span class="fn">object</span>({ x: z.<span class="fn">number</span>(), y: z.<span class="fn">number</span>(), z: z.<span class="fn">number</span>() }).<span class="fn">optional</span>(),
-    }),
-    handler: <span class="fn">createPythonToolHandler</span>(<span class="str">"actor_spawn"</span>),
-  },
-  <span class="cmt">// ... 8 more actor tools</span>
-];
-      </div>
-      <div class="code-panel" id="tab-usage">
-<span class="cmt"># In your terminal with Claude Code + MCP configured:</span>
-
-<span class="prompt">$</span> <span class="cmd">claude</span>
-<span class="output">> Spawn a PointLight at position (500, 200, 300) and</span>
-<span class="output">  set its intensity to 50000</span>
-
-<span class="tool">  [tool] actor-spawn</span>  className: PointLight, location: {500, 200, 300}
-<span class="success">  Created: PointLight_0 at (500, 200, 300)</span>
-
-<span class="tool">  [tool] actor-setProperty</span>  property: Intensity, value: 50000
-<span class="success">  Set PointLight_0.Intensity = 50000</span>
-
-<span class="output">> Done! Spawned a PointLight at (500, 200, 300)</span>
-<span class="output">  with intensity 50,000 lux.</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SAFETY -->
-<section class="section" id="safety">
-  <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-purple">Trust &amp; Safety</span>
-      <h2>3-Tier <span class="tg">Safety System</span></h2>
-      <p>Every tool classified by risk. Destructive operations require explicit human approval.</p>
-    </div>
-    <div class="safety-grid">
-      <div class="sc reveal">
-        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e68a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <h4>Safe</h4>
-        <p><strong>Read-only queries.</strong> List assets, inspect Blueprints, query project structure. No approval needed.</p>
-      </div>
-      <div class="sc reveal reveal-d1">
-        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#febc2e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <h4>Warn</h4>
-        <p><strong>Recoverable mutations.</strong> Create assets, spawn actors, modify properties. Logged and auto-approved.</p>
-      </div>
-      <div class="sc reveal reveal-d2">
-        <div class="sc-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ff5f57" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><line x1="12" y1="16" x2="12" y2="19"/></svg></div>
-        <h4>Dangerous</h4>
-        <p><strong>Destructive operations.</strong> Delete assets, cook content, exec console commands. Requires Slate dialog approval with 60s timeout.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ROADMAP -->
-<section class="section arch-section" id="roadmap">
-  <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-cyan">Roadmap</span>
-      <h2>Built to <span class="tg2">Keep Growing</span></h2>
-      <p>All 15 phases complete. The learning system gets smarter with every interaction.</p>
-    </div>
-    <div class="roadmap-timeline reveal">
-      <div class="rm-item">
-        <div class="rm-dot rd-g"></div>
-        <div class="rm-content">
-          <div class="rm-date">Phase 0-9 &mdash; Complete</div>
-          <h4>Foundation &amp; Core Tools (85 tools)</h4>
-          <p>Blueprint manipulation, self-healing compilation, asset pipeline, actors, materials, levels, animation, meshes, DataTables, gameplay, source control, build pipeline, debug tools, Python bridge with 154 scripts.</p>
+    <div class="changelog-list">
+      <div class="changelog-entry fade-up delay-1">
+        <div>
+          <span class="changelog-version">v0.4.1</span>
+        </div>
+        <div>
+          <p class="changelog-tag">Error Handling &amp; Resilience</p>
+          <h3 class="changelog-title">Structured Errors, Circuit Breaker, Per-Tool Timeouts</h3>
+          <p class="changelog-desc">Introduced 13 typed UMA_E_* error codes replacing raw string errors. Added circuit breaker with 5-failure threshold and 60s cooldown. Extended timeouts for 16 long-running tools. Reconnection tracking. 27 new tests.</p>
         </div>
       </div>
-      <div class="rm-item">
-        <div class="rm-dot rd-g"></div>
-        <div class="rm-content">
-          <div class="rm-date">Phase 10-12 &mdash; Complete</div>
-          <h4>Full UE API Coverage (157 tools)</h4>
-          <p>Sequencer, AI/Navigation, UMG Widgets, Texture pipeline, Niagara VFX, Audio, Landscape, Physics, World Partition, Foliage, Curves, PCG, Geometry Script.</p>
+      <div class="changelog-entry fade-up delay-2">
+        <div>
+          <span class="changelog-version">v0.4.0</span>
+        </div>
+        <div>
+          <p class="changelog-tag">Testing Improvements</p>
+          <h3 class="changelog-title">Coverage Gate, Snapshot Tests, Fuzz Testing</h3>
+          <p class="changelog-desc">Enforced 80% coverage threshold across all modules. Added snapshot-based regression tests and fuzz testing suite with 143 test cases. Python test suite expanded to 58 tests.</p>
         </div>
       </div>
-      <div class="rm-item">
-        <div class="rm-dot rd-g"></div>
-        <div class="rm-content">
-          <div class="rm-date">Phase 13-14 &mdash; Complete</div>
-          <h4>Workflow &amp; Analysis Intelligence (176 tools)</h4>
-          <p>8 workflow templates, Blueprint complexity analysis, asset health audits, performance hints, code conventions, refactoring tools, context intelligence engine.</p>
+      <div class="changelog-entry fade-up delay-3">
+        <div>
+          <span class="changelog-version">v0.1.0</span>
         </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot rd-g"></div>
-        <div class="rm-content">
-          <div class="rm-date">Phase 15 &mdash; Complete (Current)</div>
-          <h4>AI-Powered Learning System (183 tools)</h4>
-          <p>Persistent workflow learning from Epic docs, intent matching with 60+ UE synonym groups, outcome tracking, error resolution learning. The system gets smarter with every interaction.</p>
-        </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot rd-o"></div>
-        <div class="rm-content">
-          <div class="rm-date">Coming Next</div>
-          <h4>Community &amp; Ecosystem</h4>
-          <p>Shared workflow marketplace, community-contributed error resolutions, UE version-specific variants, plugin ecosystem for custom tool domains, real-time editor event streaming.</p>
+        <div>
+          <p class="changelog-tag">Initial Release</p>
+          <h3 class="changelog-title">183 Tools, 37 Domains, Context Intelligence</h3>
+          <p class="changelog-desc">Full initial release with 183 MCP tools across 37 domains, 154 Python automation scripts, context intelligence with 60+ UE synonym groups, safety gate for destructive operations, and self-healing compilation.</p>
         </div>
       </div>
     </div>
-    <div class="compat-row reveal">
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.4</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.5</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.6</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>UE 5.7</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Node.js 20+</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>TypeScript 5.5+</div>
-      <div class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Claude Code</div>
-    </div>
   </div>
 </section>
 
-<!-- DOCS -->
-<section class="section" id="docs">
+<!-- INSTALL -->
+<section class="section section-border-top" id="install" aria-labelledby="install-heading">
   <div class="container">
-    <div class="sh reveal">
-      <span class="badge b-blue">Documentation</span>
-      <h2>Comprehensive <span class="tg">Guides &amp; References</span></h2>
-      <p>Everything you need to get started, extend, and understand the system.</p>
+    <div class="fade-up">
+      <p class="section-label">Get Started</p>
+      <h2 class="section-headline" id="install-heading">One Command Setup</h2>
     </div>
-    <div class="docs-grid">
-      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="doc-card reveal" target="_blank" rel="noopener">
-        <div class="doc-icon di-g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-        <div><h4>Quick Start Guide</h4><p>Installation, configuration, and first connection walkthrough for MCP server and UE plugin.</p></div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md" class="doc-card reveal reveal-d1" target="_blank" rel="noopener">
-        <div class="doc-icon di-b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <div><h4>MCP Tools API Reference</h4><p>Complete reference for all 183 tools: parameters, return values, safety levels, examples.</p></div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="doc-card reveal reveal-d2" target="_blank" rel="noopener">
-        <div class="doc-icon di-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-        <div><h4>Architecture Guide</h4><p>4-layer design, ADRs, threading model, caching strategy, error taxonomy, data flow diagrams.</p></div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/websocket-protocol.md" class="doc-card reveal" target="_blank" rel="noopener">
-        <div class="doc-icon di-c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-        <div><h4>WebSocket Protocol</h4><p>Message envelopes, request/response correlation, error codes (1000-9299), connection lifecycle.</p></div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/safety-architecture.md" class="doc-card reveal reveal-d1" target="_blank" rel="noopener">
-        <div class="doc-icon di-o"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-        <div><h4>Safety Architecture</h4><p>3-tier classification, approval workflow, path sandboxing, human-in-the-loop gate.</p></div>
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/coding-conventions/README.md" class="doc-card reveal reveal-d2" target="_blank" rel="noopener">
-        <div class="doc-icon di-g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <div><h4>Coding Conventions</h4><p>TypeScript and C++ style guides, naming conventions, testing patterns, contribution guidelines.</p></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="section cta">
-  <div class="container reveal">
-    <h2>Ready to <span class="tg">Automate</span> Unreal Engine?</h2>
-    <p>Stop clicking through menus. Start describing what you want. Let Claude and Unreal Engine handle the rest.</p>
-    <div class="cta-buttons">
-      <a href="https://github.com/jaguarcode/UnrealMasterAI#quick-start" class="btn btn-p" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Get Started Free
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI" class="btn btn-o" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        Star on GitHub
-      </a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" class="btn btn-o" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Read Architecture
-      </a>
+    <div class="install-layout">
+      <div class="fade-up delay-1">
+        <p class="install-desc">Unreal Master Agent runs as a local MCP server. No accounts, no cloud dependency. Add it to Claude Code's config and it activates immediately in your next session.</p>
+        <p class="install-desc">The UE plugin connects via WebSocket on port 9877. Once connected, Claude can read your entire project structure, manipulate Blueprints, spawn actors, edit materials, and run Python scripts — all through natural language.</p>
+        <ol class="install-steps" aria-label="Setup steps">
+          <li class="install-step">
+            <span class="install-step-num" aria-hidden="true">1</span>
+            <span class="install-step-text">Add the config block to <code>.claude/mcp.json</code> in your project or home directory</span>
+          </li>
+          <li class="install-step">
+            <span class="install-step-num" aria-hidden="true">2</span>
+            <span class="install-step-text">Install the UE Agent Plugin into your Unreal Engine project's <code>Plugins/</code> folder</span>
+          </li>
+          <li class="install-step">
+            <span class="install-step-num" aria-hidden="true">3</span>
+            <span class="install-step-text">Open your project in UE 5.4–5.7, then start a Claude Code session and ask it anything</span>
+          </li>
+        </ol>
+      </div>
+      <div class="fade-up delay-2">
+        <div class="code-block" role="region" aria-label="MCP configuration">
+          <div class="code-block-header">
+            <span class="code-block-title">.claude/mcp.json</span>
+            <button class="code-block-copy" onclick="copyConfig(this)" aria-label="Copy configuration to clipboard">Copy</button>
+          </div>
+          <pre aria-label="MCP server configuration JSON"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master"</span><span class="pun">: {</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">:</span> <span class="pun">[</span>
+        <span class="str">"-y"</span><span class="pun">,</span>
+        <span class="str">"unreal-master-mcp-server"</span>
+      <span class="pun">],</span>
+      <span class="key">"env"</span><span class="pun">: {</span>
+        <span class="key">"UE_WS_PORT"</span><span class="pun">:</span> <span class="str">"9877"</span>
+      <span class="pun">}</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-links">
-      <a href="#quickstart">Quick Start</a>
-      <a href="#features">Features</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#tools">Tools</a>
-      <a href="#use-cases">Use Cases</a>
-      <a href="#docs">Docs</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-main">
+      <div>
+        <p class="footer-brand-name">Unreal Master Agent</p>
+        <p class="footer-brand-license">Released under the MIT License</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/unreal-master-mcp-server" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">API Reference</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+      </nav>
     </div>
-    <p>Unreal Master Agent &middot; Built with Claude Code &middot; Model Context Protocol &middot; UE 5.4 - 5.7 &middot; MIT License</p>
+    <p class="footer-disclaimer">Unreal Engine is a trademark of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.</p>
   </div>
 </footer>
 
 <script>
-/* PARTICLES */
-(function(){
-  const c=document.getElementById('particles'),ctx=c.getContext('2d');
-  let w,h,particles=[];
-  function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
-  resize();window.addEventListener('resize',resize);
-  class P{
-    constructor(){this.reset()}
-    reset(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.r=Math.random()*1.5+.5;this.a=Math.random()*.4+.1;this.color=(['#0d7dff','#6c3bff','#00d4ff','#00e68a'])[Math.random()*4|0]}
-    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w||this.y<0||this.y>h)this.reset()}
-    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.color;ctx.globalAlpha=this.a;ctx.fill()}
-  }
-  for(let i=0;i<80;i++)particles.push(new P);
-  function loop(){
-    ctx.clearRect(0,0,w,h);
-    particles.forEach(p=>{p.update();p.draw()});
-    ctx.globalAlpha=.05;ctx.strokeStyle='#0d7dff';ctx.lineWidth=.5;
-    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
-      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
-      if(dx*dx+dy*dy<15000){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}
+// Mobile menu toggle
+function toggleMenu(btn) {
+  const menu = document.getElementById('mobileMenu');
+  const isOpen = menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  const btn = document.querySelector('.hamburger');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+// Copy config
+function copyConfig(btn) {
+  const config = `{
+  "mcpServers": {
+    "unreal-master": {
+      "command": "npx",
+      "args": ["-y", "unreal-master-mcp-server"],
+      "env": { "UE_WS_PORT": "9877" }
     }
-    ctx.globalAlpha=1;requestAnimationFrame(loop);
   }
-  loop();
+}`;
+  navigator.clipboard.writeText(config).then(function() {
+    btn.textContent = 'Copied';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  }).catch(function() {
+    btn.textContent = 'Copy';
+  });
+}
+
+// Scroll fade-up animations
+(function() {
+  var elements = document.querySelectorAll('.fade-up');
+  if (!('IntersectionObserver' in window)) {
+    elements.forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  elements.forEach(function(el) { observer.observe(el); });
 })();
 
-/* TERMINAL TYPING */
-(function(){
-  const body=document.getElementById('terminalBody');
-  const lines=[
-    {type:'prompt',text:'$ '},
-    {type:'cmd',text:'claude "Create a castle with 4 towers, add torches with fire VFX"'},
-    {type:'br'},
-    {type:'tool',text:'  [context] matchIntent '},
-    {type:'output',text:'  Matched workflow: level-building (confidence: 0.92)'},
-    {type:'tool',text:'  [tool] actor-spawn '},
-    {type:'output',text:'  Spawned: Castle_Main, Tower_N, Tower_S, Tower_E, Tower_W'},
-    {type:'tool',text:'  [tool] actor-setTransform '},
-    {type:'output',text:'  Positioned 4 towers at castle corners'},
-    {type:'tool',text:'  [tool] niagara-createSystem '},
-    {type:'output',text:'  Created: NS_TorchFire with ember emitter'},
-    {type:'tool',text:'  [tool] actor-spawn '},
-    {type:'output',text:'  Spawned 8 torches, attached fire VFX to each'},
-    {type:'tool',text:'  [context] recordOutcome '},
-    {type:'success',text:'  Workflow complete (success, 6 tools, 2.4s)'},
-    {type:'br'},
-    {type:'output',text:'  Done! Castle with 4 towers and 8 lit torches.'},
-    {type:'output',text:'  Workflow learned for future castle-building requests.'},
-  ];
-  let lineIdx=0,charIdx=0;body.innerHTML='';
-  function typeLine(){
-    if(lineIdx>=lines.length){const cursor=document.createElement('span');cursor.className='typing-cursor';body.appendChild(cursor);return}
-    const line=lines[lineIdx];
-    if(line.type==='br'){body.appendChild(document.createElement('br'));lineIdx++;setTimeout(typeLine,200);return}
-    if(!body.querySelector(`[data-line="${lineIdx}"]`)){const span=document.createElement('span');span.className=line.type;span.dataset.line=lineIdx;body.appendChild(span);charIdx=0}
-    const el=body.querySelector(`[data-line="${lineIdx}"]`);
-    if(charIdx<line.text.length){el.textContent+=line.text[charIdx];charIdx++;setTimeout(typeLine,line.type==='cmd'?30:10);body.parentElement.scrollTop=body.parentElement.scrollHeight}
-    else{body.appendChild(document.createElement('br'));lineIdx++;setTimeout(typeLine,line.type==='tool'?350:line.type==='success'?500:120)}
-  }
-  setTimeout(typeLine,1500);
+// Nav scroll behavior
+(function() {
+  var nav = document.querySelector('.nav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) {
+      nav.style.background = 'rgba(0,0,0,0.95)';
+    } else {
+      nav.style.background = 'rgba(0,0,0,0.8)';
+    }
+  }, { passive: true });
 })();
-
-/* NAV SCROLL */
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>50)});
-
-/* HAMBURGER */
-document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
-
-/* CODE TABS */
-document.querySelectorAll('.code-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.code-tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.code-panel').forEach(p=>p.classList.remove('active'));
-    tab.classList.add('active');document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
-  });
-});
-
-/* SCROLL REVEAL */
-const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-
-/* STAT COUNTER */
-const statObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting)return;
-    const el=e.target,target=+el.dataset.target;let current=0;
-    const step=Math.max(1,Math.floor(target/40));
-    const iv=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(iv)}el.textContent=current},30);
-    statObs.unobserve(el);
-  });
-},{threshold:.5});
-document.querySelectorAll('.stat-num').forEach(el=>statObs.observe(el));
-
-/* SMOOTH NAV CLOSE ON LINK CLICK */
-document.querySelectorAll('.nav-links a[href^="#"]').forEach(a=>{a.addEventListener('click',()=>{document.getElementById('navLinks').classList.remove('open')})});
 </script>
 </body>
 </html>
