@@ -6,6 +6,12 @@
   "Description": "AI agent plugin enabling Claude Code to manipulate UE internals via MCP",
   "Category": "AI",
   "CreatedBy": "Unreal Master Team",
+  "CreatedByURL": "https://github.com/jaguarcode/UnrealMasterAI",
+  "DocsURL": "https://jaguarcode.github.io/UnrealMasterAI/",
+  "SupportURL": "https://github.com/jaguarcode/UnrealMasterAI/issues",
+  "MarketplaceURL": "",
+  "EngineVersion": "5.4.0",
+  "SupportedTargetPlatforms": ["Win64", "Mac", "Linux"],
   "EnabledByDefault": true,
   "CanContainContent": true,
   "Plugins": [

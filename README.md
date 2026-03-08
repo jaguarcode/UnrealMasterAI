@@ -108,6 +108,22 @@ Add the server to `.claude/mcp.json` (project root):
 }
 ```
 
+**Or, if installed globally via npm:**
+
+```json
+{
+  "mcpServers": {
+    "unreal-master": {
+      "command": "npx",
+      "args": ["-y", "unreal-master-mcp-server"],
+      "env": {
+        "UE_WS_PORT": "9877"
+      }
+    }
+  }
+}
+```
+
 ### 3. Build the MCP server
 
 ```bash
@@ -116,6 +132,14 @@ npm run build
 ```
 
 ### 4. Enable the UE Plugin
+
+**Quick install** (copies the plugin automatically):
+
+```bash
+./scripts/install-plugin.sh /path/to/YourProject
+```
+
+**Manual install:**
 
 Copy or symlink `ue-plugin/` into your Unreal Engine project's `Plugins/` directory (renaming to `UnrealMasterAgent`), then enable it in the `.uproject` file:
 
@@ -351,6 +375,27 @@ MIT License — see LICENSE file for details.
 ---
 
 *For the full architecture specification, threading model, data flow diagrams, and all Architecture Decision Records, see [ARCHITECTURE.md](./ARCHITECTURE.md).*
+
+---
+
+## Troubleshooting
+
+### Connection Issues
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `WebSocket connection failed` | UE plugin not running or wrong port | Verify UE Editor is open with the plugin enabled. Check `UE_WS_PORT` matches in both MCP config and UE plugin settings (default: `9877`). |
+| `editor-ping` returns no response | Plugin not connected | Restart UE Editor. Check Output Log for "UnrealMasterAgent: WebSocket connected" message. |
+| `Tool not found` | MCP server not started | Ensure `.claude/mcp.json` is configured and Claude Code restarted. |
+| Python script errors | PythonScriptPlugin not enabled | Enable "Python Editor Script Plugin" in Edit → Plugins → Scripting. Restart the editor. |
+| `EADDRINUSE` error | Port already in use | Another instance is running on port 9877. Kill it or change `UE_WS_PORT` to a different port. |
+
+### Build Issues
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `tsc` compilation errors | Missing dependencies | Run `cd mcp-server && npm install` |
+| Plugin compile errors | Missing UE dependencies | Ensure `PythonScriptPlugin` is enabled in your `.uproject` |
 
 ---
 

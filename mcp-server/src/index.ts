@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * MCP Bridge Server Entry Point.
  * Initializes WebSocket bridge, then McpServer with StdioServerTransport.
