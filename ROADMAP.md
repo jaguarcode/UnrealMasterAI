@@ -1,7 +1,7 @@
 # Unreal Master Agent — Future Improvement Plan & Open-Source Roadmap
 
 **Date:** 2026-03-08 (Updated: 2026-03-08)
-**Current Version:** 0.1.0
+**Current Version:** 0.4.0
 **Status:** Phase 0 & Phase 2 Complete — Phase 1, 3-5 Pending
 
 ---

@@ -5,4 +5,4 @@ Bundled Python scripts executed by FUMAPythonBridge within UE's embedded Python 
 Each script module exports an execute(params_json: str) -> str function.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.4.0"

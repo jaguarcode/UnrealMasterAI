@@ -296,7 +296,7 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
   const server = new McpServer(
     {
       name: 'unreal-master-agent',
-      version: '0.1.0',
+      version: '0.4.0',
     },
     {
       instructions: SERVER_INSTRUCTIONS,
