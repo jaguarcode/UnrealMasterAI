@@ -10,6 +10,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
 
+## [0.4.1] - 2026-03-08
+
+### Added
+- **Structured error codes**: `ErrorCode` enum with 13 typed `UMA_E_*` codes, `UMAError` class with `toJSON()`, `createToolError()` and `formatBridgeError()` helpers (`src/errors.ts`)
+- **Per-tool request timeout**: `getToolTimeout()` returns 300s for 16 long-running tools (build, workflow, import, landscape), 30s for all others (`src/transport/tool-timeouts.ts`)
+- **Circuit breaker**: `CircuitBreaker` class with configurable failure threshold (default 5) and cooldown period (default 60s), auto-transitions through closed → open → half-open states (`src/state/circuit-breaker.ts`)
+- **WebSocket reconnection tracking**: `ConnectionManager` now tracks `disconnectCount`, `lastDisconnectedAt`, `lastConnectedAt` with `getStats()` and `resetStats()` methods
+- 27 new tests: circuit breaker (11), connection manager (9), tool timeouts (7)
+
+### Changed
+- `WebSocketBridge.sendRequest()` now accepts optional `timeoutMs` parameter for per-request timeout override
+- `editorPing()` now accepts optional `CircuitBreaker` parameter and resets it on successful pong
+- `actorSpawn`, `blueprintSerialize`, `materialCreate` handlers now use structured `UMAError` error responses instead of raw string errors
+- WebSocket bridge logs reconnection events with disconnect count on connect/disconnect
+
+## [0.4.0] - 2026-03-08
+
+### Added
+- **Coverage gate**: Vitest v8 coverage thresholds enforced in CI (lines/functions/statements: 80%, branches: 75%)
+- **Snapshot tests**: Tool schema snapshots lock 183 tool names, domain mappings, and safety classifications
+- **Fuzz testing**: 143 fuzz tests with 11 input vectors across 10 tool handlers
+- **Python script tests**: pytest suite with mocked `unreal` module — 58 tests covering utils.py, actor_spawn.py, material_create.py, level_create.py, asset_create.py
+- npm package README with badges, quick-start, architecture diagram
+
 ## [0.1.0] - 2026-03-08
 
 ### Added
@@ -40,5 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: npx quick-start, troubleshooting guide, install-plugin reference
 - Epic Games trademark disclaimer
 
-[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.1.0...v0.4.0
 [0.1.0]: https://github.com/jaguarcode/UnrealMasterAI/releases/tag/v0.1.0

@@ -6,6 +6,8 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { encodeMessage, decodeResponse } from './message-codec.js';
 import type { WSMessage, WSResponse } from '../types/messages.js';
+import { ConnectionManager } from './connection-manager.js';
+import type { ConnectionStats } from './connection-manager.js';
 
 export interface WebSocketBridgeOptions {
   port: number;
@@ -33,6 +35,7 @@ export class WebSocketBridge {
   private listening = false;
   private actualPort: number;
   private lastConnectedAt: Date | null = null;
+  connectionManager: ConnectionManager;
 
   /** Callback when client disconnects */
   onClientDisconnected: (() => void) | null = null;
@@ -44,6 +47,7 @@ export class WebSocketBridge {
     this.port = options.port;
     this.actualPort = options.port;
     this.requestTimeoutMs = options.requestTimeoutMs ?? 30000;
+    this.connectionManager = new ConnectionManager();
   }
 
   /**
@@ -79,6 +83,8 @@ export class WebSocketBridge {
         console.error(`[WS] Client connected successfully`);
         this.activeClient = ws;
         this.lastConnectedAt = new Date();
+        this.connectionManager.setState('connected');
+        console.error(`[WS] Connection established (total disconnects so far: ${this.connectionManager.disconnectCount})`);
         this.onClientConnected?.();
 
         ws.on('message', (data) => {
@@ -104,6 +110,9 @@ export class WebSocketBridge {
         ws.on('close', () => {
           if (ws === this.activeClient) {
             this.activeClient = null;
+            this.connectionManager.setState('disconnected');
+            const count = this.connectionManager.disconnectCount;
+            console.error(`[WS] Client disconnected (disconnect #${count}). Server still listening for reconnections.`);
             // Reject all pending requests
             for (const [id, pending] of this.pendingRequests) {
               clearTimeout(pending.timer);
@@ -157,8 +166,10 @@ export class WebSocketBridge {
 
   /**
    * Send a request to the connected UE plugin and wait for a correlated response.
+   * @param msg - The message to send
+   * @param timeoutMs - Optional per-request timeout override. Falls back to this.requestTimeoutMs.
    */
-  sendRequest(msg: WSMessage): Promise<WSResponse> {
+  sendRequest(msg: WSMessage, timeoutMs?: number): Promise<WSResponse> {
     return new Promise((resolve, reject) => {
       console.error(`[WS] sendRequest called for ${msg.method}, hasClient=${!!this.activeClient}, readyState=${this.activeClient?.readyState}`);
       if (!this.activeClient || this.activeClient.readyState !== WebSocket.OPEN) {
@@ -167,10 +178,11 @@ export class WebSocketBridge {
         return;
       }
 
+      const effectiveTimeout = timeoutMs ?? this.requestTimeoutMs;
       const timer = setTimeout(() => {
         this.pendingRequests.delete(msg.id);
-        reject(new Error(`Request timeout after ${this.requestTimeoutMs}ms for ${msg.method}`));
-      }, this.requestTimeoutMs);
+        reject(new Error(`Request timeout after ${effectiveTimeout}ms for ${msg.method}`));
+      }, effectiveTimeout);
 
       this.pendingRequests.set(msg.id, { resolve, reject, timer });
 
@@ -213,6 +225,13 @@ export class WebSocketBridge {
    * Return diagnostic information about the current WebSocket state.
    * Used by editor-ping to surface connection health details.
    */
+  /**
+   * Return connection statistics from the connection manager.
+   */
+  getConnectionStats(): ConnectionStats {
+    return this.connectionManager.getStats();
+  }
+
   getDiagnostics(): BridgeDiagnostics {
     let websocketState: BridgeDiagnostics['websocketState'];
     if (this.activeClient === null) {

@@ -6,6 +6,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { WebSocketBridge } from '../../transport/websocket-bridge.js';
 import type { CacheStore } from '../../state/cache-store.js';
+import { createToolError, formatBridgeError } from '../../errors.js';
 
 export interface SerializeParams {
   assetPath: string;
@@ -51,14 +52,7 @@ export async function blueprintSerialize(
     const response = await bridge.sendRequest(msg);
 
     if (response.error) {
-      return {
-        content: [
-          {
-            type: 'text' as const,
-            text: JSON.stringify({ status: 'error', error: response.error }),
-          },
-        ],
-      };
+      return formatBridgeError('blueprint-serialize', response.error);
     }
 
     // Cache the full result, return summary
@@ -90,14 +84,6 @@ export async function blueprintSerialize(
       ],
     };
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return {
-      content: [
-        {
-          type: 'text' as const,
-          text: JSON.stringify({ status: 'error', error: message }),
-        },
-      ],
-    };
+    return createToolError('blueprint-serialize', err);
   }
 }

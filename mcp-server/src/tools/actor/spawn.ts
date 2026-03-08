@@ -5,6 +5,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { WebSocketBridge } from '../../transport/websocket-bridge.js';
 import type { McpToolResult } from '../editor/ping.js';
+import { createToolError, formatBridgeError } from '../../errors.js';
 
 export interface Vec3 {
   x: number;
@@ -38,11 +39,10 @@ export async function actorSpawn(
   try {
     const response = await bridge.sendRequest(msg);
     if (response.error) {
-      return { content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: response.error }) }] };
+      return formatBridgeError('actor-spawn', response.error);
     }
     return { content: [{ type: 'text', text: JSON.stringify({ status: 'success', result: response.result }) }] };
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return { content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: message }) }] };
+    return createToolError('actor-spawn', err);
   }
 }

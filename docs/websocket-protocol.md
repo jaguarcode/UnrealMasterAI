@@ -100,6 +100,7 @@ Error codes are organized in ranges by category. The error code determines the s
 | 4000-4099 | Blueprint Operations | Blueprint graph manipulation failures | 4001: Node spawn failed, 4002: Pin connect failed, 4003: Node delete failed, 4004: Property modify failed |
 | 5000-5099 | Internal / Compilation | Internal errors and Live Coding issues | 5000: Serialization error, 5001: Live Coding not initialized, 5002: Feature not available, 5003: Feature not enabled, 5004: Already compiling |
 | 6000-6099 | Safety Gate | Approval and safety mechanism errors | 6000: ApprovalGate not initialized, 6001: Approval rejected or timeout |
+| 7000-7099 | Resilience | Circuit breaker and resilience errors | 7000: Circuit breaker open (UMA_E_CIRCUIT_OPEN) |
 
 **Error Code Details:**
 
@@ -322,8 +323,10 @@ Promise resolved, consumer receives result
 ### 4. Timeout Handling
 
 - **Default Timeout:** 30 seconds
-- **Configurable:** `requestTimeoutMs` in `WebSocketBridgeOptions`
-- **Behavior:** If no response within timeout, pending request is rejected with error
+- **Long-Running Tools:** 300 seconds (build-cookContent, build-lightmaps, compilation-trigger, compilation-selfHeal, all workflow-* tools, asset-import, landscape-create, landscape-importHeightmap, niagara-compile)
+- **Configurable:** `requestTimeoutMs` in `WebSocketBridgeOptions`, or per-request via `sendRequest(msg, timeoutMs)`
+- **Per-Tool Config:** `getToolTimeout(toolName)` from `src/transport/tool-timeouts.ts` returns appropriate timeout
+- **Behavior:** If no response within timeout, pending request is rejected with `UMA_E_REQUEST_TIMEOUT` error
 - **Cleanup:** Timer cleared on response or timeout; request removed from pending map
 
 ### 5. Client Disconnection
@@ -526,6 +529,14 @@ interface WebSocketBridgeOptions {
   port: number;                    // Port to listen on
   requestTimeoutMs?: number;       // Default: 30000 (30s)
 }
+
+// Per-request timeout override (added in v0.4.1)
+bridge.sendRequest(msg, timeoutMs?: number);
+
+// Per-tool timeout lookup (added in v0.4.1)
+import { getToolTimeout } from './transport/tool-timeouts.js';
+const timeout = getToolTimeout('build-cookContent'); // 300000 (5 min)
+const timeout = getToolTimeout('editor-ping');       // 30000 (30s)
 ```
 
 ---

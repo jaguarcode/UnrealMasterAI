@@ -11,10 +11,21 @@ export interface ConnectionManagerOptions {
   heartbeatIntervalMs?: number;
 }
 
+export interface ConnectionStats {
+  state: ConnectionState;
+  disconnectCount: number;
+  lastDisconnectedAt: Date | null;
+  lastConnectedAt: Date | null;
+}
+
 export class ConnectionManager {
   private state: ConnectionState = 'disconnected';
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
   private heartbeatIntervalMs: number;
+
+  disconnectCount: number = 0;
+  lastDisconnectedAt: Date | null = null;
+  lastConnectedAt: Date | null = null;
 
   onStateChange: ((state: ConnectionState) => void) | null = null;
 
@@ -23,11 +34,17 @@ export class ConnectionManager {
   }
 
   /**
-   * Update connection state.
+   * Update connection state. Tracks disconnect/connect timestamps and counts.
    */
   setState(state: ConnectionState): void {
     if (this.state !== state) {
       this.state = state;
+      if (state === 'disconnected') {
+        this.disconnectCount++;
+        this.lastDisconnectedAt = new Date();
+      } else if (state === 'connected') {
+        this.lastConnectedAt = new Date();
+      }
       this.onStateChange?.(state);
     }
   }
@@ -44,6 +61,27 @@ export class ConnectionManager {
    */
   isConnected(): boolean {
     return this.state === 'connected';
+  }
+
+  /**
+   * Return a snapshot of connection statistics.
+   */
+  getStats(): ConnectionStats {
+    return {
+      state: this.state,
+      disconnectCount: this.disconnectCount,
+      lastDisconnectedAt: this.lastDisconnectedAt,
+      lastConnectedAt: this.lastConnectedAt,
+    };
+  }
+
+  /**
+   * Reset disconnect counter and timestamps.
+   */
+  resetStats(): void {
+    this.disconnectCount = 0;
+    this.lastDisconnectedAt = null;
+    this.lastConnectedAt = null;
   }
 
   /**

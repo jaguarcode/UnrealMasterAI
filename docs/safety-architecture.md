@@ -329,11 +329,59 @@ The server never auto-retries; Claude always makes the retry decision based on c
 
 ## Error Codes
 
+### Safety Gate Errors
+
 | Code | Name | Cause | Remedy |
 |------|------|-------|--------|
 | 6001 | OPERATION_REJECTED | User clicked "Reject" or timed out | Retry with user approval or choose alternative operation |
 | 6002 | UNSAFE_PATH | Path failed safety validation | Use a path within allowed roots |
 | 6003 | APPROVAL_TIMEOUT | WebSocket bridge unavailable | Ensure UE editor and MCP server are connected |
+
+### Structured Error Codes (v0.4.1)
+
+Tool handlers now return structured `UMA_E_*` error codes instead of raw strings. See `src/errors.ts`:
+
+| Error Code | Constant | Description |
+|-----------|----------|-------------|
+| `UMA_E_CONNECTION_LOST` | `ErrorCode.CONNECTION_LOST` | WebSocket client disconnected |
+| `UMA_E_CONNECTION_REFUSED` | `ErrorCode.CONNECTION_REFUSED` | Connection refused by server |
+| `UMA_E_REQUEST_TIMEOUT` | `ErrorCode.REQUEST_TIMEOUT` | Request timed out |
+| `UMA_E_ACTOR_NOT_FOUND` | `ErrorCode.ACTOR_NOT_FOUND` | Actor not found in level |
+| `UMA_E_ASSET_NOT_FOUND` | `ErrorCode.ASSET_NOT_FOUND` | Asset not found at path |
+| `UMA_E_BLUEPRINT_NOT_FOUND` | `ErrorCode.BLUEPRINT_NOT_FOUND` | Blueprint not found |
+| `UMA_E_VALIDATION_ERROR` | `ErrorCode.VALIDATION_ERROR` | Input validation failed |
+| `UMA_E_COMPILATION_FAILED` | `ErrorCode.COMPILATION_FAILED` | Compilation error |
+| `UMA_E_PERMISSION_DENIED` | `ErrorCode.PERMISSION_DENIED` | Operation denied by safety gate |
+| `UMA_E_PYTHON_EXECUTION` | `ErrorCode.PYTHON_EXECUTION_ERROR` | Python script execution error |
+| `UMA_E_CIRCUIT_OPEN` | `ErrorCode.CIRCUIT_OPEN` | Circuit breaker is open |
+| `UMA_E_TOOL_NOT_FOUND` | `ErrorCode.TOOL_NOT_FOUND` | MCP tool not found |
+| `UMA_E_INTERNAL_ERROR` | `ErrorCode.INTERNAL_ERROR` | Unclassified internal error |
+
+---
+
+## Circuit Breaker (v0.4.1)
+
+The circuit breaker (`src/state/circuit-breaker.ts`) prevents cascading failures by disabling tool execution after consecutive errors:
+
+- **Threshold:** Opens after 5 consecutive failures (configurable)
+- **Cooldown:** Auto-transitions to half-open after 60 seconds (configurable)
+- **Recovery:** `editor-ping` success resets the circuit breaker to closed
+- **States:** `closed` (normal) → `open` (blocking) → `half-open` (probing)
+
+```
+Tool call fails
+  ↓
+CircuitBreaker.recordFailure()
+  ↓
+consecutiveFailures >= threshold?
+  ├─ No → Continue (closed state)
+  └─ Yes → Circuit opens → Block requests with UMA_E_CIRCUIT_OPEN
+         ↓
+         After cooldown → Half-open → Allow one request
+         ↓
+         Success → Close circuit (reset)
+         Failure → Re-open circuit
+```
 
 ---
 

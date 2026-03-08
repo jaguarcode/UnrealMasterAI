@@ -1,6 +1,6 @@
 # Unreal Master Agent — Architecture
 
-**Version:** 0.1.0
+**Version:** 0.4.1
 **Date:** 2026-02-25 (Updated: 2026-03-08)
 **Status:** Implementation Complete (Phase 0-15 done, 183 MCP tools across 37 domains)
 
@@ -81,9 +81,12 @@ The agent design follows a strict separation of concerns: the LLM reasons and or
 | `ToolRegistry` | `src/tools/registry.ts` | Static + dynamic tool registration |
 | `WebSocketBridge` | `src/transport/websocket-bridge.ts` | WS server; Node.js listens, UE connects as client |
 | `MessageCodec` | `src/transport/message-codec.ts` | Encode/decode with Zod validation |
-| `ConnectionManager` | `src/transport/connection-manager.ts` | Exponential backoff reconnection |
+| `ConnectionManager` | `src/transport/connection-manager.ts` | Connection state tracking, disconnect counting, reconnection stats |
+| `ToolTimeouts` | `src/transport/tool-timeouts.ts` | Per-tool timeout config (30s default, 300s for long ops) |
 | `CacheStore` | `src/state/cache-store.ts` | LRU key-value store for stateful caching |
 | `SafetyGate` | `src/state/safety.ts` | Human-in-the-loop approval for destructive ops |
+| `CircuitBreaker` | `src/state/circuit-breaker.ts` | Resilience: opens after N failures, auto-resets after cooldown |
+| `ErrorCodes` | `src/errors.ts` | Structured `UMA_E_*` error codes and helpers |
 | `Tracer` | `src/observability/tracer.ts` | OpenTelemetry-compatible traces |
 
 > **CRITICAL CONSTRAINT:** All debug output MUST go to `stderr`. `stdout` is exclusively for JSON-RPC messages. A single `console.log()` will corrupt the JSON-RPC stream.
@@ -456,13 +459,16 @@ Unreal Master/
 │   │   │   ├── analyze/     Analysis tools
 │   │   │   ├── refactor/    Refactoring tools
 │   │   │   └── context/     Context intelligence
+│   │   ├── errors.ts              Structured UMA_E_* error codes
 │   │   ├── transport/
 │   │   │   ├── websocket-bridge.ts
 │   │   │   ├── message-codec.ts
-│   │   │   └── connection-manager.ts
+│   │   │   ├── connection-manager.ts
+│   │   │   └── tool-timeouts.ts   Per-tool timeout configuration
 │   │   ├── state/
 │   │   │   ├── cache-store.ts
-│   │   │   └── safety.ts
+│   │   │   ├── safety.ts
+│   │   │   └── circuit-breaker.ts Circuit breaker for resilience
 │   │   └── observability/
 │   │       └── tracer.ts
 │   ├── package.json

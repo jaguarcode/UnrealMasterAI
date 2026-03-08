@@ -18,7 +18,7 @@
 | L3.5 | Python Scripts | **High** | 154 scripts — 153/154 use `@execute_wrapper` consistently. But only 46/154 call `validate_path()` for input validation. |
 | L4 | Engine APIs | N/A | UE internals — consumed, not owned |
 | Cross | Context Intelligence | **Medium-High** | 9 files with mature intent matching (60+ synonym groups), multi-signal error similarity engine. Shared `tokenize()` utility extracted (Phase 0). `learned-workflows.json` is empty and `error-resolutions.json` has placeholder data. |
-| Cross | Testing | **High** | 972 TS tests across 56 files (52 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz tests. |
+| Cross | Testing | **High** | 999 TS tests across 59 files (55 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz + resilience tests. |
 | Cross | Documentation | **Medium-High** | Good architecture docs. Port/lint/trademark issues fixed (Phase 0). README has npx quick-start and troubleshooting (Phase 2). API reference still references 85 tools (actual: 183). |
 
 ### 1.2 Strengths
@@ -140,10 +140,10 @@
 - [ ] **Multi-UE-version CI matrix**: Test plugin build against UE 5.4 and 5.5 minimum *(requires UE build environment)*
 
 #### 3.2 Error Handling & Resilience
-- [ ] **Structured error codes**: Replace string errors with typed error enum (e.g., `UMA_E_ACTOR_NOT_FOUND`)
-- [ ] **WebSocket reconnection**: Auto-reconnect with exponential backoff when UE disconnects
-- [ ] **Request timeout**: Configurable per-tool timeout (default 30s, long ops like cook: 300s)
-- [ ] **Circuit breaker**: Disable tools after N consecutive failures, re-enable on successful ping
+- [x] **Structured error codes**: `ErrorCode` enum with 13 typed codes (`UMA_E_*`), `UMAError` class, `createToolError()`/`formatBridgeError()` helpers — adopted in actor-spawn, blueprint-serialize, material-create
+- [x] **WebSocket reconnection**: `ConnectionManager` tracks `disconnectCount`, `lastDisconnectedAt`, `lastConnectedAt` — bridge logs reconnection events and accepts new UE connections after disconnect
+- [x] **Request timeout**: `getToolTimeout()` returns 300s for 16 long-running tools (build, workflow, import), 30s default — `sendRequest()` accepts per-request `timeoutMs` override
+- [x] **Circuit breaker**: `CircuitBreaker` class opens after 5 consecutive failures (configurable), auto-resets after 60s cooldown — `editor-ping` resets circuit on success
 
 #### 3.3 Observability
 - [ ] **Structured logging**: JSON log output with request IDs, tool names, latencies

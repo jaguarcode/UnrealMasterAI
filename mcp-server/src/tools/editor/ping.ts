@@ -5,6 +5,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import type { WebSocketBridge } from '../../transport/websocket-bridge.js';
+import type { CircuitBreaker } from '../../state/circuit-breaker.js';
 
 export interface McpTextContent {
   type: 'text';
@@ -28,7 +29,7 @@ const SUGGESTED_FIXES = [
  * On success: { status: 'pong', latencyMs, ueVersion, websocketState }
  * On failure: { status: 'error'|'timeout'|'disconnected', error, diagnostics }
  */
-export async function editorPing(bridge: WebSocketBridge): Promise<McpToolResult> {
+export async function editorPing(bridge: WebSocketBridge, circuitBreaker?: CircuitBreaker): Promise<McpToolResult> {
   const msg = {
     id: uuidv4(),
     method: 'editor.ping' as const,
@@ -61,6 +62,8 @@ export async function editorPing(bridge: WebSocketBridge): Promise<McpToolResult
         ],
       };
     }
+
+    circuitBreaker?.reset();
 
     const result = response.result as Record<string, unknown> | undefined;
     const ueVersion = result && typeof result['ueVersion'] === 'string'
