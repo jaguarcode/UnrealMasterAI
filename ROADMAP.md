@@ -86,7 +86,7 @@
 #### 1.2 CI/CD Pipeline
 - [x] **GitHub Actions: CI** — `npm install` → `typecheck` → `vitest run` → `npm audit` → coverage report on every PR
 - [ ] **GitHub Actions: Build** — Build MCP server + verify C++ plugin compiles (UE build cache) *(requires UE build environment)*
-- [ ] **Branch protection** — Require CI pass + 1 review for `main` *(requires GitHub repo settings)*
+- [x] **Branch protection** — Require CI pass + 1 review for `main`
 - [ ] **Coverage badge** — Display test coverage in README *(requires CI run to generate coverage data)*
 - [x] **README badges** — License, npm version, Node version, UE version, test count
 
@@ -94,7 +94,7 @@
 - [x] **CHANGELOG.md** — Initialize with retroactive history of major milestones (Phases 0-15)
 - [x] Adopt **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`)
 - [x] **GitHub Actions: Release** — Auto-generate releases from tags, attach built artifacts *(created in Phase 2)*
-- [ ] Create first git tag (`v0.2.0`) after Phase 0 fixes *(manual step)*
+- [x] Create first git tag (`v0.2.0`)
 
 #### 1.4 Documentation Sync
 - [x] Update `docs/api-reference/mcp-tools.md` from 85 → 183 tools (auto-generated from server.ts registrations)
@@ -109,7 +109,7 @@
 #### 2.1 npm Package Publishing
 - [x] Remove `"private": true` from `mcp-server/package.json`
 - [x] Set `"bin"` entry for CLI startup: `"unreal-master-mcp-server": "dist/index.js"`
-- [ ] Publish to npm as `unreal-master-mcp-server` *(requires npm account setup)*
+- [x] Publish to npm as `unreal-master-mcp-server` *(NPM_TOKEN configured, auto-publishes on tag)*
 - [x] Add `npx unreal-master-mcp-server` quick-start to README
 - [x] GitHub Actions: Auto-publish to npm on version tag (`.github/workflows/npm-publish.yml`)
 
