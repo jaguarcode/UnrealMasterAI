@@ -73,33 +73,33 @@
 - [x] **Extract shared `tokenize()`**: Deduplicated into `mcp-server/src/utils/tokenize.ts`.
 - [x] **Add Epic trademark disclaimer**: Added to README footer.
 
-### Phase 1: OSS Foundation (v0.2.0) — Weeks 1-2
+### Phase 1: OSS Foundation (v0.2.0) — ✅ PARTIALLY COMPLETE
 > *Goal: Make the project ready for external contributors*
 
 #### 1.1 Governance Files
-- [ ] **CONTRIBUTING.md** — Fork/PR workflow, coding standards, Python script template (`@execute_wrapper` pattern), commit conventions, DCO/CLA decision, "How to add a new tool" guide
-- [ ] **CODE_OF_CONDUCT.md** — Contributor Covenant v2.1
-- [ ] **SECURITY.md** — Vulnerability reporting process (GitHub Security Advisories)
-- [ ] **.github/ISSUE_TEMPLATE/** — Bug report, feature request, new tool proposal templates
-- [ ] **.github/PULL_REQUEST_TEMPLATE.md** — Checklist (tests, docs, types, no TODOs, safety classification)
+- [x] **CONTRIBUTING.md** — Fork/PR workflow, coding standards, Python script template (`@execute_wrapper` pattern), commit conventions, DCO/CLA decision, "How to add a new tool" guide
+- [x] **CODE_OF_CONDUCT.md** — Contributor Covenant v2.1
+- [x] **SECURITY.md** — Vulnerability reporting process (GitHub Security Advisories)
+- [x] **.github/ISSUE_TEMPLATE/** — Bug report, feature request, new tool proposal templates
+- [x] **.github/PULL_REQUEST_TEMPLATE.md** — Checklist (tests, docs, types, no TODOs, safety classification)
 
 #### 1.2 CI/CD Pipeline
-- [ ] **GitHub Actions: CI** — `npm install` → `typecheck` → `vitest run` → `npm audit` → coverage report on every PR
-- [ ] **GitHub Actions: Build** — Build MCP server + verify C++ plugin compiles (UE build cache)
-- [ ] **Branch protection** — Require CI pass + 1 review for `main`
-- [ ] **Coverage badge** — Display test coverage in README
-- [ ] **README badges** — License, npm version, Node version, UE version, test count
+- [x] **GitHub Actions: CI** — `npm install` → `typecheck` → `vitest run` → `npm audit` → coverage report on every PR
+- [ ] **GitHub Actions: Build** — Build MCP server + verify C++ plugin compiles (UE build cache) *(requires UE build environment)*
+- [ ] **Branch protection** — Require CI pass + 1 review for `main` *(requires GitHub repo settings)*
+- [ ] **Coverage badge** — Display test coverage in README *(requires CI run to generate coverage data)*
+- [x] **README badges** — License, npm version, Node version, UE version, test count
 
 #### 1.3 Versioning & Releases
-- [ ] **CHANGELOG.md** — Initialize with retroactive history of major milestones (Phases 0-15)
-- [ ] Adopt **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`)
-- [ ] **GitHub Actions: Release** — Auto-generate releases from tags, attach built artifacts
-- [ ] Create first git tag (`v0.2.0`) after Phase 0 fixes
+- [x] **CHANGELOG.md** — Initialize with retroactive history of major milestones (Phases 0-15)
+- [x] Adopt **Conventional Commits** (`feat:`, `fix:`, `docs:`, `chore:`)
+- [x] **GitHub Actions: Release** — Auto-generate releases from tags, attach built artifacts *(created in Phase 2)*
+- [ ] Create first git tag (`v0.2.0`) after Phase 0 fixes *(manual step)*
 
 #### 1.4 Documentation Sync
 - [ ] Update `docs/api-reference/mcp-tools.md` from 85 → 183 tools (auto-generate from tool-schemas.ts)
-- [ ] Add tool count badge to README
-- [ ] Create `docs/adding-a-tool.md` — Step-by-step guide for contributors adding new MCP tools
+- [x] Add tool count badge to README
+- [x] Create `docs/adding-a-tool.md` — Step-by-step guide for contributors adding new MCP tools
 - [ ] Add OG image to `docs/index.html` (currently missing `og:image` meta tag)
 - [ ] Add logo/branding assets to `docs/assets/`
 

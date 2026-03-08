@@ -1,0 +1,91 @@
+name: New Tool Proposal
+description: Propose a new MCP tool for Unreal Engine
+labels: ["new-tool", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposing a new tool? Great! Please provide as much detail as possible.
+        See [docs/adding-a-tool.md](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/adding-a-tool.md) for the tool development guide.
+  - type: input
+    id: tool-name
+    attributes:
+      label: Tool Name
+      description: "Follow the naming convention: domain-action (e.g., actor-spawn, material-create)"
+      placeholder: "domain-action"
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      description: Which domain does this tool belong to?
+      options:
+        - actor
+        - asset
+        - blueprint
+        - material
+        - mesh
+        - animation
+        - audio
+        - level
+        - landscape
+        - niagara
+        - sequencer
+        - widget
+        - ai
+        - physics
+        - texture
+        - foliage
+        - pcg
+        - gameplay
+        - editor
+        - content
+        - build
+        - compilation
+        - debug
+        - project
+        - file
+        - other (specify below)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this tool do?
+    validations:
+      required: true
+  - type: textarea
+    id: parameters
+    attributes:
+      label: Parameters
+      description: |
+        List the input parameters with types and descriptions.
+        Example:
+        - `actorName` (string, required): Name of the actor to modify
+        - `location` (object, optional): {x, y, z} world coordinates
+    validations:
+      required: true
+  - type: textarea
+    id: python-script
+    attributes:
+      label: Python Script Sketch
+      description: Optional rough implementation of the Python script
+      render: python
+  - type: dropdown
+    id: safety
+    attributes:
+      label: Safety Classification
+      description: How destructive is this tool?
+      options:
+        - SAFE (read-only, no side effects)
+        - WARN (modifies state, reversible)
+        - DANGEROUS (destructive, requires approval)
+    validations:
+      required: true
+  - type: textarea
+    id: ue-apis
+    attributes:
+      label: UE APIs Used
+      description: Which Unreal Engine APIs does this tool need?
