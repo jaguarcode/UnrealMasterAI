@@ -23,7 +23,7 @@ jobs:
       - name: Install and test
         working-directory: mcp-server
         run: |
-          npm ci
+          npm install
           npm run build
           npm run test
 

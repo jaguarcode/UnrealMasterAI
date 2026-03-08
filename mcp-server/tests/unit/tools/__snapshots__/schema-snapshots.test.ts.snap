@@ -1,0 +1,1221 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tool schema snapshots > domain-to-tools mapping is stable 1`] = `
+[
+  {
+    "name": "actor",
+    "tools": [
+      "actor-addComponent",
+      "actor-delete",
+      "actor-getComponents",
+      "actor-getProperties",
+      "actor-select",
+      "actor-setArrayRef",
+      "actor-setProperty",
+      "actor-setTransform",
+      "actor-spawn",
+    ],
+  },
+  {
+    "name": "ai",
+    "tools": [
+      "ai-addBlackboardKey",
+      "ai-configureNavMesh",
+      "ai-createBehaviorTree",
+      "ai-createBlackboard",
+      "ai-createEQS",
+      "ai-getBehaviorTreeInfo",
+      "ai-getBlackboardKeys",
+      "ai-getNavMeshInfo",
+    ],
+  },
+  {
+    "name": "analyze",
+    "tools": [
+      "analyze-assetHealth",
+      "analyze-blueprintComplexity",
+      "analyze-codeConventions",
+      "analyze-performanceHints",
+    ],
+  },
+  {
+    "name": "animation",
+    "tools": [
+      "anim-createMontage",
+      "anim-getBlendSpace",
+      "anim-getSkeletonInfo",
+      "anim-listMontages",
+      "anim-listSequences",
+    ],
+  },
+  {
+    "name": "asset",
+    "tools": [
+      "asset-create",
+      "asset-delete",
+      "asset-duplicate",
+      "asset-export",
+      "asset-getReferences",
+      "asset-import",
+      "asset-rename",
+      "asset-setMetadata",
+    ],
+  },
+  {
+    "name": "audio",
+    "tools": [
+      "audio-createCue",
+      "audio-createMetaSound",
+      "audio-getInfo",
+      "audio-import",
+      "audio-listAssets",
+      "audio-setAttenuation",
+    ],
+  },
+  {
+    "name": "blueprint",
+    "tools": [
+      "blueprint-connectPins",
+      "blueprint-createNode",
+      "blueprint-deleteNode",
+      "blueprint-modifyProperty",
+      "blueprint-serialize",
+    ],
+  },
+  {
+    "name": "build",
+    "tools": [
+      "build-cookContent",
+      "build-getMapCheck",
+      "build-lightmaps",
+    ],
+  },
+  {
+    "name": "chat",
+    "tools": [
+      "chat-sendMessage",
+    ],
+  },
+  {
+    "name": "compilation",
+    "tools": [
+      "compilation-getErrors",
+      "compilation-getStatus",
+      "compilation-selfHeal",
+      "compilation-trigger",
+    ],
+  },
+  {
+    "name": "content",
+    "tools": [
+      "content-findAssets",
+      "content-getAssetDetails",
+      "content-listAssets",
+      "content-validateAssets",
+    ],
+  },
+  {
+    "name": "curve",
+    "tools": [
+      "curve-create",
+      "curve-getInfo",
+      "curve-setKeys",
+    ],
+  },
+  {
+    "name": "datatable",
+    "tools": [
+      "datatable-addRow",
+      "datatable-create",
+      "datatable-getRows",
+      "datatable-removeRow",
+    ],
+  },
+  {
+    "name": "debug",
+    "tools": [
+      "debug-execConsole",
+      "debug-getLog",
+      "debug-getPerformance",
+    ],
+  },
+  {
+    "name": "editor",
+    "tools": [
+      "editor-getAssetInfo",
+      "editor-getLevelInfo",
+      "editor-getRecentActivity",
+      "editor-getSelection",
+      "editor-getViewport",
+      "editor-listActors",
+      "editor-ping",
+      "editor-setSelection",
+    ],
+  },
+  {
+    "name": "editor-utils",
+    "tools": [
+      "editor-batchOperation",
+    ],
+  },
+  {
+    "name": "file",
+    "tools": [
+      "file-read",
+      "file-search",
+      "file-write",
+    ],
+  },
+  {
+    "name": "foliage",
+    "tools": [
+      "foliage-createType",
+      "foliage-getInfo",
+      "foliage-setProperties",
+    ],
+  },
+  {
+    "name": "gameplay",
+    "tools": [
+      "gameplay-addInputAction",
+      "gameplay-getGameMode",
+      "gameplay-listInputActions",
+      "gameplay-setGameMode",
+    ],
+  },
+  {
+    "name": "geoscript",
+    "tools": [
+      "geoscript-getInfo",
+      "geoscript-meshBoolean",
+      "geoscript-meshTransform",
+    ],
+  },
+  {
+    "name": "landscape",
+    "tools": [
+      "landscape-create",
+      "landscape-exportHeightmap",
+      "landscape-getInfo",
+      "landscape-importHeightmap",
+      "landscape-setMaterial",
+    ],
+  },
+  {
+    "name": "level",
+    "tools": [
+      "level-addSublevel",
+      "level-create",
+      "level-getWorldSettings",
+      "level-open",
+      "level-save",
+    ],
+  },
+  {
+    "name": "material",
+    "tools": [
+      "material-create",
+      "material-createInstance",
+      "material-getNodes",
+      "material-getParameters",
+      "material-setParameter",
+      "material-setTexture",
+    ],
+  },
+  {
+    "name": "mesh",
+    "tools": [
+      "mesh-generateCollision",
+      "mesh-getInfo",
+      "mesh-setLOD",
+      "mesh-setMaterial",
+    ],
+  },
+  {
+    "name": "niagara",
+    "tools": [
+      "niagara-addEmitter",
+      "niagara-compile",
+      "niagara-createSystem",
+      "niagara-getInfo",
+      "niagara-listSystems",
+      "niagara-setParameter",
+    ],
+  },
+  {
+    "name": "pcg",
+    "tools": [
+      "pcg-addNode",
+      "pcg-connectNodes",
+      "pcg-createGraph",
+      "pcg-getInfo",
+    ],
+  },
+  {
+    "name": "physics",
+    "tools": [
+      "physics-createAsset",
+      "physics-createMaterial",
+      "physics-getInfo",
+      "physics-setConstraint",
+      "physics-setProfile",
+    ],
+  },
+  {
+    "name": "project",
+    "tools": [
+      "project-getClassHierarchy",
+      "project-getDependencyGraph",
+      "project-getPlugins",
+      "project-getSettings",
+      "project-getStructure",
+      "project-snapshot",
+    ],
+  },
+  {
+    "name": "python",
+    "tools": [
+      "python-execute",
+    ],
+  },
+  {
+    "name": "refactor",
+    "tools": [
+      "refactor-renameChain",
+    ],
+  },
+  {
+    "name": "sequencer",
+    "tools": [
+      "sequencer-addBinding",
+      "sequencer-addTrack",
+      "sequencer-create",
+      "sequencer-exportFBX",
+      "sequencer-getInfo",
+      "sequencer-importFBX",
+      "sequencer-open",
+      "sequencer-setKeyframe",
+    ],
+  },
+  {
+    "name": "slate",
+    "tools": [
+      "slate-generate",
+      "slate-listTemplates",
+      "slate-validate",
+    ],
+  },
+  {
+    "name": "sourcecontrol",
+    "tools": [
+      "sourcecontrol-checkout",
+      "sourcecontrol-diff",
+      "sourcecontrol-getStatus",
+    ],
+  },
+  {
+    "name": "texture",
+    "tools": [
+      "texture-createRenderTarget",
+      "texture-getInfo",
+      "texture-import",
+      "texture-listTextures",
+      "texture-resize",
+      "texture-setCompression",
+    ],
+  },
+  {
+    "name": "widget",
+    "tools": [
+      "widget-addElement",
+      "widget-create",
+      "widget-getBindings",
+      "widget-getInfo",
+      "widget-listWidgets",
+      "widget-setProperty",
+    ],
+  },
+  {
+    "name": "workflow",
+    "tools": [
+      "workflow-createCharacter",
+      "workflow-createDialogueSystem",
+      "workflow-createInteractable",
+      "workflow-createInventorySystem",
+      "workflow-createProjectile",
+      "workflow-createUIScreen",
+      "workflow-setupLevel",
+      "workflow-setupMultiplayer",
+    ],
+  },
+  {
+    "name": "worldpartition",
+    "tools": [
+      "worldpartition-createDataLayer",
+      "worldpartition-createHLOD",
+      "worldpartition-getInfo",
+      "worldpartition-setConfig",
+    ],
+  },
+]
+`;
+
+exports[`tool schema snapshots > safety classifications are stable 1`] = `
+[
+  {
+    "name": "actor-addComponent",
+    "safety": "warn",
+  },
+  {
+    "name": "actor-delete",
+    "safety": "dangerous",
+  },
+  {
+    "name": "actor-getComponents",
+    "safety": "safe",
+  },
+  {
+    "name": "actor-getProperties",
+    "safety": "safe",
+  },
+  {
+    "name": "actor-select",
+    "safety": "warn",
+  },
+  {
+    "name": "actor-setArrayRef",
+    "safety": "warn",
+  },
+  {
+    "name": "actor-setProperty",
+    "safety": "warn",
+  },
+  {
+    "name": "actor-setTransform",
+    "safety": "warn",
+  },
+  {
+    "name": "actor-spawn",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-addBlackboardKey",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-configureNavMesh",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-createBehaviorTree",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-createBlackboard",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-createEQS",
+    "safety": "warn",
+  },
+  {
+    "name": "ai-getBehaviorTreeInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "ai-getBlackboardKeys",
+    "safety": "safe",
+  },
+  {
+    "name": "ai-getNavMeshInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "analyze-assetHealth",
+    "safety": "safe",
+  },
+  {
+    "name": "analyze-blueprintComplexity",
+    "safety": "safe",
+  },
+  {
+    "name": "analyze-codeConventions",
+    "safety": "safe",
+  },
+  {
+    "name": "analyze-performanceHints",
+    "safety": "safe",
+  },
+  {
+    "name": "anim-createMontage",
+    "safety": "warn",
+  },
+  {
+    "name": "anim-getBlendSpace",
+    "safety": "safe",
+  },
+  {
+    "name": "anim-getSkeletonInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "anim-listMontages",
+    "safety": "safe",
+  },
+  {
+    "name": "anim-listSequences",
+    "safety": "safe",
+  },
+  {
+    "name": "asset-create",
+    "safety": "warn",
+  },
+  {
+    "name": "asset-delete",
+    "safety": "dangerous",
+  },
+  {
+    "name": "asset-duplicate",
+    "safety": "warn",
+  },
+  {
+    "name": "asset-export",
+    "safety": "warn",
+  },
+  {
+    "name": "asset-getReferences",
+    "safety": "safe",
+  },
+  {
+    "name": "asset-import",
+    "safety": "warn",
+  },
+  {
+    "name": "asset-rename",
+    "safety": "dangerous",
+  },
+  {
+    "name": "asset-setMetadata",
+    "safety": "warn",
+  },
+  {
+    "name": "audio-createCue",
+    "safety": "warn",
+  },
+  {
+    "name": "audio-createMetaSound",
+    "safety": "warn",
+  },
+  {
+    "name": "audio-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "audio-import",
+    "safety": "warn",
+  },
+  {
+    "name": "audio-listAssets",
+    "safety": "safe",
+  },
+  {
+    "name": "audio-setAttenuation",
+    "safety": "warn",
+  },
+  {
+    "name": "blueprint-connectPins",
+    "safety": "warn",
+  },
+  {
+    "name": "blueprint-createNode",
+    "safety": "warn",
+  },
+  {
+    "name": "blueprint-deleteNode",
+    "safety": "dangerous",
+  },
+  {
+    "name": "blueprint-modifyProperty",
+    "safety": "warn",
+  },
+  {
+    "name": "blueprint-serialize",
+    "safety": "safe",
+  },
+  {
+    "name": "build-cookContent",
+    "safety": "dangerous",
+  },
+  {
+    "name": "build-getMapCheck",
+    "safety": "safe",
+  },
+  {
+    "name": "build-lightmaps",
+    "safety": "warn",
+  },
+  {
+    "name": "chat-sendMessage",
+    "safety": "warn",
+  },
+  {
+    "name": "compilation-getErrors",
+    "safety": "safe",
+  },
+  {
+    "name": "compilation-getStatus",
+    "safety": "safe",
+  },
+  {
+    "name": "compilation-selfHeal",
+    "safety": "warn",
+  },
+  {
+    "name": "compilation-trigger",
+    "safety": "warn",
+  },
+  {
+    "name": "content-findAssets",
+    "safety": "safe",
+  },
+  {
+    "name": "content-getAssetDetails",
+    "safety": "safe",
+  },
+  {
+    "name": "content-listAssets",
+    "safety": "safe",
+  },
+  {
+    "name": "content-validateAssets",
+    "safety": "safe",
+  },
+  {
+    "name": "curve-create",
+    "safety": "warn",
+  },
+  {
+    "name": "curve-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "curve-setKeys",
+    "safety": "warn",
+  },
+  {
+    "name": "datatable-addRow",
+    "safety": "warn",
+  },
+  {
+    "name": "datatable-create",
+    "safety": "warn",
+  },
+  {
+    "name": "datatable-getRows",
+    "safety": "safe",
+  },
+  {
+    "name": "datatable-removeRow",
+    "safety": "dangerous",
+  },
+  {
+    "name": "debug-execConsole",
+    "safety": "dangerous",
+  },
+  {
+    "name": "debug-getLog",
+    "safety": "safe",
+  },
+  {
+    "name": "debug-getPerformance",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-batchOperation",
+    "safety": "warn",
+  },
+  {
+    "name": "editor-getAssetInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-getLevelInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-getRecentActivity",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-getSelection",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-getViewport",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-listActors",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-ping",
+    "safety": "safe",
+  },
+  {
+    "name": "editor-setSelection",
+    "safety": "warn",
+  },
+  {
+    "name": "file-read",
+    "safety": "safe",
+  },
+  {
+    "name": "file-search",
+    "safety": "safe",
+  },
+  {
+    "name": "file-write",
+    "safety": "warn",
+  },
+  {
+    "name": "foliage-createType",
+    "safety": "warn",
+  },
+  {
+    "name": "foliage-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "foliage-setProperties",
+    "safety": "warn",
+  },
+  {
+    "name": "gameplay-addInputAction",
+    "safety": "warn",
+  },
+  {
+    "name": "gameplay-getGameMode",
+    "safety": "safe",
+  },
+  {
+    "name": "gameplay-listInputActions",
+    "safety": "safe",
+  },
+  {
+    "name": "gameplay-setGameMode",
+    "safety": "warn",
+  },
+  {
+    "name": "geoscript-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "geoscript-meshBoolean",
+    "safety": "warn",
+  },
+  {
+    "name": "geoscript-meshTransform",
+    "safety": "warn",
+  },
+  {
+    "name": "landscape-create",
+    "safety": "warn",
+  },
+  {
+    "name": "landscape-exportHeightmap",
+    "safety": "warn",
+  },
+  {
+    "name": "landscape-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "landscape-importHeightmap",
+    "safety": "warn",
+  },
+  {
+    "name": "landscape-setMaterial",
+    "safety": "warn",
+  },
+  {
+    "name": "level-addSublevel",
+    "safety": "warn",
+  },
+  {
+    "name": "level-create",
+    "safety": "warn",
+  },
+  {
+    "name": "level-getWorldSettings",
+    "safety": "safe",
+  },
+  {
+    "name": "level-open",
+    "safety": "warn",
+  },
+  {
+    "name": "level-save",
+    "safety": "warn",
+  },
+  {
+    "name": "material-create",
+    "safety": "warn",
+  },
+  {
+    "name": "material-createInstance",
+    "safety": "warn",
+  },
+  {
+    "name": "material-getNodes",
+    "safety": "safe",
+  },
+  {
+    "name": "material-getParameters",
+    "safety": "safe",
+  },
+  {
+    "name": "material-setParameter",
+    "safety": "warn",
+  },
+  {
+    "name": "material-setTexture",
+    "safety": "warn",
+  },
+  {
+    "name": "mesh-generateCollision",
+    "safety": "warn",
+  },
+  {
+    "name": "mesh-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "mesh-setLOD",
+    "safety": "warn",
+  },
+  {
+    "name": "mesh-setMaterial",
+    "safety": "warn",
+  },
+  {
+    "name": "niagara-addEmitter",
+    "safety": "warn",
+  },
+  {
+    "name": "niagara-compile",
+    "safety": "warn",
+  },
+  {
+    "name": "niagara-createSystem",
+    "safety": "warn",
+  },
+  {
+    "name": "niagara-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "niagara-listSystems",
+    "safety": "safe",
+  },
+  {
+    "name": "niagara-setParameter",
+    "safety": "warn",
+  },
+  {
+    "name": "pcg-addNode",
+    "safety": "warn",
+  },
+  {
+    "name": "pcg-connectNodes",
+    "safety": "warn",
+  },
+  {
+    "name": "pcg-createGraph",
+    "safety": "warn",
+  },
+  {
+    "name": "pcg-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "physics-createAsset",
+    "safety": "warn",
+  },
+  {
+    "name": "physics-createMaterial",
+    "safety": "warn",
+  },
+  {
+    "name": "physics-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "physics-setConstraint",
+    "safety": "warn",
+  },
+  {
+    "name": "physics-setProfile",
+    "safety": "warn",
+  },
+  {
+    "name": "project-getClassHierarchy",
+    "safety": "safe",
+  },
+  {
+    "name": "project-getDependencyGraph",
+    "safety": "safe",
+  },
+  {
+    "name": "project-getPlugins",
+    "safety": "safe",
+  },
+  {
+    "name": "project-getSettings",
+    "safety": "safe",
+  },
+  {
+    "name": "project-getStructure",
+    "safety": "safe",
+  },
+  {
+    "name": "project-snapshot",
+    "safety": "safe",
+  },
+  {
+    "name": "python-execute",
+    "safety": "warn",
+  },
+  {
+    "name": "refactor-renameChain",
+    "safety": "dangerous",
+  },
+  {
+    "name": "sequencer-addBinding",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-addTrack",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-create",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-exportFBX",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "sequencer-importFBX",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-open",
+    "safety": "warn",
+  },
+  {
+    "name": "sequencer-setKeyframe",
+    "safety": "warn",
+  },
+  {
+    "name": "slate-generate",
+    "safety": "warn",
+  },
+  {
+    "name": "slate-listTemplates",
+    "safety": "safe",
+  },
+  {
+    "name": "slate-validate",
+    "safety": "safe",
+  },
+  {
+    "name": "sourcecontrol-checkout",
+    "safety": "warn",
+  },
+  {
+    "name": "sourcecontrol-diff",
+    "safety": "safe",
+  },
+  {
+    "name": "sourcecontrol-getStatus",
+    "safety": "safe",
+  },
+  {
+    "name": "texture-createRenderTarget",
+    "safety": "warn",
+  },
+  {
+    "name": "texture-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "texture-import",
+    "safety": "warn",
+  },
+  {
+    "name": "texture-listTextures",
+    "safety": "safe",
+  },
+  {
+    "name": "texture-resize",
+    "safety": "warn",
+  },
+  {
+    "name": "texture-setCompression",
+    "safety": "warn",
+  },
+  {
+    "name": "widget-addElement",
+    "safety": "warn",
+  },
+  {
+    "name": "widget-create",
+    "safety": "warn",
+  },
+  {
+    "name": "widget-getBindings",
+    "safety": "safe",
+  },
+  {
+    "name": "widget-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "widget-listWidgets",
+    "safety": "safe",
+  },
+  {
+    "name": "widget-setProperty",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createCharacter",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createDialogueSystem",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createInteractable",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createInventorySystem",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createProjectile",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-createUIScreen",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-setupLevel",
+    "safety": "warn",
+  },
+  {
+    "name": "workflow-setupMultiplayer",
+    "safety": "warn",
+  },
+  {
+    "name": "worldpartition-createDataLayer",
+    "safety": "warn",
+  },
+  {
+    "name": "worldpartition-createHLOD",
+    "safety": "warn",
+  },
+  {
+    "name": "worldpartition-getInfo",
+    "safety": "safe",
+  },
+  {
+    "name": "worldpartition-setConfig",
+    "safety": "warn",
+  },
+]
+`;
+
+exports[`tool schema snapshots > tool names list is stable 1`] = `
+[
+  "actor-addComponent",
+  "actor-delete",
+  "actor-getComponents",
+  "actor-getProperties",
+  "actor-select",
+  "actor-setArrayRef",
+  "actor-setProperty",
+  "actor-setTransform",
+  "actor-spawn",
+  "ai-addBlackboardKey",
+  "ai-configureNavMesh",
+  "ai-createBehaviorTree",
+  "ai-createBlackboard",
+  "ai-createEQS",
+  "ai-getBehaviorTreeInfo",
+  "ai-getBlackboardKeys",
+  "ai-getNavMeshInfo",
+  "analyze-assetHealth",
+  "analyze-blueprintComplexity",
+  "analyze-codeConventions",
+  "analyze-performanceHints",
+  "anim-createMontage",
+  "anim-getBlendSpace",
+  "anim-getSkeletonInfo",
+  "anim-listMontages",
+  "anim-listSequences",
+  "asset-create",
+  "asset-delete",
+  "asset-duplicate",
+  "asset-export",
+  "asset-getReferences",
+  "asset-import",
+  "asset-rename",
+  "asset-setMetadata",
+  "audio-createCue",
+  "audio-createMetaSound",
+  "audio-getInfo",
+  "audio-import",
+  "audio-listAssets",
+  "audio-setAttenuation",
+  "blueprint-connectPins",
+  "blueprint-createNode",
+  "blueprint-deleteNode",
+  "blueprint-modifyProperty",
+  "blueprint-serialize",
+  "build-cookContent",
+  "build-getMapCheck",
+  "build-lightmaps",
+  "chat-sendMessage",
+  "compilation-getErrors",
+  "compilation-getStatus",
+  "compilation-selfHeal",
+  "compilation-trigger",
+  "content-findAssets",
+  "content-getAssetDetails",
+  "content-listAssets",
+  "content-validateAssets",
+  "curve-create",
+  "curve-getInfo",
+  "curve-setKeys",
+  "datatable-addRow",
+  "datatable-create",
+  "datatable-getRows",
+  "datatable-removeRow",
+  "debug-execConsole",
+  "debug-getLog",
+  "debug-getPerformance",
+  "editor-batchOperation",
+  "editor-getAssetInfo",
+  "editor-getLevelInfo",
+  "editor-getRecentActivity",
+  "editor-getSelection",
+  "editor-getViewport",
+  "editor-listActors",
+  "editor-ping",
+  "editor-setSelection",
+  "file-read",
+  "file-search",
+  "file-write",
+  "foliage-createType",
+  "foliage-getInfo",
+  "foliage-setProperties",
+  "gameplay-addInputAction",
+  "gameplay-getGameMode",
+  "gameplay-listInputActions",
+  "gameplay-setGameMode",
+  "geoscript-getInfo",
+  "geoscript-meshBoolean",
+  "geoscript-meshTransform",
+  "landscape-create",
+  "landscape-exportHeightmap",
+  "landscape-getInfo",
+  "landscape-importHeightmap",
+  "landscape-setMaterial",
+  "level-addSublevel",
+  "level-create",
+  "level-getWorldSettings",
+  "level-open",
+  "level-save",
+  "material-create",
+  "material-createInstance",
+  "material-getNodes",
+  "material-getParameters",
+  "material-setParameter",
+  "material-setTexture",
+  "mesh-generateCollision",
+  "mesh-getInfo",
+  "mesh-setLOD",
+  "mesh-setMaterial",
+  "niagara-addEmitter",
+  "niagara-compile",
+  "niagara-createSystem",
+  "niagara-getInfo",
+  "niagara-listSystems",
+  "niagara-setParameter",
+  "pcg-addNode",
+  "pcg-connectNodes",
+  "pcg-createGraph",
+  "pcg-getInfo",
+  "physics-createAsset",
+  "physics-createMaterial",
+  "physics-getInfo",
+  "physics-setConstraint",
+  "physics-setProfile",
+  "project-getClassHierarchy",
+  "project-getDependencyGraph",
+  "project-getPlugins",
+  "project-getSettings",
+  "project-getStructure",
+  "project-snapshot",
+  "python-execute",
+  "refactor-renameChain",
+  "sequencer-addBinding",
+  "sequencer-addTrack",
+  "sequencer-create",
+  "sequencer-exportFBX",
+  "sequencer-getInfo",
+  "sequencer-importFBX",
+  "sequencer-open",
+  "sequencer-setKeyframe",
+  "slate-generate",
+  "slate-listTemplates",
+  "slate-validate",
+  "sourcecontrol-checkout",
+  "sourcecontrol-diff",
+  "sourcecontrol-getStatus",
+  "texture-createRenderTarget",
+  "texture-getInfo",
+  "texture-import",
+  "texture-listTextures",
+  "texture-resize",
+  "texture-setCompression",
+  "widget-addElement",
+  "widget-create",
+  "widget-getBindings",
+  "widget-getInfo",
+  "widget-listWidgets",
+  "widget-setProperty",
+  "workflow-createCharacter",
+  "workflow-createDialogueSystem",
+  "workflow-createInteractable",
+  "workflow-createInventorySystem",
+  "workflow-createProjectile",
+  "workflow-createUIScreen",
+  "workflow-setupLevel",
+  "workflow-setupMultiplayer",
+  "worldpartition-createDataLayer",
+  "worldpartition-createHLOD",
+  "worldpartition-getInfo",
+  "worldpartition-setConfig",
+]
+`;

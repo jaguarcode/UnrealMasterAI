@@ -43,3 +43,18 @@ jobs:
       - name: Security audit
         run: npm audit --audit-level=high
         continue-on-error: true
+
+  python-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ue-plugin/Content/Python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pytest
+        run: pip install pytest
+      - name: Run Python tests
+        run: python -m pytest tests/ -v
