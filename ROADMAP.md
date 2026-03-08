@@ -97,7 +97,7 @@
 - [ ] Create first git tag (`v0.2.0`) after Phase 0 fixes *(manual step)*
 
 #### 1.4 Documentation Sync
-- [ ] Update `docs/api-reference/mcp-tools.md` from 85 → 183 tools (auto-generate from tool-schemas.ts)
+- [x] Update `docs/api-reference/mcp-tools.md` from 85 → 183 tools (auto-generated from server.ts registrations)
 - [x] Add tool count badge to README
 - [x] Create `docs/adding-a-tool.md` — Step-by-step guide for contributors adding new MCP tools
 - [ ] Add OG image to `docs/index.html` (currently missing `og:image` meta tag)
@@ -122,8 +122,8 @@
 - [ ] Investigate UE Marketplace submission requirements *(manual research needed)*
 
 #### 2.3 Developer Experience
-- [ ] **Interactive setup wizard**: `npx unreal-master-mcp-server init` — generates `.claude/mcp.json`, validates prerequisites
-- [ ] **Connection health dashboard**: `editor-ping` with detailed diagnostics on failure
+- [x] **Interactive setup wizard**: `npx unreal-master-mcp-server init` — generates MCP config, validates Node.js version
+- [x] **Connection health dashboard**: `editor-ping` with detailed diagnostics on failure (latency, WebSocket state, suggested fixes)
 - [ ] **Example project**: Minimal UE project with plugin pre-configured for onboarding
 - [ ] **Video tutorial**: 5-min "zero to first tool call" walkthrough
 - [x] **Troubleshooting guide**: Added connection & build issue tables to README

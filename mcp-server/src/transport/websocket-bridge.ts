@@ -18,6 +18,12 @@ interface PendingRequest {
   timer: ReturnType<typeof setTimeout>;
 }
 
+export interface BridgeDiagnostics {
+  websocketState: 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'NO_CLIENT';
+  configuredPort: number;
+  lastConnectedAt: string | null;
+}
+
 export class WebSocketBridge {
   private wss: WebSocketServer | null = null;
   private activeClient: WebSocket | null = null;
@@ -26,6 +32,7 @@ export class WebSocketBridge {
   private requestTimeoutMs: number;
   private listening = false;
   private actualPort: number;
+  private lastConnectedAt: Date | null = null;
 
   /** Callback when client disconnects */
   onClientDisconnected: (() => void) | null = null;
@@ -71,6 +78,7 @@ export class WebSocketBridge {
 
         console.error(`[WS] Client connected successfully`);
         this.activeClient = ws;
+        this.lastConnectedAt = new Date();
         this.onClientConnected?.();
 
         ws.on('message', (data) => {
@@ -199,5 +207,29 @@ export class WebSocketBridge {
    */
   hasActiveConnection(): boolean {
     return this.activeClient !== null && this.activeClient.readyState === WebSocket.OPEN;
+  }
+
+  /**
+   * Return diagnostic information about the current WebSocket state.
+   * Used by editor-ping to surface connection health details.
+   */
+  getDiagnostics(): BridgeDiagnostics {
+    let websocketState: BridgeDiagnostics['websocketState'];
+    if (this.activeClient === null) {
+      websocketState = 'NO_CLIENT';
+    } else {
+      const stateMap: Record<number, BridgeDiagnostics['websocketState']> = {
+        [WebSocket.CONNECTING]: 'CONNECTING',
+        [WebSocket.OPEN]: 'OPEN',
+        [WebSocket.CLOSING]: 'CLOSING',
+        [WebSocket.CLOSED]: 'CLOSED',
+      };
+      websocketState = stateMap[this.activeClient.readyState] ?? 'CLOSED';
+    }
+    return {
+      websocketState,
+      configuredPort: this.port,
+      lastConnectedAt: this.lastConnectedAt ? this.lastConnectedAt.toISOString() : null,
+    };
   }
 }

@@ -6,6 +6,14 @@
  * CRITICAL: No output to stdout except JSON-RPC messages.
  * All logging goes to stderr via the logger module.
  */
+
+// Handle `init` subcommand before anything else so stdout is never guarded.
+if (process.argv.includes('init')) {
+  const { runInit } = await import('./cli/init.js');
+  await runInit();
+  process.exit(0);
+}
+
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { installStdoutGuard, createLogger } from './observability/logger.js';
 import { createServer } from './server.js';
