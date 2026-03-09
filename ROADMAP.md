@@ -146,10 +146,10 @@
 - [x] **Circuit breaker**: `CircuitBreaker` class opens after 5 consecutive failures (configurable), auto-resets after 60s cooldown — `editor-ping` resets circuit on success
 
 #### 3.3 Observability
-- [ ] **Structured logging**: JSON log output with request IDs, tool names, latencies
-- [ ] **Metrics export**: OpenTelemetry-compatible spans for tool execution tracing
-- [ ] **Performance dashboard**: Track tool latency percentiles over time
-- [ ] **Error rate alerting**: Webhook notification when error rate exceeds threshold
+- [x] **Structured logging**: JSON log output with request IDs, tool names, latencies — `createLogger()` supports `'json'` format, `LOG_FORMAT=json` env var, `withContext()` for request-scoped fields
+- [x] **Metrics export**: OpenTelemetry-compatible spans for tool execution tracing — W3C traceId/spanId, `exportSpans()` OTLP format, `OTEL_EXPORTER_ENDPOINT` env var
+- [x] **Performance dashboard**: Track tool latency percentiles over time — `getPerformanceSummary()` with p50/p95/p99 latencies, sorted by call count
+- [x] **Error rate alerting**: Webhook notification when error rate exceeds threshold — `AlertManager` with sliding window, cooldown, `ALERT_WEBHOOK_URL` env var
 
 #### 3.4 Security Hardening
 - [ ] **Python `validate_path()` audit**: Expand from 46/154 → all scripts that accept asset/file paths. Create `validate_and_load_asset()` helper combining validation with loading.

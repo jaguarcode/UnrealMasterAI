@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![Tests](https://img.shields.io/badge/Tests-999%20passed-brightgreen.svg)](mcp-server/)
+[![Tests](https://img.shields.io/badge/Tests-1063%20passed-brightgreen.svg)](mcp-server/)
 [![MCP Tools](https://img.shields.io/badge/MCP%20Tools-183-purple.svg)](docs/api-reference/mcp-tools.md)
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.

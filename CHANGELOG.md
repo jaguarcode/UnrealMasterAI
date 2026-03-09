@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
 
+## [0.4.2] — 2026-03-09
+
+### Added
+- **Structured JSON logging**: `createLogger()` supports `'json'` format with `LOG_FORMAT=json` env var. `withContext()` returns child logger with pre-filled requestId/toolName/durationMs fields
+- **OpenTelemetry-compatible tracing**: W3C traceId (32-hex) and spanId (16-hex), `exportSpans()` returns OTLP-format payload with nanosecond timestamps and typed attributes
+- **Performance dashboard**: `MetricsCollector.getPerformanceSummary()` returns all tools sorted by call count with p50/p95/p99 latency percentiles and aggregate stats
+- **Error rate alerting**: `AlertManager` class with sliding-window error rate tracking, configurable cooldown, and fire-and-forget webhook POST via `ALERT_WEBHOOK_URL`
+
+### Changed
+- Test count: 999 → 1063 tests across 62 files (was 59)
+
 ## [0.4.1] - 2026-03-08
 
 ### Added
@@ -64,7 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: npx quick-start, troubleshooting guide, install-plugin reference
 - Epic Games trademark disclaimer
 
-[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.1.0...v0.4.0
 [0.1.0]: https://github.com/jaguarcode/UnrealMasterAI/releases/tag/v0.1.0

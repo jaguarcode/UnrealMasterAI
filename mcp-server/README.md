@@ -105,7 +105,7 @@ Unreal Engine 5.4-5.7
 ## Testing
 
 ```bash
-# 999 TypeScript tests + 58 Python tests
+# 1063 TypeScript tests + 58 Python tests
 npm test
 
 # With coverage (thresholds enforced)
