@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
   "Version": 1,
-  "VersionName": "0.4.0",
+  "VersionName": "0.4.3",
   "FriendlyName": "Unreal Master Agent",
   "Description": "AI agent plugin enabling Claude Code to manipulate UE internals via MCP",
   "Category": "AI",
@@ -10,7 +10,6 @@
   "DocsURL": "https://jaguarcode.github.io/UnrealMasterAI/",
   "SupportURL": "https://github.com/jaguarcode/UnrealMasterAI/issues",
   "MarketplaceURL": "",
-  "EngineVersion": "5.4.0",
   "SupportedTargetPlatforms": ["Win64", "Mac", "Linux"],
   "EnabledByDefault": true,
   "CanContainContent": true,
