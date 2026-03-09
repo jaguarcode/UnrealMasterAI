@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
 
+## [0.4.3] — 2026-03-09
+
+### Added
+- **WebSocket authentication**: `WS_AUTH_SECRET` env var enables shared-secret auth with `x-uma-auth-token` header. Uses `crypto.timingSafeEqual` via HMAC normalization to prevent timing attacks
+- **Rate limiting**: `RateLimiter` class with sliding-window enforcement. `RATE_LIMIT_PER_MINUTE` env var configures global limit (default: 0 = disabled). Wraps all 183 tools automatically
+- **Enhanced path traversal prevention**: `isPathSafe()` now blocks null bytes, URL-encoded traversals, double-encoded patterns, and UNC paths. New `isAssetPathSafe()` validates UE content roots
+- **Asset path validation in safety gate**: `classifyOperation()` scans 14 asset path parameter keys and flags unsafe paths as dangerous before tool execution
+- **Input validation audit test**: 9 tests verify all 183 tools have Zod input schemas
+- **Python `validate_and_load_asset()` helper**: Combines path validation with asset loading in one call
+- **PythonScriptPlugin documentation**: Setup guide updated with enabling steps, verification, and troubleshooting
+- **`npm run audit:security`**: Dependency audit script for CI pipeline
+
+### Changed
+- Test count: 1063 → 1134 tests across 66 files (was 62)
+
 ## [0.4.2] — 2026-03-09
 
 ### Added

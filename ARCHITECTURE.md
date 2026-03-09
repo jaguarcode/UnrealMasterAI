@@ -89,6 +89,8 @@ The agent design follows a strict separation of concerns: the LLM reasons and or
 | `ErrorCodes` | `src/errors.ts` | Structured `UMA_E_*` error codes and helpers |
 | `Tracer` | `src/observability/tracer.ts` | OpenTelemetry-compatible traces |
 | `AlertManager` | `src/observability/alert-manager.ts` | Sliding-window error rate alerting with webhook notifications |
+| `RateLimiter` | `src/state/rate-limiter.ts` | Sliding-window rate limiting for tool calls |
+| `WsAuth` | `src/transport/ws-auth.ts` | WebSocket connection authentication |
 
 > **CRITICAL CONSTRAINT:** All debug output MUST go to `stderr`. `stdout` is exclusively for JSON-RPC messages. A single `console.log()` will corrupt the JSON-RPC stream.
 

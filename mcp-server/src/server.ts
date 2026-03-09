@@ -7,6 +7,7 @@ import { z } from 'zod';
 import path from 'node:path';
 import type { Logger } from './observability/logger.js';
 import type { WebSocketBridge } from './transport/websocket-bridge.js';
+import type { RateLimiter } from './state/rate-limiter.js';
 import { editorPing } from './tools/editor/ping.js';
 import { editorGetLevelInfo } from './tools/editor/get-level-info.js';
 import { editorListActors } from './tools/editor/list-actors.js';
@@ -287,12 +288,43 @@ Developer Request
 7. Actor mobility — StaticMeshActors default to Static, set to Movable before runtime movement.
 `.trim();
 
+interface ServerOptions {
+  rateLimiter?: RateLimiter;
+}
+
+function withRateLimit(
+  rateLimiter: RateLimiter | undefined,
+  toolName: string,
+  handler: (params: unknown) => Promise<unknown>
+): (params: unknown) => Promise<unknown> {
+  if (!rateLimiter) return handler;
+  return async (params: unknown) => {
+    const result = rateLimiter.check(toolName);
+    if (!result.allowed) {
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            status: 'error',
+            code: 'UMA_E_RATE_LIMITED',
+            error: `Rate limited. Retry after ${result.retryAfterMs}ms`,
+            retryAfterMs: result.retryAfterMs,
+          }),
+        }],
+      };
+    }
+    return handler(params);
+  };
+}
+
 /**
  * Create and configure the MCP server with all tools registered.
  * @param logger - stderr-only logger
  * @param bridge - WebSocket bridge to the UE plugin
+ * @param options - optional server options (rate limiter, etc.)
  */
-export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer {
+export function createServer(logger: Logger, bridge: WebSocketBridge, options: ServerOptions = {}): McpServer {
+  const { rateLimiter } = options;
   const server = new McpServer(
     {
       name: 'unreal-master-agent',
@@ -302,6 +334,21 @@ export function createServer(logger: Logger, bridge: WebSocketBridge): McpServer
       instructions: SERVER_INSTRUCTIONS,
     },
   );
+
+  // Wrap server.tool to inject rate limiting around every handler registration.
+  if (rateLimiter) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const originalTool: (...args: any[]) => any = server.tool.bind(server);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (server as any).tool = (...args: any[]) => {
+      const toolName: string = args[0];
+      const lastArg = args[args.length - 1];
+      if (typeof lastArg === 'function') {
+        args[args.length - 1] = withRateLimit(rateLimiter, toolName, lastArg);
+      }
+      return originalTool(...args);
+    };
+  }
 
   const cache = new CacheStore({ maxEntries: 1000, ttlMs: 60000 });
 

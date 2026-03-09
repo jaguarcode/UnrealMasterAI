@@ -8,10 +8,12 @@ import { encodeMessage, decodeResponse } from './message-codec.js';
 import type { WSMessage, WSResponse } from '../types/messages.js';
 import { ConnectionManager } from './connection-manager.js';
 import type { ConnectionStats } from './connection-manager.js';
+import { validateWsAuth } from './ws-auth.js';
 
 export interface WebSocketBridgeOptions {
   port: number;
   requestTimeoutMs?: number;
+  authSecret?: string;
 }
 
 interface PendingRequest {
@@ -35,6 +37,7 @@ export class WebSocketBridge {
   private listening = false;
   private actualPort: number;
   private lastConnectedAt: Date | null = null;
+  private authSecret: string | undefined;
   connectionManager: ConnectionManager;
 
   /** Callback when client disconnects */
@@ -47,6 +50,7 @@ export class WebSocketBridge {
     this.port = options.port;
     this.actualPort = options.port;
     this.requestTimeoutMs = options.requestTimeoutMs ?? 30000;
+    this.authSecret = options.authSecret;
     this.connectionManager = new ConnectionManager();
   }
 
@@ -55,7 +59,16 @@ export class WebSocketBridge {
    */
   start(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.wss = new WebSocketServer({ port: this.port });
+      this.wss = new WebSocketServer({
+        port: this.port,
+        verifyClient: this.authSecret
+          ? (info, cb) => {
+              const result = validateWsAuth(info.req.headers, { secret: this.authSecret });
+              if (result.accepted) cb(true);
+              else cb(false, 401, result.reason ?? 'Unauthorized');
+            }
+          : undefined,
+      });
 
       this.wss.on('listening', () => {
         this.listening = true;

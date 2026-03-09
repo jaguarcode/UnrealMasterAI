@@ -18,6 +18,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { installStdoutGuard, createLogger } from './observability/logger.js';
 import { createServer } from './server.js';
 import { WebSocketBridge } from './transport/websocket-bridge.js';
+import { RateLimiter } from './state/rate-limiter.js';
 
 // Install stdout guard FIRST — before any other code can pollute stdout
 installStdoutGuard();
@@ -30,11 +31,16 @@ async function main() {
   logger.info('Starting Unreal Master Agent MCP Bridge Server');
 
   const wsPort = parseInt(process.env.UE_WS_PORT ?? '9877', 10);
-  const bridge = new WebSocketBridge({ port: wsPort });
+  const authSecret = process.env.WS_AUTH_SECRET;
+  const bridge = new WebSocketBridge({ port: wsPort, authSecret });
   await bridge.start();
   logger.info(`WebSocket bridge listening on port ${bridge.getPort()}`);
+  if (authSecret) {
+    logger.info('WebSocket authentication enabled');
+  }
 
-  const mcpServer = createServer(logger, bridge);
+  const rateLimiter = new RateLimiter();
+  const mcpServer = createServer(logger, bridge, { rateLimiter });
 
   const transport = new StdioServerTransport();
   await mcpServer.connect(transport);

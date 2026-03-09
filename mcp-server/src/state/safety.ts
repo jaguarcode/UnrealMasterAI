@@ -271,6 +271,15 @@ export function classifyOperation(
   toolName: string,
   params: Record<string, unknown>,
 ): SafetyClassification {
+  // Validate asset paths in params before any tool-specific checks
+  const assetPathKeys = ['assetPath', 'blueprintPath', 'materialPath', 'meshPath', 'animationPath', 'texturePath', 'soundPath', 'widgetPath', 'sequencePath', 'niagaraPath', 'landscapePath', 'curvePath', 'pcgPath', 'sourcePath', 'targetPath'];
+  for (const key of assetPathKeys) {
+    const val = params[key];
+    if (typeof val === 'string' && val.startsWith('/') && !isAssetPathSafe(val)) {
+      return { level: 'dangerous' as const, reason: `Potentially unsafe asset path in ${key}: ${val}`, requiresApproval: true };
+    }
+  }
+
   // Safe operations (queries, reads)
   if (SAFE_TOOLS.has(toolName)) {
     return { level: 'safe', reason: 'Read-only operation', requiresApproval: false };
@@ -311,11 +320,26 @@ export function classifyOperation(
 
 /**
  * Validate that a file path is safe and within allowed project roots.
- * Blocks path traversal attacks (.., ~) and paths outside allowed roots.
+ * Blocks path traversal attacks (.., ~), null bytes, URL-encoded traversals,
+ * double-encoded patterns, and UNC paths.
  */
 export function isPathSafe(filePath: string, allowedRoots: string[]): boolean {
-  // Normalize to forward slashes
+  // Block null bytes (null byte injection)
+  if (filePath.includes('\0') || filePath.includes('\x00')) return false;
+
+  // Block URL-encoded traversal attempts (case-insensitive)
+  const lowerPath = filePath.toLowerCase();
+  if (lowerPath.includes('%2e%2e')) return false;  // encoded ..
+  if (lowerPath.includes('%2f')) return false;      // encoded /
+  if (lowerPath.includes('%5c')) return false;      // encoded \
+  if (lowerPath.includes('%252e')) return false;    // double-encoded .
+  if (lowerPath.includes('%255c')) return false;    // double-encoded \
+
+  // Normalize backslashes to forward slashes before remaining checks
   const normalized = filePath.replace(/\\/g, '/');
+
+  // Block UNC paths (//server/share or \\server\share already normalized)
+  if (normalized.startsWith('//')) return false;
 
   // Block path traversal
   if (normalized.includes('..')) return false;
@@ -323,6 +347,38 @@ export function isPathSafe(filePath: string, allowedRoots: string[]): boolean {
 
   // Must start with one of the allowed roots
   return allowedRoots.some((root) => normalized.startsWith(root.replace(/\\/g, '/')));
+}
+
+/**
+ * Validate that a UE asset path stays within /Game/, /Engine/, or /Script/ roots.
+ * Asset paths use forward slashes and must not contain traversal patterns.
+ */
+export function isAssetPathSafe(assetPath: string): boolean {
+  // Reject empty string
+  if (!assetPath) return false;
+
+  // Block null bytes
+  if (assetPath.includes('\0') || assetPath.includes('\x00')) return false;
+
+  // Block URL-encoded traversal attempts (case-insensitive)
+  const lowerPath = assetPath.toLowerCase();
+  if (lowerPath.includes('%2e%2e')) return false;
+  if (lowerPath.includes('%2f')) return false;
+  if (lowerPath.includes('%5c')) return false;
+  if (lowerPath.includes('%252e')) return false;
+  if (lowerPath.includes('%255c')) return false;
+
+  // Normalize backslashes to forward slashes
+  const normalized = assetPath.replace(/\\/g, '/');
+
+  // Block path traversal
+  if (normalized.includes('..')) return false;
+
+  // Must start with a valid UE content root
+  const validRoots = ['/Game/', '/Engine/', '/Script/'];
+  if (!validRoots.some((root) => normalized.startsWith(root))) return false;
+
+  return true;
 }
 
 export interface ApprovalRequestContext {

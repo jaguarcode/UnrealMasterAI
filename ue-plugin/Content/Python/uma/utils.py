@@ -47,7 +47,7 @@ def validate_path(asset_path):
     Raises:
         ValueError: If the path is outside allowed roots or contains traversal.
     """
-    allowed_roots = ["/Game/", "/Engine/"]
+    allowed_roots = ["/Game/", "/Engine/", "/Script/"]
 
     if not asset_path:
         raise ValueError("Asset path cannot be empty")
@@ -63,6 +63,28 @@ def validate_path(asset_path):
         )
 
     return True
+
+
+def validate_and_load_asset(asset_path):
+    """
+    Validate an asset path and load the asset in one step.
+    Combines validate_path() with EditorAssetLibrary.load_asset().
+
+    Returns:
+        tuple: (asset, None) on success, (None, error_message) on failure
+    """
+    try:
+        validate_path(asset_path)
+    except (ValueError, TypeError) as e:
+        return None, f"Invalid asset path: {str(e)}"
+
+    try:
+        asset = unreal.EditorAssetLibrary.load_asset(asset_path)
+        if asset is None:
+            return None, f"Asset not found: {asset_path}"
+        return asset, None
+    except Exception as e:
+        return None, f"Failed to load asset {asset_path}: {str(e)}"
 
 
 def parse_params(params_json):

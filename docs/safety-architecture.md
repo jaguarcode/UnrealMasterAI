@@ -190,10 +190,14 @@ function isPathSafe(filePath: string, allowedRoots: string[]): boolean {
 }
 ```
 
-**Protected Patterns:**
+**Protected Patterns (v0.4.3 enhanced):**
 
 - `..` — Path traversal attempts
 - `~` — Home directory shortcuts
+- Null bytes (`\0`) — Null byte injection
+- URL-encoded traversals (`%2e%2e`) — Encoded dot-dot sequences
+- Double-encoded traversals (`%252e`) — Double-encoded evasion
+- UNC paths (`\\server\share`) — Windows UNC path bypass
 - Paths outside allowed roots
 
 **Allowed Roots (Example):**
@@ -204,6 +208,25 @@ function isPathSafe(filePath: string, allowedRoots: string[]): boolean {
 /Plugins/
 C:\Users\<username>\Documents\
 ```
+
+### 2a. isAssetPathSafe() — TypeScript (v0.4.3)
+
+**File:** `mcp-server/src/state/safety.ts`
+
+Validates that a UE asset path references an allowed content root:
+
+```typescript
+function isAssetPathSafe(assetPath: string): boolean {
+  // Accepts paths beginning with /Game/, /Engine/, or /Script/
+  // Rejects all other roots
+}
+```
+
+**Valid roots:** `/Game/`, `/Engine/`, `/Script/`
+
+### 2b. Asset path validation in classifyOperation() (v0.4.3)
+
+`classifyOperation()` now scans 14 asset path parameter keys (e.g., `blueprintPath`, `assetPath`, `materialPath`, `texturePath`, etc.) and flags any request containing an unsafe asset path as **dangerous** before tool execution.
 
 ### 3. ApprovalGate — TypeScript
 
@@ -356,6 +379,28 @@ Tool handlers now return structured `UMA_E_*` error codes instead of raw strings
 | `UMA_E_CIRCUIT_OPEN` | `ErrorCode.CIRCUIT_OPEN` | Circuit breaker is open |
 | `UMA_E_TOOL_NOT_FOUND` | `ErrorCode.TOOL_NOT_FOUND` | MCP tool not found |
 | `UMA_E_INTERNAL_ERROR` | `ErrorCode.INTERNAL_ERROR` | Unclassified internal error |
+
+---
+
+## WebSocket Authentication (v0.4.3)
+
+The MCP server supports optional shared-secret authentication for incoming WebSocket connections.
+
+- **Env var:** `WS_AUTH_SECRET` — when set, all connecting clients must send the `x-uma-auth-token` header
+- **Validation:** Uses `crypto.timingSafeEqual` via HMAC normalization to prevent timing-based secret extraction
+- **Default:** No auth required (backward compatible — existing setups are unaffected)
+- **File:** `src/transport/ws-auth.ts`
+
+---
+
+## Rate Limiting (v0.4.3)
+
+The `RateLimiter` class enforces a configurable per-minute cap on tool calls using a sliding-window algorithm.
+
+- **Env var:** `RATE_LIMIT_PER_MINUTE` — global limit applied to all 183 tools (default: `0` = disabled)
+- **Mechanism:** Sliding window — counts calls in the trailing 60-second window
+- **Application:** Injected via `server.tool` monkey-patch at startup; no per-tool changes required
+- **File:** `src/state/rate-limiter.ts`
 
 ---
 

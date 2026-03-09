@@ -112,6 +112,42 @@ Alternatively, add the server to your global Claude Code settings:
 
 ## Step 4: Install and Enable the UE Plugin
 
+### PythonScriptPlugin Requirement
+
+The Unreal Master Agent's Python automation layer requires the **Python Editor Script Plugin**, which is not enabled by default in all Unreal Engine distributions.
+
+#### Enabling the Plugin
+
+1. Open your UE project in the editor
+2. Go to **Edit → Plugins**
+3. Search for "**Python Editor Script Plugin**" under the **Scripting** category
+4. Check the **Enabled** checkbox
+5. Restart the editor when prompted
+
+#### Verifying Installation
+
+After enabling, verify Python is available:
+1. Open **Window → Developer Tools → Output Log**
+2. Switch the command bar dropdown to **Python**
+3. Type `print("Python works!")` and press Enter
+
+#### Graceful Error Handling
+
+If PythonScriptPlugin is not available, the MCP server will:
+- Return a descriptive error: `"Python script execution requires PythonScriptPlugin. Enable it in Edit → Plugins → Scripting."`
+- Continue operating with all non-Python tools functional
+- Log a warning at startup when the plugin is not detected
+
+#### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "PythonScriptPlugin not found" | Plugin not enabled | Enable in Edit → Plugins → Scripting |
+| Python commands not available | Editor restart needed | Restart UE Editor after enabling plugin |
+| Import errors in Python scripts | Wrong Python version | UE5 requires Python 3.9+. Check with `python --version` in UE console |
+
+---
+
 The UE plugin implements the Layer 3 (C++) components that execute operations in Unreal Engine.
 
 ### Copy the Plugin
