@@ -83,6 +83,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full architecture document incl
 - **npm** 10+
 - **TypeScript** 5.5+ (installed via devDependencies)
 - **Unreal Engine** 5.4 - 5.7
+- **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python automation (154 scripts)
 - **Claude Code** (latest) with MCP support
 
 ---
@@ -159,7 +160,19 @@ Copy or symlink `ue-plugin/` into your Unreal Engine project's `Plugins/` direct
 
 Rebuild the project from source.
 
-### 5. Start the agent
+### 5. Enable Python Editor Script Plugin
+
+The Python automation layer (154 scripts) requires the **Python Editor Script Plugin**:
+
+1. Open your UE project → **Edit → Plugins**
+2. Search for **"Python Editor Script Plugin"** under **Scripting**
+3. Enable it and restart the editor
+
+> Without this plugin, all non-Python tools (Blueprints, actors, materials, etc.) still work. Only Python-based automation will be unavailable.
+
+See [docs/setup-guide.md](docs/setup-guide.md#pythonscriptplugin-requirement) for verification steps and troubleshooting.
+
+### 6. Start the agent
 
 Open your Unreal Engine project (the plugin auto-connects to the MCP server on startup), then launch Claude Code in the project root. The MCP server starts automatically.
 

@@ -100,6 +100,7 @@ Unreal Engine 5.4-5.7
 
 - **Node.js** >= 20.0.0
 - **Unreal Engine** 5.4 - 5.7
+- **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python-based automation
 - **UE Plugin**: [UnrealMasterAgent](https://github.com/jaguarcode/UnrealMasterAI/tree/main/ue-plugin) installed in your project
 
 ## Testing
