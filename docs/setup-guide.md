@@ -152,17 +152,17 @@ The UE plugin implements the Layer 3 (C++) components that execute operations in
 
 ### Copy the Plugin
 
-Copy or symlink the `ue-plugin/` directory to your Unreal Engine project's `Plugins/` directory:
+Copy or symlink the `UnrealMasterAgent/` directory to your Unreal Engine project's `Plugins/` directory:
 
 ```bash
 # Option A: Copy
-cp -r ue-plugin /path/to/YourProject/Plugins/UnrealMasterAgent
+cp -r UnrealMasterAgent /path/to/YourProject/Plugins/UnrealMasterAgent
 
 # Option B: Symlink (Unix/Linux/macOS)
-ln -s /path/to/UnrealMasterAI/ue-plugin /path/to/YourProject/Plugins/UnrealMasterAgent
+ln -s /path/to/UnrealMasterAI/UnrealMasterAgent /path/to/YourProject/Plugins/UnrealMasterAgent
 
 # Option C: Symlink (Windows, requires admin)
-mklink /D "C:\YourProject\Plugins\UnrealMasterAgent" "C:\Workspace\UnrealMasterAI\ue-plugin"
+mklink /D "C:\YourProject\Plugins\UnrealMasterAgent" "C:\Workspace\UnrealMasterAI\UnrealMasterAgent"
 ```
 
 ### Enable in .uproject

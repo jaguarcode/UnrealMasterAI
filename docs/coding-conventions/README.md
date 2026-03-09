@@ -13,7 +13,7 @@ The Unreal Master Agent is a two-track development project:
 | Track | Component | Language | Location |
 |-------|-----------|----------|----------|
 | **A** | MCP Bridge Server | TypeScript | `mcp-server/src/` |
-| **B** | UE Agent Plugin | C++ | `ue-plugin/Source/UnrealMasterAgent/` |
+| **B** | UE Agent Plugin | C++ | `UnrealMasterAgent/Source/UnrealMasterAgent/` |
 
 Both tracks integrate at milestone boundaries and follow strict TDD discipline from the start. The project uses a 4-layer architecture where:
 
@@ -276,7 +276,7 @@ Keep dependencies minimal and pinned to specific versions. All dependencies must
 
 ---
 
-## 3. C++ Conventions (ue-plugin/)
+## 3. C++ Conventions (UnrealMasterAgent/)
 
 ### 3.1 Naming Conventions and Class Prefixes
 

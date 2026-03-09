@@ -57,7 +57,7 @@ Use the [Feature Request](https://github.com/jaguarcode/UnrealMasterAI/issues/ne
 
 ### Python Scripts
 
-All Python scripts in `ue-plugin/Content/Python/uma/` follow a standard pattern:
+All Python scripts in `UnrealMasterAgent/Content/Python/uma/` follow a standard pattern:
 
 ```python
 import unreal
@@ -119,7 +119,7 @@ chore: bump @modelcontextprotocol/sdk to 1.13.0
 See the detailed guide: [docs/adding-a-tool.md](docs/adding-a-tool.md)
 
 Quick overview:
-1. Create a Python script in `ue-plugin/Content/Python/uma/`
+1. Create a Python script in `UnrealMasterAgent/Content/Python/uma/`
 2. Create a TypeScript tool handler in `mcp-server/src/tools/<domain>/`
 3. Register the tool in `mcp-server/src/server.ts` with Zod schema
 4. Classify the tool in `mcp-server/src/state/safety.ts`

@@ -255,8 +255,8 @@ class ApprovalGate {
 
 ### 4. FUMAApprovalGate — C++
 
-**File:** `ue-plugin/Source/UnrealMasterAgent/Public/Safety/UMAApprovalGate.h`
-**Implementation:** `ue-plugin/Source/UnrealMasterAgent/Private/Safety/UMAApprovalGate.cpp`
+**File:** `UnrealMasterAgent/Source/UnrealMasterAgent/Public/Safety/UMAApprovalGate.h`
+**Implementation:** `UnrealMasterAgent/Source/UnrealMasterAgent/Private/Safety/UMAApprovalGate.cpp`
 
 Manages approval dialog lifecycle in the UE editor:
 
@@ -276,8 +276,8 @@ class FUMAApprovalGate {
 
 ### 5. SUMAApprovalDialog — C++ Slate Widget
 
-**File:** `ue-plugin/Source/UnrealMasterAgent/Public/Safety/UMAApprovalGate.h`
-**Implementation:** `ue-plugin/Source/UnrealMasterAgent/Private/Safety/UMAApprovalGate.cpp`
+**File:** `UnrealMasterAgent/Source/UnrealMasterAgent/Public/Safety/UMAApprovalGate.h`
+**Implementation:** `UnrealMasterAgent/Source/UnrealMasterAgent/Private/Safety/UMAApprovalGate.cpp`
 
 Modal Slate dialog displayed to the developer:
 

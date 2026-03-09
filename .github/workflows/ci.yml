@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ue-plugin/Content/Python
+        working-directory: UnrealMasterAgent/Content/Python
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

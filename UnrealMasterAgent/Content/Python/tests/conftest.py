@@ -14,7 +14,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Ensure the uma package is importable from the Python root
 # ---------------------------------------------------------------------------
-PYTHON_ROOT = Path(__file__).parent.parent  # ue-plugin/Content/Python/
+PYTHON_ROOT = Path(__file__).parent.parent  # UnrealMasterAgent/Content/Python/
 if str(PYTHON_ROOT) not in sys.path:
     sys.path.insert(0, str(PYTHON_ROOT))
 

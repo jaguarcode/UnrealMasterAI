@@ -8,12 +8,12 @@ set -euo pipefail
 VERSION="${1:-0.1.0}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-PLUGIN_DIR="$ROOT_DIR/ue-plugin"
+PLUGIN_DIR="$ROOT_DIR/UnrealMasterAgent"
 BUILD_DIR="$ROOT_DIR/build"
 OUTPUT_NAME="UnrealMasterAgent-${VERSION}"
 
 if [ ! -d "$PLUGIN_DIR" ]; then
-  echo "Error: ue-plugin/ directory not found at $PLUGIN_DIR" >&2
+  echo "Error: UnrealMasterAgent/ directory not found at $PLUGIN_DIR" >&2
   exit 1
 fi
 

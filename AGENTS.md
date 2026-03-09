@@ -13,7 +13,7 @@ UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 | Path | Layer | Description |
 |------|-------|-------------|
 | `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (183 tools, 826 tests) |
-| `ue-plugin/` | Layer 3 | C++ Unreal Engine plugin + 154 Python automation scripts |
+| `UnrealMasterAgent/` | Layer 3 | C++ Unreal Engine plugin + 154 Python automation scripts |
 | `TestProject/` | — | UE5 test project with gameplay classes (PatrollingActor, etc.) |
 | `docs/` | — | API reference, protocol spec, schemas, Slate RAG templates, guides |
 | `README.md` | — | Setup instructions and development workflow |
@@ -121,7 +121,7 @@ Response (UE → MCP):
 | File | Purpose |
 |------|---------|
 | `mcp-server/AGENTS.md` | MCP Bridge Server docs |
-| `ue-plugin/AGENTS.md` | UE Plugin docs |
+| `UnrealMasterAgent/AGENTS.md` | UE Plugin docs |
 | `docs/AGENTS.md` | Documentation index and RAG knowledge base docs |
 
 <!-- MANUAL: Custom project notes can be added below -->

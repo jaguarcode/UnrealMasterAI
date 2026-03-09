@@ -6,13 +6,13 @@ This guide walks you through adding a new tool to Unreal Master Agent, from Pyth
 
 Each tool in Unreal Master Agent has three parts:
 
-1. **Python script** (`ue-plugin/Content/Python/uma/`) — Executes UE operations
+1. **Python script** (`UnrealMasterAgent/Content/Python/uma/`) — Executes UE operations
 2. **TypeScript handler** (`mcp-server/src/tools/<domain>/`) — MCP interface with Zod schema
 3. **Registration** (`mcp-server/src/server.ts`) — Registers the tool with the MCP server
 
 ## Step 1: Create the Python Script
 
-Create a new file in `ue-plugin/Content/Python/uma/`. Follow the naming convention: `domain_action.py` (e.g., `actor_spawn.py`, `material_create.py`).
+Create a new file in `UnrealMasterAgent/Content/Python/uma/`. Follow the naming convention: `domain_action.py` (e.g., `actor_spawn.py`, `material_create.py`).
 
 ### Template
 
@@ -192,7 +192,7 @@ mcp-server/
 │   └── unit/
 │       └── tools/
 │           └── <your-domain>/       # Your tests
-ue-plugin/
+UnrealMasterAgent/
 └── Content/
     └── Python/
         └── uma/

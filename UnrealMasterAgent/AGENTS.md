@@ -11,7 +11,7 @@ MCP Bridge Server as a WebSocket CLIENT. All UE API calls run on the GameThread.
 ## Source Layout
 
 ```
-ue-plugin/Source/
+UnrealMasterAgent/Source/
 ├── UnrealMasterAgent/              Main plugin module
 │   ├── UnrealMasterAgent.Build.cs  Module build rules
 │   ├── Public/

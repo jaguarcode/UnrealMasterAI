@@ -7,7 +7,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-PLUGIN_SRC="$ROOT_DIR/ue-plugin"
+PLUGIN_SRC="$ROOT_DIR/UnrealMasterAgent"
 PLUGIN_NAME="UnrealMasterAgent"
 
 if [ $# -lt 1 ]; then

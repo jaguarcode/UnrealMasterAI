@@ -148,7 +148,7 @@ npm run build
 
 **Manual install:**
 
-Copy or symlink `ue-plugin/` into your Unreal Engine project's `Plugins/` directory (renaming to `UnrealMasterAgent`), then enable it in the `.uproject` file:
+Copy or symlink `UnrealMasterAgent/` into your Unreal Engine project's `Plugins/` directory, then enable it in the `.uproject` file:
 
 ```json
 {
@@ -253,7 +253,7 @@ Unreal Master/
 │   ├── tests/             Test suites
 │   └── docs/              Development guides
 │
-├── ue-plugin/               Layer 3: C++ UE plugin
+├── UnrealMasterAgent/               Layer 3: C++ UE plugin
 │   ├── Content/Python/uma/  Python scripts for UE automation (154 scripts)
 │   └── Source/
 │       ├── UnrealMasterAgent/        Main module
@@ -372,7 +372,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 |-------|-------|--------|
 | MCP Server (TypeScript) | 826 tests across 54 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
-| Python Scripts | 154 scripts in `ue-plugin/Content/Python/uma/` | Verified live |
+| Python Scripts | 154 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
 
 ---
 
