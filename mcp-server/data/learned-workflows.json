@@ -1,5 +1,3586 @@
 {
   "version": 1,
-  "updatedAt": 1773287004276,
-  "items": []
+  "updatedAt": 1773296864136,
+  "items": [
+    {
+      "id": "learned-actor-patrol-enemy",
+      "name": "Create Patrolling Enemy Actor",
+      "description": "Spawn an enemy actor with patrol points and set up movement between waypoints",
+      "domain": "actor",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create patrolling enemy",
+        "make enemy patrol",
+        "enemy walk between points",
+        "patrol waypoints setup"
+      ],
+      "prerequisites": [
+        "Enemy mesh asset",
+        "NavMesh in level"
+      ],
+      "steps": [
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn enemy actor in level"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add InterpToMovementComponent for patrol"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Configure patrol points and behaviour type to PING_PONG"
+        },
+        {
+          "tool": "actor-setTransform",
+          "purpose": "Position enemy at patrol start location"
+        },
+        {
+          "tool": "ai-configureNavMesh",
+          "purpose": "Ensure NavMesh covers patrol area"
+        }
+      ],
+      "expectedOutcome": "An enemy actor that automatically patrols between waypoints using InterpToMovement",
+      "source": "user-defined",
+      "tags": [
+        "actor",
+        "enemy",
+        "patrol",
+        "ai",
+        "movement"
+      ]
+    },
+    {
+      "id": "learned-blueprint-health-component",
+      "name": "Blueprint Health and Damage System",
+      "description": "Create a reusable health component Blueprint with damage events and death logic",
+      "domain": "blueprint",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create health component",
+        "add health system",
+        "make damage system",
+        "health and death logic",
+        "hp system blueprint"
+      ],
+      "prerequisites": [
+        "Actor Blueprint to attach to"
+      ],
+      "steps": [
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Create HealthComponent Blueprint class"
+        },
+        {
+          "tool": "blueprint-modifyProperty",
+          "purpose": "Add MaxHealth and CurrentHealth float variables"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add TakeDamage event node"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Connect damage input to health subtraction math"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add death check branch and OnDeath dispatcher"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire branch output to death event dispatch"
+        }
+      ],
+      "expectedOutcome": "A reusable HealthComponent Blueprint that tracks HP, responds to damage, and fires death events",
+      "source": "user-defined",
+      "tags": [
+        "blueprint",
+        "health",
+        "damage",
+        "component",
+        "gameplay"
+      ]
+    },
+    {
+      "id": "learned-material-tri-planar",
+      "name": "Create Tri-Planar Projection Material",
+      "description": "Build a master material using world-aligned texture projections on all three axes for seamless tiling on irregular meshes",
+      "domain": "material",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "tri-planar material",
+        "world aligned texture",
+        "seamless rock material",
+        "no seam terrain texture",
+        "triplanar projection"
+      ],
+      "prerequisites": [
+        "Albedo, normal, and roughness textures"
+      ],
+      "steps": [
+        {
+          "tool": "material-create",
+          "purpose": "Create new master material asset"
+        },
+        {
+          "tool": "texture-import",
+          "purpose": "Import albedo, normal, and roughness textures"
+        },
+        {
+          "tool": "material-setTexture",
+          "purpose": "Assign textures to material texture parameters"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add WorldAlignedTexture nodes for X, Y, Z projections"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Blend three projections using absolute world normal"
+        },
+        {
+          "tool": "material-getNodes",
+          "purpose": "Verify node graph is correctly wired"
+        }
+      ],
+      "expectedOutcome": "A tri-planar master material that tiles seamlessly on any mesh without visible seams",
+      "source": "user-defined",
+      "tags": [
+        "material",
+        "texture",
+        "tri-planar",
+        "world-aligned",
+        "master-material"
+      ]
+    },
+    {
+      "id": "learned-anim-locomotion-blendspace",
+      "name": "Set Up Locomotion Blend Space",
+      "description": "Configure a 2D blend space for character locomotion blending idle, walk, and run animations based on speed and direction",
+      "domain": "animation",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "locomotion blend space",
+        "character movement animation",
+        "blend walk and run",
+        "speed direction blendspace",
+        "setup locomotion anim"
+      ],
+      "prerequisites": [
+        "Character skeleton",
+        "Idle, walk, run animation sequences"
+      ],
+      "steps": [
+        {
+          "tool": "anim-getSkeletonInfo",
+          "purpose": "Verify skeleton compatibility with animations"
+        },
+        {
+          "tool": "anim-listSequences",
+          "purpose": "List available locomotion animation sequences"
+        },
+        {
+          "tool": "anim-getBlendSpace",
+          "purpose": "Open or inspect existing blend space asset"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add blend space player node in AnimGraph"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire Speed and Direction variables to blend space inputs"
+        }
+      ],
+      "expectedOutcome": "A functional 2D blend space driving smooth locomotion transitions based on character velocity",
+      "source": "user-defined",
+      "tags": [
+        "animation",
+        "blendspace",
+        "locomotion",
+        "character",
+        "movement"
+      ]
+    },
+    {
+      "id": "learned-level-streaming-setup",
+      "name": "Configure Level Streaming with Sublevels",
+      "description": "Set up a persistent level with streaming sublevels for open-world performance optimization",
+      "domain": "level",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "level streaming",
+        "add sublevel",
+        "streaming sublevels setup",
+        "persistent level streaming",
+        "open world level loading"
+      ],
+      "prerequisites": [
+        "Persistent level exists",
+        "Sublevel map assets"
+      ],
+      "steps": [
+        {
+          "tool": "level-open",
+          "purpose": "Open the persistent master level"
+        },
+        {
+          "tool": "level-addSublevel",
+          "purpose": "Add sublevel for zone A"
+        },
+        {
+          "tool": "level-addSublevel",
+          "purpose": "Add sublevel for zone B"
+        },
+        {
+          "tool": "level-getWorldSettings",
+          "purpose": "Verify world settings and streaming method"
+        },
+        {
+          "tool": "level-save",
+          "purpose": "Save all level changes"
+        }
+      ],
+      "expectedOutcome": "A persistent level with correctly configured streaming sublevels that load based on player proximity",
+      "source": "user-defined",
+      "tags": [
+        "level",
+        "streaming",
+        "sublevels",
+        "open-world",
+        "performance"
+      ]
+    },
+    {
+      "id": "learned-audio-ambient-soundscape",
+      "name": "Create Ambient Soundscape with Attenuation",
+      "description": "Import ambient audio, create a sound cue with attenuation settings for realistic 3D spatial audio in an outdoor environment",
+      "domain": "audio",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "ambient sound",
+        "create soundscape",
+        "3D audio attenuation",
+        "outdoor audio setup",
+        "spatial sound cue"
+      ],
+      "prerequisites": [
+        "WAV audio files for ambient sounds"
+      ],
+      "steps": [
+        {
+          "tool": "audio-import",
+          "purpose": "Import ambient WAV files into content browser"
+        },
+        {
+          "tool": "audio-createCue",
+          "purpose": "Create a sound cue combining ambient layers"
+        },
+        {
+          "tool": "audio-setAttenuation",
+          "purpose": "Configure 3D attenuation with falloff curve"
+        },
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn AmbientSound actor in level"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Assign sound cue and enable auto-activate"
+        }
+      ],
+      "expectedOutcome": "A spatially accurate ambient soundscape that attenuates realistically with distance",
+      "source": "user-defined",
+      "tags": [
+        "audio",
+        "ambient",
+        "attenuation",
+        "soundscape",
+        "3D-audio"
+      ]
+    },
+    {
+      "id": "learned-niagara-fire-effect",
+      "name": "Create Fire Particle Effect with Niagara",
+      "description": "Build a realistic fire VFX system using Niagara with sprite-based flames, ember particles, and heat distortion",
+      "domain": "niagara",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "niagara fire effect",
+        "create fire particles",
+        "flame VFX niagara",
+        "fire particle system",
+        "campfire effect"
+      ],
+      "prerequisites": [
+        "Fire sprite sheet texture",
+        "Heat distortion material"
+      ],
+      "steps": [
+        {
+          "tool": "niagara-createSystem",
+          "purpose": "Create new Niagara particle system for fire"
+        },
+        {
+          "tool": "niagara-addEmitter",
+          "purpose": "Add sprite emitter for base flames"
+        },
+        {
+          "tool": "niagara-addEmitter",
+          "purpose": "Add sprite emitter for rising embers"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Set flame color, size, and lifetime parameters"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Configure ember velocity and turbulence"
+        },
+        {
+          "tool": "niagara-compile",
+          "purpose": "Compile the Niagara system"
+        },
+        {
+          "tool": "niagara-getInfo",
+          "purpose": "Verify system properties and emitter count"
+        }
+      ],
+      "expectedOutcome": "A realistic multi-layer fire effect with flames and embers ready to place in levels",
+      "source": "user-defined",
+      "tags": [
+        "niagara",
+        "vfx",
+        "fire",
+        "particles",
+        "emitter"
+      ]
+    },
+    {
+      "id": "learned-widget-hud-health-bar",
+      "name": "Create HUD Widget with Health Bar",
+      "description": "Build a UMG HUD widget displaying player health as a progress bar with dynamic color changes",
+      "domain": "widget",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "create HUD widget",
+        "health bar UI",
+        "player HUD",
+        "UMG health display",
+        "make health bar"
+      ],
+      "prerequisites": [
+        "Player character Blueprint with health variable"
+      ],
+      "steps": [
+        {
+          "tool": "widget-create",
+          "purpose": "Create new WBP_HUD Widget Blueprint"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add Canvas Panel as root container"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add Progress Bar widget for health display"
+        },
+        {
+          "tool": "widget-setProperty",
+          "purpose": "Configure progress bar fill color and style"
+        },
+        {
+          "tool": "widget-getBindings",
+          "purpose": "Verify binding connections to player health variable"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Create Widget node in player Blueprint to spawn HUD"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire BeginPlay to create and add HUD to viewport"
+        }
+      ],
+      "expectedOutcome": "A functional HUD widget that displays and updates player health as a colored progress bar",
+      "source": "user-defined",
+      "tags": [
+        "widget",
+        "hud",
+        "health",
+        "umg",
+        "ui"
+      ]
+    },
+    {
+      "id": "learned-landscape-terrain-setup",
+      "name": "Create and Paint Landscape Terrain",
+      "description": "Create a large landscape, import a heightmap, and apply a multi-layer landscape material",
+      "domain": "landscape",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create landscape",
+        "terrain setup",
+        "import heightmap",
+        "paint landscape material",
+        "outdoor terrain"
+      ],
+      "prerequisites": [
+        "Heightmap PNG or RAW file",
+        "Landscape material with layers"
+      ],
+      "steps": [
+        {
+          "tool": "landscape-create",
+          "purpose": "Create new landscape with desired resolution"
+        },
+        {
+          "tool": "landscape-importHeightmap",
+          "purpose": "Import heightmap data to shape terrain"
+        },
+        {
+          "tool": "landscape-setMaterial",
+          "purpose": "Assign multi-layer landscape material"
+        },
+        {
+          "tool": "landscape-getInfo",
+          "purpose": "Verify landscape bounds and material assignment"
+        },
+        {
+          "tool": "build-lightmaps",
+          "purpose": "Build lighting after terrain placement"
+        }
+      ],
+      "expectedOutcome": "A detailed landscape with correct heightmap shape and painted material layers ready for content placement",
+      "source": "user-defined",
+      "tags": [
+        "landscape",
+        "terrain",
+        "heightmap",
+        "material",
+        "outdoor"
+      ]
+    },
+    {
+      "id": "learned-sequencer-cutscene",
+      "name": "Create In-Game Cutscene with Sequencer",
+      "description": "Build a cinematic cutscene using Level Sequence with camera cuts, actor animations, and audio tracks",
+      "domain": "sequencer",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create cutscene",
+        "cinematic sequence",
+        "level sequence with camera",
+        "ingame cinematic",
+        "sequencer cutscene setup"
+      ],
+      "prerequisites": [
+        "Camera actor",
+        "Characters with animations",
+        "Audio cue for scene"
+      ],
+      "steps": [
+        {
+          "tool": "sequencer-create",
+          "purpose": "Create a new Level Sequence asset"
+        },
+        {
+          "tool": "sequencer-open",
+          "purpose": "Open sequence in Sequencer editor"
+        },
+        {
+          "tool": "sequencer-addBinding",
+          "purpose": "Add camera actor binding"
+        },
+        {
+          "tool": "sequencer-addTrack",
+          "purpose": "Add camera cut track for camera management"
+        },
+        {
+          "tool": "sequencer-addBinding",
+          "purpose": "Add character actor bindings"
+        },
+        {
+          "tool": "sequencer-addTrack",
+          "purpose": "Add animation track for character movement"
+        },
+        {
+          "tool": "sequencer-addTrack",
+          "purpose": "Add audio track for scene music and dialogue"
+        },
+        {
+          "tool": "sequencer-setKeyframe",
+          "purpose": "Set keyframes for camera and character transforms"
+        },
+        {
+          "tool": "sequencer-getInfo",
+          "purpose": "Review sequence duration and track configuration"
+        }
+      ],
+      "expectedOutcome": "A polished in-game cutscene with camera cuts, animated characters, and synchronized audio",
+      "source": "user-defined",
+      "tags": [
+        "sequencer",
+        "cutscene",
+        "cinematic",
+        "camera",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-mesh-lod-collision",
+      "name": "Configure Mesh LODs and Collision",
+      "description": "Set up LOD levels and generate accurate collision for a static mesh to optimize performance",
+      "domain": "mesh",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "set mesh LOD",
+        "configure LOD levels",
+        "generate mesh collision",
+        "optimize static mesh",
+        "mesh LOD setup"
+      ],
+      "prerequisites": [
+        "Static mesh asset imported"
+      ],
+      "steps": [
+        {
+          "tool": "mesh-getInfo",
+          "purpose": "Inspect current mesh LOD and collision settings"
+        },
+        {
+          "tool": "mesh-setLOD",
+          "purpose": "Configure LOD 0 through LOD 3 reduction percentages"
+        },
+        {
+          "tool": "mesh-generateCollision",
+          "purpose": "Generate convex hull collision for the mesh"
+        },
+        {
+          "tool": "mesh-setMaterial",
+          "purpose": "Verify and assign LOD-appropriate material slots"
+        },
+        {
+          "tool": "analyze-performanceHints",
+          "purpose": "Check mesh complexity and LOD effectiveness"
+        }
+      ],
+      "expectedOutcome": "A static mesh with properly configured LOD levels and collision ready for efficient runtime use",
+      "source": "user-defined",
+      "tags": [
+        "mesh",
+        "lod",
+        "collision",
+        "optimization",
+        "static-mesh"
+      ]
+    },
+    {
+      "id": "learned-physics-ragdoll-setup",
+      "name": "Set Up Character Ragdoll Physics",
+      "description": "Create a physics asset for a character skeleton to enable ragdoll death simulation",
+      "domain": "physics",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "setup ragdoll",
+        "character physics asset",
+        "death ragdoll",
+        "physics simulation character",
+        "ragdoll on death"
+      ],
+      "prerequisites": [
+        "Character skeletal mesh with skeleton"
+      ],
+      "steps": [
+        {
+          "tool": "physics-getInfo",
+          "purpose": "Inspect existing physics asset if any"
+        },
+        {
+          "tool": "physics-createAsset",
+          "purpose": "Create new physics asset for character skeleton"
+        },
+        {
+          "tool": "physics-createMaterial",
+          "purpose": "Create physical material for body mass settings"
+        },
+        {
+          "tool": "physics-setConstraint",
+          "purpose": "Configure joint constraints for realistic limb limits"
+        },
+        {
+          "tool": "physics-setProfile",
+          "purpose": "Assign ragdoll physics profile to character"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add SetAllBodiesSimulatePhysics node in death event"
+        }
+      ],
+      "expectedOutcome": "A character with full ragdoll physics that activates upon death for realistic simulation",
+      "source": "user-defined",
+      "tags": [
+        "physics",
+        "ragdoll",
+        "character",
+        "simulation",
+        "death"
+      ]
+    },
+    {
+      "id": "learned-foliage-forest-biome",
+      "name": "Set Up Forest Foliage Biome",
+      "description": "Create foliage types for trees, bushes, and ground cover and configure density and culling settings",
+      "domain": "foliage",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "add foliage",
+        "create forest",
+        "paint trees and bushes",
+        "foliage system setup",
+        "forest biome foliage"
+      ],
+      "prerequisites": [
+        "Tree and bush static mesh assets"
+      ],
+      "steps": [
+        {
+          "tool": "foliage-createType",
+          "purpose": "Create foliage type for large trees"
+        },
+        {
+          "tool": "foliage-setProperties",
+          "purpose": "Set tree density, scale range, and cull distances"
+        },
+        {
+          "tool": "foliage-createType",
+          "purpose": "Create foliage type for ground cover"
+        },
+        {
+          "tool": "foliage-setProperties",
+          "purpose": "Configure ground cover density and alignment to surface"
+        },
+        {
+          "tool": "foliage-getInfo",
+          "purpose": "Verify foliage type count and coverage settings"
+        },
+        {
+          "tool": "analyze-performanceHints",
+          "purpose": "Check foliage performance impact"
+        }
+      ],
+      "expectedOutcome": "A configured foliage system with realistic forest density and proper LOD culling distances",
+      "source": "user-defined",
+      "tags": [
+        "foliage",
+        "forest",
+        "environment",
+        "trees",
+        "density"
+      ]
+    },
+    {
+      "id": "learned-pcg-procedural-city",
+      "name": "Procedural City Block with PCG",
+      "description": "Use PCG to procedurally scatter buildings along a spline-defined road network",
+      "domain": "pcg",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "procedural city",
+        "PCG building scatter",
+        "generate city blocks",
+        "procedural urban layout",
+        "PCG spline buildings"
+      ],
+      "prerequisites": [
+        "Building mesh assets",
+        "Spline actor defining road layout"
+      ],
+      "steps": [
+        {
+          "tool": "pcg-createGraph",
+          "purpose": "Create new PCG graph for city generation"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add SplineSampler node to sample along road splines"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add StaticMeshSpawner node for building placement"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add AttributeNoise node for placement variation"
+        },
+        {
+          "tool": "pcg-connectNodes",
+          "purpose": "Connect spline sampler through noise to mesh spawner"
+        },
+        {
+          "tool": "pcg-getInfo",
+          "purpose": "Inspect graph execution and output point count"
+        }
+      ],
+      "expectedOutcome": "A PCG graph that procedurally places building meshes along road splines with randomized variation",
+      "source": "user-defined",
+      "tags": [
+        "pcg",
+        "procedural",
+        "city",
+        "buildings",
+        "spline"
+      ]
+    },
+    {
+      "id": "learned-texture-import-configure",
+      "name": "Import and Configure Texture Assets",
+      "description": "Import a texture set (albedo, normal, roughness, metallic) and configure compression and mip settings",
+      "domain": "texture",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "import textures",
+        "configure texture compression",
+        "texture setup",
+        "import texture set",
+        "set texture mips"
+      ],
+      "prerequisites": [
+        "PNG or TGA texture files"
+      ],
+      "steps": [
+        {
+          "tool": "texture-import",
+          "purpose": "Import albedo/diffuse texture"
+        },
+        {
+          "tool": "texture-setCompression",
+          "purpose": "Set albedo compression to DXT1 or BC7"
+        },
+        {
+          "tool": "texture-import",
+          "purpose": "Import normal map texture"
+        },
+        {
+          "tool": "texture-setCompression",
+          "purpose": "Set normal map compression to BC5"
+        },
+        {
+          "tool": "texture-import",
+          "purpose": "Import roughness and metallic textures"
+        },
+        {
+          "tool": "texture-setCompression",
+          "purpose": "Set linear data textures to BC4 or BC5"
+        },
+        {
+          "tool": "texture-listTextures",
+          "purpose": "List all imported textures to verify"
+        }
+      ],
+      "expectedOutcome": "A properly imported and compressed texture set ready for material assignment",
+      "source": "user-defined",
+      "tags": [
+        "texture",
+        "import",
+        "compression",
+        "normal-map",
+        "PBR"
+      ]
+    },
+    {
+      "id": "learned-ai-behavior-tree-enemy",
+      "name": "Create Enemy AI with Behavior Tree",
+      "description": "Build a complete enemy AI system with blackboard, behavior tree, and EQS for target detection",
+      "domain": "ai",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "enemy AI behavior tree",
+        "create AI controller",
+        "behavior tree setup",
+        "enemy intelligence system",
+        "AI patrol and attack"
+      ],
+      "prerequisites": [
+        "Enemy character Blueprint",
+        "NavMesh baked in level"
+      ],
+      "steps": [
+        {
+          "tool": "ai-createBlackboard",
+          "purpose": "Create blackboard asset for AI variables"
+        },
+        {
+          "tool": "ai-addBlackboardKey",
+          "purpose": "Add TargetActor object key"
+        },
+        {
+          "tool": "ai-addBlackboardKey",
+          "purpose": "Add PatrolLocation vector key"
+        },
+        {
+          "tool": "ai-createBehaviorTree",
+          "purpose": "Create behavior tree with patrol and attack sequences"
+        },
+        {
+          "tool": "ai-createEqs",
+          "purpose": "Create EQS query to find player within sight radius"
+        },
+        {
+          "tool": "ai-configureNavMesh",
+          "purpose": "Configure navigation mesh for AI movement"
+        },
+        {
+          "tool": "ai-getBehaviorTreeInfo",
+          "purpose": "Verify behavior tree structure and blackboard connection"
+        }
+      ],
+      "expectedOutcome": "A fully functional enemy AI that patrols, detects players via EQS, and transitions to attack behavior",
+      "source": "user-defined",
+      "tags": [
+        "ai",
+        "behavior-tree",
+        "blackboard",
+        "eqs",
+        "enemy"
+      ]
+    },
+    {
+      "id": "learned-datatable-item-database",
+      "name": "Create Item Database with DataTable",
+      "description": "Build an item database using a DataTable with rows for weapons, armor, and consumables",
+      "domain": "datatable",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "create item database",
+        "datatable for items",
+        "item stats table",
+        "RPG item database",
+        "weapon datatable"
+      ],
+      "prerequisites": [
+        "FItemData struct defined in C++ or Blueprint"
+      ],
+      "steps": [
+        {
+          "tool": "datatable-create",
+          "purpose": "Create DataTable asset with FItemData row structure"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add row for Sword with damage, weight, rarity"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add row for Health Potion with heal amount and cooldown"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add row for Iron Armor with defense and durability"
+        },
+        {
+          "tool": "datatable-getRows",
+          "purpose": "Verify all rows and data integrity"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate DataTable asset for errors"
+        }
+      ],
+      "expectedOutcome": "A populated DataTable serving as a game item database for inventory and loot systems",
+      "source": "user-defined",
+      "tags": [
+        "datatable",
+        "items",
+        "database",
+        "inventory",
+        "RPG"
+      ]
+    },
+    {
+      "id": "learned-curve-animation-easing",
+      "name": "Create Easing Curves for UI Animation",
+      "description": "Create float curves for elastic and bounce easing to drive smooth UI widget animations",
+      "domain": "curve",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "create animation curve",
+        "easing curve UI",
+        "bounce animation curve",
+        "elastic easing",
+        "curve for widget animation"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "curve-create",
+          "purpose": "Create new float curve asset for ease-in-out"
+        },
+        {
+          "tool": "curve-setKeys",
+          "purpose": "Set keyframes with cubic tangents for smooth interpolation"
+        },
+        {
+          "tool": "curve-create",
+          "purpose": "Create bounce easing float curve"
+        },
+        {
+          "tool": "curve-setKeys",
+          "purpose": "Set keyframes for bounce overshoot effect"
+        },
+        {
+          "tool": "curve-getInfo",
+          "purpose": "Verify curve key values and interpolation types"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add GetFloatValue node to sample curve in widget animation"
+        }
+      ],
+      "expectedOutcome": "Reusable easing curves that drive smooth and expressive UI widget animations",
+      "source": "user-defined",
+      "tags": [
+        "curve",
+        "animation",
+        "easing",
+        "ui",
+        "widget"
+      ]
+    },
+    {
+      "id": "learned-gameplay-input-enhanced",
+      "name": "Set Up Enhanced Input System",
+      "description": "Configure Enhanced Input actions and mappings for character movement, jump, and interaction",
+      "domain": "gameplay",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "enhanced input setup",
+        "input action mapping",
+        "configure player input",
+        "add input actions",
+        "new input system UE5"
+      ],
+      "prerequisites": [
+        "Player character Blueprint"
+      ],
+      "steps": [
+        {
+          "tool": "gameplay-getGameMode",
+          "purpose": "Verify game mode and pawn class setup"
+        },
+        {
+          "tool": "gameplay-addInputAction",
+          "purpose": "Create IA_Move input action for WASD movement"
+        },
+        {
+          "tool": "gameplay-addInputAction",
+          "purpose": "Create IA_Jump input action for spacebar"
+        },
+        {
+          "tool": "gameplay-addInputAction",
+          "purpose": "Create IA_Interact input action for E key"
+        },
+        {
+          "tool": "gameplay-listInputActions",
+          "purpose": "List all input actions to verify configuration"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Enhanced Input Action nodes in player Blueprint"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire input events to movement and jump functions"
+        }
+      ],
+      "expectedOutcome": "A fully configured Enhanced Input system with actions for movement, jumping, and interaction",
+      "source": "user-defined",
+      "tags": [
+        "gameplay",
+        "input",
+        "enhanced-input",
+        "movement",
+        "character"
+      ]
+    },
+    {
+      "id": "learned-content-asset-audit",
+      "name": "Content Browser Asset Audit",
+      "description": "Scan content browser for unused assets, validate asset health, and identify references",
+      "domain": "content",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "audit content assets",
+        "find unused assets",
+        "asset health check",
+        "content browser cleanup",
+        "validate assets"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "content-listAssets",
+          "purpose": "List all assets in content browser"
+        },
+        {
+          "tool": "content-findAssets",
+          "purpose": "Find assets matching specific criteria or folders"
+        },
+        {
+          "tool": "analyze-assetHealth",
+          "purpose": "Run health analysis to find broken references"
+        },
+        {
+          "tool": "asset-getReferences",
+          "purpose": "Check references for potentially orphaned assets"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate all assets for errors and warnings"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review log for any asset loading errors"
+        }
+      ],
+      "expectedOutcome": "A complete audit report of content assets with broken references and unused assets identified",
+      "source": "user-defined",
+      "tags": [
+        "content",
+        "audit",
+        "assets",
+        "references",
+        "cleanup"
+      ]
+    },
+    {
+      "id": "learned-debug-performance-profile",
+      "name": "Debug Performance Issues",
+      "description": "Use console commands and performance tools to diagnose and identify frame rate bottlenecks",
+      "domain": "debug",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "debug performance",
+        "find frame rate issues",
+        "profile game performance",
+        "diagnose slow frame rate",
+        "performance bottleneck"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "debug-getPerformance",
+          "purpose": "Get current frame time, GPU time, and CPU time"
+        },
+        {
+          "tool": "debug-execConsole",
+          "purpose": "Run stat fps and stat scenerendering"
+        },
+        {
+          "tool": "debug-execConsole",
+          "purpose": "Run ProfileGPU to capture GPU frame profile"
+        },
+        {
+          "tool": "analyze-performanceHints",
+          "purpose": "Analyze scene for performance hints and warnings"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Check output log for performance warnings"
+        },
+        {
+          "tool": "editor-getViewport",
+          "purpose": "Check viewport render settings and show flags"
+        }
+      ],
+      "expectedOutcome": "A clear picture of performance bottlenecks with GPU and CPU cost breakdowns",
+      "source": "user-defined",
+      "tags": [
+        "debug",
+        "performance",
+        "profiling",
+        "optimization",
+        "fps"
+      ]
+    },
+    {
+      "id": "learned-build-cook-package",
+      "name": "Cook and Package Game Content",
+      "description": "Cook content for a target platform, run map checks, and build final lighting before packaging",
+      "domain": "build",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "cook content",
+        "package game",
+        "build and cook",
+        "prepare for shipping",
+        "final build process"
+      ],
+      "prerequisites": [
+        "All assets saved and validated",
+        "Lighting needs rebuild"
+      ],
+      "steps": [
+        {
+          "tool": "build-getMapCheck",
+          "purpose": "Run map check to find errors and warnings"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate all content before cooking"
+        },
+        {
+          "tool": "build-lightmaps",
+          "purpose": "Build final production lighting"
+        },
+        {
+          "tool": "build-cookContent",
+          "purpose": "Cook content for target platform"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review cook log for errors or missing assets"
+        }
+      ],
+      "expectedOutcome": "Successfully cooked and validated game content ready for packaging and distribution",
+      "source": "user-defined",
+      "tags": [
+        "build",
+        "cook",
+        "package",
+        "lighting",
+        "shipping"
+      ]
+    },
+    {
+      "id": "learned-asset-migration-rename",
+      "name": "Migrate and Rename Asset Folder Structure",
+      "description": "Reorganize content folder by renaming assets, updating references, and migrating to new structure",
+      "domain": "asset",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "rename assets",
+        "reorganize content folder",
+        "migrate assets",
+        "fix asset references",
+        "restructure content browser"
+      ],
+      "prerequisites": [
+        "Content to reorganize"
+      ],
+      "steps": [
+        {
+          "tool": "content-listAssets",
+          "purpose": "List current asset structure and paths"
+        },
+        {
+          "tool": "asset-getReferences",
+          "purpose": "Check references before renaming to understand impact"
+        },
+        {
+          "tool": "asset-rename",
+          "purpose": "Rename assets to follow new naming convention"
+        },
+        {
+          "tool": "asset-duplicate",
+          "purpose": "Duplicate assets to new folder structure if needed"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate assets after rename to ensure no broken refs"
+        },
+        {
+          "tool": "sourcecontrol-getStatus",
+          "purpose": "Verify source control tracks all renamed files"
+        }
+      ],
+      "expectedOutcome": "A clean, consistently named content structure with all references properly updated",
+      "source": "user-defined",
+      "tags": [
+        "asset",
+        "rename",
+        "migration",
+        "organization",
+        "references"
+      ]
+    },
+    {
+      "id": "learned-geoscript-boolean-subtract",
+      "name": "Boolean Mesh Operations with GeoScript",
+      "description": "Use GeoScript to perform subtract and intersect boolean operations between meshes to create archways and openings",
+      "domain": "geoscript",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "GeoScript boolean",
+        "mesh subtract operation",
+        "boolean mesh cut",
+        "create archway with GeoScript",
+        "procedural mesh boolean"
+      ],
+      "prerequisites": [
+        "Source and cutter mesh assets"
+      ],
+      "steps": [
+        {
+          "tool": "geoscript-getInfo",
+          "purpose": "Inspect GeoScript plugin availability and version"
+        },
+        {
+          "tool": "mesh-getInfo",
+          "purpose": "Get source mesh bounds and polygon count"
+        },
+        {
+          "tool": "geoscript-meshBoolean",
+          "purpose": "Perform subtract boolean to cut archway opening"
+        },
+        {
+          "tool": "geoscript-meshTransform",
+          "purpose": "Apply transform to align result mesh"
+        },
+        {
+          "tool": "mesh-generateCollision",
+          "purpose": "Regenerate collision on the resulting mesh"
+        },
+        {
+          "tool": "mesh-setMaterial",
+          "purpose": "Reassign materials to boolean result mesh"
+        }
+      ],
+      "expectedOutcome": "A new mesh created by boolean subtraction with correct topology, collision, and materials",
+      "source": "user-defined",
+      "tags": [
+        "geoscript",
+        "boolean",
+        "mesh",
+        "procedural",
+        "modeling"
+      ]
+    },
+    {
+      "id": "learned-worldpartition-setup",
+      "name": "Configure World Partition for Open World",
+      "description": "Set up World Partition with data layers, HLOD generation, and streaming configuration for large open worlds",
+      "domain": "worldpartition",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "world partition setup",
+        "configure open world streaming",
+        "HLOD world partition",
+        "data layers setup",
+        "world partition large map"
+      ],
+      "prerequisites": [
+        "Open world level",
+        "World Partition enabled"
+      ],
+      "steps": [
+        {
+          "tool": "worldpartition-getInfo",
+          "purpose": "Inspect current World Partition configuration"
+        },
+        {
+          "tool": "worldpartition-setConfig",
+          "purpose": "Configure cell size and loading range"
+        },
+        {
+          "tool": "worldpartition-createDataLayer",
+          "purpose": "Create data layer for daytime objects"
+        },
+        {
+          "tool": "worldpartition-createDataLayer",
+          "purpose": "Create data layer for nighttime objects"
+        },
+        {
+          "tool": "worldpartition-createHLOD",
+          "purpose": "Generate HLOD for distant terrain and buildings"
+        },
+        {
+          "tool": "build-getMapCheck",
+          "purpose": "Run map check for World Partition issues"
+        }
+      ],
+      "expectedOutcome": "A World Partition configured open world with data layers and HLODs for scalable streaming",
+      "source": "user-defined",
+      "tags": [
+        "worldpartition",
+        "open-world",
+        "hlod",
+        "data-layers",
+        "streaming"
+      ]
+    },
+    {
+      "id": "learned-slate-editor-tool",
+      "name": "Generate Custom Slate Editor Tool",
+      "description": "Create a custom Slate-based editor tool using templates for asset batch editing workflows",
+      "domain": "slate",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "create editor tool",
+        "custom slate widget",
+        "editor extension slate",
+        "batch editor tool",
+        "custom editor panel"
+      ],
+      "prerequisites": [
+        "C++ editor module set up"
+      ],
+      "steps": [
+        {
+          "tool": "slate-listTemplates",
+          "purpose": "List available Slate widget templates"
+        },
+        {
+          "tool": "slate-generate",
+          "purpose": "Generate Slate widget from property editor template"
+        },
+        {
+          "tool": "slate-validate",
+          "purpose": "Validate generated Slate code for syntax errors"
+        },
+        {
+          "tool": "compilation-trigger",
+          "purpose": "Trigger compilation of new Slate code"
+        },
+        {
+          "tool": "compilation-getStatus",
+          "purpose": "Check compilation progress"
+        },
+        {
+          "tool": "compilation-getErrors",
+          "purpose": "Review any compilation errors"
+        }
+      ],
+      "expectedOutcome": "A functional custom Slate editor panel compiled and accessible in the Unreal Editor",
+      "source": "user-defined",
+      "tags": [
+        "slate",
+        "editor",
+        "tool",
+        "c++",
+        "compilation"
+      ]
+    },
+    {
+      "id": "learned-compilation-selfheal",
+      "name": "Auto-Heal Compilation Errors",
+      "description": "Detect and automatically resolve common C++ compilation errors using self-healing capabilities",
+      "domain": "compilation",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "fix compilation errors",
+        "auto heal build",
+        "resolve compile errors",
+        "fix C++ build errors",
+        "compilation self heal"
+      ],
+      "prerequisites": [
+        "C++ source files with errors"
+      ],
+      "steps": [
+        {
+          "tool": "compilation-trigger",
+          "purpose": "Trigger compilation to surface errors"
+        },
+        {
+          "tool": "compilation-getStatus",
+          "purpose": "Check current compilation status"
+        },
+        {
+          "tool": "compilation-getErrors",
+          "purpose": "Retrieve detailed error list with file and line info"
+        },
+        {
+          "tool": "compilation-selfHeal",
+          "purpose": "Apply self-healing to resolve known error patterns"
+        },
+        {
+          "tool": "compilation-trigger",
+          "purpose": "Re-trigger compilation after fixes"
+        },
+        {
+          "tool": "compilation-getStatus",
+          "purpose": "Verify compilation succeeded after self-heal"
+        }
+      ],
+      "expectedOutcome": "Compilation errors automatically identified and resolved, resulting in a successful build",
+      "source": "user-defined",
+      "tags": [
+        "compilation",
+        "self-heal",
+        "build",
+        "c++",
+        "errors"
+      ]
+    },
+    {
+      "id": "learned-project-snapshot-review",
+      "name": "Take and Review Project Snapshot",
+      "description": "Capture a full project snapshot to document current state, plugins, settings, and class hierarchy",
+      "domain": "project",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "project snapshot",
+        "document project state",
+        "review project structure",
+        "capture project info",
+        "project health check"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "project-getSettings",
+          "purpose": "Review current project settings and config"
+        },
+        {
+          "tool": "project-getPlugins",
+          "purpose": "List all enabled plugins and versions"
+        },
+        {
+          "tool": "project-getStructure",
+          "purpose": "Get project folder and module structure"
+        },
+        {
+          "tool": "project-getClassHierarchy",
+          "purpose": "Inspect class hierarchy for custom classes"
+        },
+        {
+          "tool": "project-getDependencyGraph",
+          "purpose": "Review module dependencies"
+        },
+        {
+          "tool": "project-snapshot",
+          "purpose": "Capture full project snapshot to file"
+        }
+      ],
+      "expectedOutcome": "A complete documented snapshot of the project state for reference or onboarding",
+      "source": "user-defined",
+      "tags": [
+        "project",
+        "snapshot",
+        "documentation",
+        "settings",
+        "plugins"
+      ]
+    },
+    {
+      "id": "learned-refactor-rename-class",
+      "name": "Refactor and Rename Actor Class Chain",
+      "description": "Safely rename a C++ Actor class and update all Blueprint and code references using rename chain",
+      "domain": "refactor",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "rename C++ class",
+        "refactor actor class",
+        "rename and update references",
+        "safe class rename",
+        "rename with reference update"
+      ],
+      "prerequisites": [
+        "Class to rename with known references"
+      ],
+      "steps": [
+        {
+          "tool": "project-getClassHierarchy",
+          "purpose": "Map out class hierarchy before renaming"
+        },
+        {
+          "tool": "asset-getReferences",
+          "purpose": "Find all assets referencing the class"
+        },
+        {
+          "tool": "sourcecontrol-checkout",
+          "purpose": "Check out all affected files for editing"
+        },
+        {
+          "tool": "refactor-renameChain",
+          "purpose": "Execute rename chain across C++ and Blueprint files"
+        },
+        {
+          "tool": "compilation-trigger",
+          "purpose": "Compile to verify rename is clean"
+        },
+        {
+          "tool": "compilation-getErrors",
+          "purpose": "Check for any remaining reference errors"
+        }
+      ],
+      "expectedOutcome": "A class successfully renamed with all references updated and no compilation errors",
+      "source": "user-defined",
+      "tags": [
+        "refactor",
+        "rename",
+        "c++",
+        "references",
+        "class"
+      ]
+    },
+    {
+      "id": "learned-python-batch-actor-setup",
+      "name": "Batch Actor Configuration via Python",
+      "description": "Use Python scripting to batch configure actor properties across an entire level",
+      "domain": "python",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "batch python script",
+        "configure actors with python",
+        "python bulk edit",
+        "automate actor setup",
+        "python batch level edit"
+      ],
+      "prerequisites": [
+        "Python Editor Script Plugin enabled"
+      ],
+      "steps": [
+        {
+          "tool": "python-listCustomScripts",
+          "purpose": "List available custom Python scripts"
+        },
+        {
+          "tool": "editor-listActors",
+          "purpose": "List all actors in level to determine scope"
+        },
+        {
+          "tool": "python-execute",
+          "purpose": "Execute Python script to iterate and configure actors"
+        },
+        {
+          "tool": "python-customExecute",
+          "purpose": "Run custom filtering and property update script"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review Python execution log for errors"
+        },
+        {
+          "tool": "editor-getLevelInfo",
+          "purpose": "Verify level actor count after batch operation"
+        }
+      ],
+      "expectedOutcome": "All matching actors in the level have been batch configured via Python automation",
+      "source": "user-defined",
+      "tags": [
+        "python",
+        "batch",
+        "automation",
+        "actors",
+        "scripting"
+      ]
+    },
+    {
+      "id": "learned-analyze-blueprint-audit",
+      "name": "Blueprint Code Quality Audit",
+      "description": "Analyze all Blueprints for complexity issues, code convention violations, and performance concerns",
+      "domain": "analyze",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "blueprint audit",
+        "analyze blueprint complexity",
+        "blueprint code quality",
+        "find complex blueprints",
+        "blueprint best practices review"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "content-findAssets",
+          "purpose": "Find all Blueprint assets in project"
+        },
+        {
+          "tool": "analyze-blueprintComplexity",
+          "purpose": "Analyze complexity metrics for each Blueprint"
+        },
+        {
+          "tool": "analyze-codeConventions",
+          "purpose": "Check naming and coding convention compliance"
+        },
+        {
+          "tool": "analyze-performanceHints",
+          "purpose": "Identify performance anti-patterns in Blueprints"
+        },
+        {
+          "tool": "analyze-assetHealth",
+          "purpose": "Check Blueprint asset health and broken nodes"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review analysis log for critical issues"
+        }
+      ],
+      "expectedOutcome": "A comprehensive Blueprint audit report with complexity scores and actionable improvement suggestions",
+      "source": "user-defined",
+      "tags": [
+        "analyze",
+        "blueprint",
+        "audit",
+        "complexity",
+        "quality"
+      ]
+    },
+    {
+      "id": "learned-workflow-third-person-character",
+      "name": "Create Third-Person Playable Character",
+      "description": "Use workflow tool to create a complete third-person character with movement, camera, and input",
+      "domain": "workflow",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create third person character",
+        "playable character setup",
+        "third person player",
+        "setup player character",
+        "character with camera"
+      ],
+      "prerequisites": [
+        "Character skeletal mesh",
+        "Animation Blueprint"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-createCharacter",
+          "purpose": "Run create character workflow for third-person setup"
+        },
+        {
+          "tool": "gameplay-setGameMode",
+          "purpose": "Set game mode to use new character as default pawn"
+        },
+        {
+          "tool": "gameplay-addInputAction",
+          "purpose": "Add look and move input actions"
+        },
+        {
+          "tool": "actor-setTransform",
+          "purpose": "Position character at player start"
+        },
+        {
+          "tool": "editor-ping",
+          "purpose": "Verify editor connection and play in editor to test"
+        }
+      ],
+      "expectedOutcome": "A playable third-person character with working movement, camera, and input mapping",
+      "source": "user-defined",
+      "tags": [
+        "workflow",
+        "character",
+        "third-person",
+        "gameplay",
+        "player"
+      ]
+    },
+    {
+      "id": "learned-workflow-multiplayer-setup",
+      "name": "Set Up Multiplayer Game Session",
+      "description": "Configure multiplayer replication, game mode, and session management for a networked game",
+      "domain": "workflow",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "setup multiplayer",
+        "configure networking",
+        "multiplayer replication",
+        "online session setup",
+        "networked game configuration"
+      ],
+      "prerequisites": [
+        "Game mode and player controller classes"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-setupMultiplayer",
+          "purpose": "Run multiplayer setup workflow"
+        },
+        {
+          "tool": "gameplay-setGameMode",
+          "purpose": "Configure game mode for multiplayer rules"
+        },
+        {
+          "tool": "blueprint-modifyProperty",
+          "purpose": "Enable replication on player state variables"
+        },
+        {
+          "tool": "project-getSettings",
+          "purpose": "Verify network settings and default map"
+        },
+        {
+          "tool": "build-getMapCheck",
+          "purpose": "Run map check for replication issues"
+        }
+      ],
+      "expectedOutcome": "A multiplayer-ready game with proper replication, session handling, and network settings",
+      "source": "user-defined",
+      "tags": [
+        "workflow",
+        "multiplayer",
+        "networking",
+        "replication",
+        "sessions"
+      ]
+    },
+    {
+      "id": "learned-material-dynamic-instance",
+      "name": "Create and Animate Dynamic Material Instance",
+      "description": "Create a material instance and animate its parameters at runtime for effects like hit flashing or glowing",
+      "domain": "material",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "dynamic material instance",
+        "animate material at runtime",
+        "material hit flash",
+        "glow effect material",
+        "runtime material parameter"
+      ],
+      "prerequisites": [
+        "Master material with exposed scalar and vector parameters"
+      ],
+      "steps": [
+        {
+          "tool": "material-getParameters",
+          "purpose": "List available parameters in the master material"
+        },
+        {
+          "tool": "material-createInstance",
+          "purpose": "Create material instance from master material"
+        },
+        {
+          "tool": "material-setParameter",
+          "purpose": "Set initial emissive and color parameter values"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add CreateDynamicMaterialInstance node in Blueprint"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Timeline node for parameter animation over time"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire timeline float output to SetVectorParameterValue"
+        }
+      ],
+      "expectedOutcome": "A dynamic material instance that animates emissive and color parameters for hit and glow effects",
+      "source": "user-defined",
+      "tags": [
+        "material",
+        "dynamic-instance",
+        "runtime",
+        "animation",
+        "vfx"
+      ]
+    },
+    {
+      "id": "learned-audio-metasound-procedural",
+      "name": "Create Procedural Audio with MetaSound",
+      "description": "Build a MetaSound source for procedural footstep audio that varies by surface type",
+      "domain": "audio",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "metasound procedural audio",
+        "surface footstep sound",
+        "procedural sound design",
+        "MetaSound footsteps",
+        "dynamic audio system"
+      ],
+      "prerequisites": [
+        "Footstep WAV files for different surfaces"
+      ],
+      "steps": [
+        {
+          "tool": "audio-import",
+          "purpose": "Import footstep WAV files for each surface type"
+        },
+        {
+          "tool": "audio-createMetaSound",
+          "purpose": "Create MetaSound source for procedural footsteps"
+        },
+        {
+          "tool": "audio-getInfo",
+          "purpose": "Verify MetaSound structure and inputs"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add surface type switch in MetaSound graph"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Route surface parameter to correct sound wave player"
+        },
+        {
+          "tool": "audio-setAttenuation",
+          "purpose": "Set spatialization and distance attenuation"
+        }
+      ],
+      "expectedOutcome": "A MetaSound that dynamically selects and plays footstep variations based on the surface material",
+      "source": "user-defined",
+      "tags": [
+        "audio",
+        "metasound",
+        "footsteps",
+        "procedural",
+        "surface"
+      ]
+    },
+    {
+      "id": "learned-widget-inventory-grid",
+      "name": "Build Inventory Grid Widget",
+      "description": "Create a grid-based inventory UI widget with item slots, drag-and-drop support, and tooltip display",
+      "domain": "widget",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "inventory UI",
+        "item grid widget",
+        "drag drop inventory",
+        "inventory system UI",
+        "item slot widget"
+      ],
+      "prerequisites": [
+        "Item data structure defined",
+        "Item icon textures"
+      ],
+      "steps": [
+        {
+          "tool": "widget-create",
+          "purpose": "Create WBP_Inventory parent widget"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add UniformGridPanel for item slot layout"
+        },
+        {
+          "tool": "widget-create",
+          "purpose": "Create WBP_ItemSlot child widget for individual slots"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add Image and Border to item slot widget"
+        },
+        {
+          "tool": "widget-setProperty",
+          "purpose": "Configure slot size and padding"
+        },
+        {
+          "tool": "widget-getBindings",
+          "purpose": "Verify item data bindings"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add drag detection and drop target logic"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire drag events to inventory slot swap logic"
+        }
+      ],
+      "expectedOutcome": "A functional grid inventory widget with drag-and-drop item management and tooltips",
+      "source": "user-defined",
+      "tags": [
+        "widget",
+        "inventory",
+        "ui",
+        "drag-drop",
+        "grid"
+      ]
+    },
+    {
+      "id": "learned-sequencer-fbx-export",
+      "name": "Export Cinematic Animation via FBX",
+      "description": "Export a Level Sequence animation to FBX for use in external DCC tools like Maya or Blender",
+      "domain": "sequencer",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "export sequence FBX",
+        "export animation to Maya",
+        "cinematic FBX export",
+        "level sequence export",
+        "export to DCC"
+      ],
+      "prerequisites": [
+        "Level Sequence with animated tracks"
+      ],
+      "steps": [
+        {
+          "tool": "sequencer-open",
+          "purpose": "Open the target Level Sequence"
+        },
+        {
+          "tool": "sequencer-getInfo",
+          "purpose": "Review sequence tracks and frame range"
+        },
+        {
+          "tool": "sequencer-exportFbx",
+          "purpose": "Export sequence to FBX file"
+        },
+        {
+          "tool": "file-search",
+          "purpose": "Locate the exported FBX file on disk"
+        },
+        {
+          "tool": "file-read",
+          "purpose": "Verify FBX file was created successfully"
+        }
+      ],
+      "expectedOutcome": "A clean FBX export of the Level Sequence ready for import into Maya, Blender, or other DCC tools",
+      "source": "user-defined",
+      "tags": [
+        "sequencer",
+        "fbx",
+        "export",
+        "dcc",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-niagara-water-splash",
+      "name": "Create Water Splash Niagara Effect",
+      "description": "Build a water splash VFX for projectile impacts using mesh and ribbon emitters",
+      "domain": "niagara",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "water splash effect",
+        "impact water VFX",
+        "niagara water particles",
+        "splash on impact",
+        "water hit effect"
+      ],
+      "prerequisites": [
+        "Water droplet mesh or sprite",
+        "Water normal texture"
+      ],
+      "steps": [
+        {
+          "tool": "niagara-createSystem",
+          "purpose": "Create Niagara system for water splash"
+        },
+        {
+          "tool": "niagara-addEmitter",
+          "purpose": "Add spray droplet emitter"
+        },
+        {
+          "tool": "niagara-addEmitter",
+          "purpose": "Add ripple ring ribbon emitter"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Configure droplet velocity, size, and gravity"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Set ripple scale and fade parameters"
+        },
+        {
+          "tool": "niagara-compile",
+          "purpose": "Compile and verify Niagara system"
+        }
+      ],
+      "expectedOutcome": "A water splash VFX system with droplets and ripple rings for use on impact events",
+      "source": "user-defined",
+      "tags": [
+        "niagara",
+        "water",
+        "splash",
+        "vfx",
+        "impact"
+      ]
+    },
+    {
+      "id": "learned-landscape-material-layers",
+      "name": "Configure Landscape Material with Texture Layers",
+      "description": "Create a landscape material with grass, rock, and snow layers blended by height and slope",
+      "domain": "landscape",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "landscape material layers",
+        "terrain texture blend",
+        "grass rock snow terrain",
+        "height blend landscape",
+        "multi layer terrain material"
+      ],
+      "prerequisites": [
+        "Grass, rock, and snow texture sets",
+        "Landscape created"
+      ],
+      "steps": [
+        {
+          "tool": "material-create",
+          "purpose": "Create new landscape material asset"
+        },
+        {
+          "tool": "texture-import",
+          "purpose": "Import grass, rock, and snow texture sets"
+        },
+        {
+          "tool": "material-setTexture",
+          "purpose": "Assign textures to material layer parameters"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add LandscapeLayerBlend node for weight-based blending"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add WorldAlignedTexture for slope-based rock blending"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire height and slope data to layer blend weights"
+        },
+        {
+          "tool": "landscape-setMaterial",
+          "purpose": "Assign finished material to landscape actor"
+        }
+      ],
+      "expectedOutcome": "A landscape material with height and slope-driven texture layer blending for realistic terrain",
+      "source": "user-defined",
+      "tags": [
+        "landscape",
+        "material",
+        "layers",
+        "terrain",
+        "blending"
+      ]
+    },
+    {
+      "id": "learned-actor-destructible-wall",
+      "name": "Create Destructible Wall Actor",
+      "description": "Set up a destructible wall using Chaos physics with debris pieces and dust particle effect on destruction",
+      "domain": "actor",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "destructible wall",
+        "breakable wall",
+        "Chaos destruction",
+        "destructible actor",
+        "wall breaks apart"
+      ],
+      "prerequisites": [
+        "Wall static mesh",
+        "Chaos geometry collection"
+      ],
+      "steps": [
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn geometry collection actor for wall"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add Chaos geometry collection component"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Configure damage threshold and break impulse"
+        },
+        {
+          "tool": "physics-createAsset",
+          "purpose": "Create physics asset for debris pieces"
+        },
+        {
+          "tool": "niagara-createSystem",
+          "purpose": "Create dust cloud Niagara effect for destruction"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Bind destruction event to spawn dust VFX"
+        }
+      ],
+      "expectedOutcome": "A destructible wall that shatters with Chaos physics and spawns a dust effect on impact",
+      "source": "user-defined",
+      "tags": [
+        "actor",
+        "destructible",
+        "chaos",
+        "physics",
+        "destruction"
+      ]
+    },
+    {
+      "id": "learned-material-water-shader",
+      "name": "Create Realistic Water Material",
+      "description": "Build a water surface material with depth fade, refraction, normal animation, and foam",
+      "domain": "material",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "water material",
+        "realistic water shader",
+        "ocean water material",
+        "water surface shader",
+        "water with depth fade"
+      ],
+      "prerequisites": [
+        "Water normal map textures",
+        "Foam texture"
+      ],
+      "steps": [
+        {
+          "tool": "material-create",
+          "purpose": "Create translucent water master material"
+        },
+        {
+          "tool": "texture-import",
+          "purpose": "Import water normal map and foam textures"
+        },
+        {
+          "tool": "material-setTexture",
+          "purpose": "Assign animated normal maps to material"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add depth fade node for underwater color transition"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add panner nodes to animate normal maps over time"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add refraction node for underwater distortion"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Blend foam mask with depth-based vertex color"
+        }
+      ],
+      "expectedOutcome": "A realistic water material with animated normals, depth-based color, refraction, and foam effects",
+      "source": "user-defined",
+      "tags": [
+        "material",
+        "water",
+        "shader",
+        "refraction",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-anim-montage-combat",
+      "name": "Create Combat Animation Montages",
+      "description": "Set up attack animation montages with notify events for hit detection and combo transitions",
+      "domain": "animation",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "combat animation montage",
+        "attack montage setup",
+        "melee combo animation",
+        "animation notify events",
+        "attack anim montage"
+      ],
+      "prerequisites": [
+        "Character skeleton",
+        "Attack animation sequences"
+      ],
+      "steps": [
+        {
+          "tool": "anim-getSkeletonInfo",
+          "purpose": "Verify skeleton and slot names for montage"
+        },
+        {
+          "tool": "anim-listSequences",
+          "purpose": "List available attack animation sequences"
+        },
+        {
+          "tool": "anim-createMontage",
+          "purpose": "Create light attack animation montage"
+        },
+        {
+          "tool": "anim-createMontage",
+          "purpose": "Create heavy attack animation montage"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add AnimNotify for hit detection window"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire AnimNotify to sphere trace for hit detection"
+        },
+        {
+          "tool": "anim-listMontages",
+          "purpose": "Verify all montages are created and assigned slots"
+        }
+      ],
+      "expectedOutcome": "Combat montages with precise hit detection notifies enabling accurate melee attack timing",
+      "source": "user-defined",
+      "tags": [
+        "animation",
+        "montage",
+        "combat",
+        "notifies",
+        "melee"
+      ]
+    },
+    {
+      "id": "learned-blueprint-save-game",
+      "name": "Implement Save and Load Game System",
+      "description": "Create a save game Blueprint that serializes player state, inventory, and world data to disk",
+      "domain": "blueprint",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "save game system",
+        "implement save load",
+        "blueprint save game",
+        "persist game data",
+        "save player progress"
+      ],
+      "prerequisites": [
+        "Player state with variables to save"
+      ],
+      "steps": [
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Create SaveGame Blueprint class with save variables"
+        },
+        {
+          "tool": "blueprint-modifyProperty",
+          "purpose": "Add player health, inventory, and position variables"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add SaveGameToSlot node in save function"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire player state data to save game object"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add LoadGameFromSlot and cast node for load function"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire loaded data to restore player state"
+        },
+        {
+          "tool": "datatable-create",
+          "purpose": "Create DataTable for checkpoint and world state data"
+        }
+      ],
+      "expectedOutcome": "A complete save/load system that persists and restores player progress between sessions",
+      "source": "user-defined",
+      "tags": [
+        "blueprint",
+        "save-game",
+        "persistence",
+        "inventory",
+        "checkpoint"
+      ]
+    },
+    {
+      "id": "learned-texture-render-target",
+      "name": "Create and Use Render Target Texture",
+      "description": "Set up a render target for dynamic scene capture and use it as a texture in a material",
+      "domain": "texture",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "render target texture",
+        "scene capture texture",
+        "security camera effect",
+        "dynamic texture render",
+        "render to texture"
+      ],
+      "prerequisites": [
+        "Material to apply render target to"
+      ],
+      "steps": [
+        {
+          "tool": "texture-createRenderTarget",
+          "purpose": "Create render target texture asset"
+        },
+        {
+          "tool": "texture-getInfo",
+          "purpose": "Verify render target dimensions and format"
+        },
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn SceneCapture2D actor in level"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Assign render target to scene capture component"
+        },
+        {
+          "tool": "material-createInstance",
+          "purpose": "Create material instance for security monitor screen"
+        },
+        {
+          "tool": "material-setTexture",
+          "purpose": "Assign render target texture to material instance"
+        }
+      ],
+      "expectedOutcome": "A dynamic render target capturing a scene view and displaying it on a monitor mesh material",
+      "source": "user-defined",
+      "tags": [
+        "texture",
+        "render-target",
+        "scene-capture",
+        "security-camera",
+        "dynamic"
+      ]
+    },
+    {
+      "id": "learned-pcg-dungeon-layout",
+      "name": "Procedural Dungeon Layout with PCG",
+      "description": "Generate dungeon room and corridor layouts procedurally using PCG graph with grid sampling",
+      "domain": "pcg",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "procedural dungeon",
+        "PCG dungeon generation",
+        "generate dungeon layout",
+        "PCG room placement",
+        "procedural level generation"
+      ],
+      "prerequisites": [
+        "Room and corridor mesh assets"
+      ],
+      "steps": [
+        {
+          "tool": "pcg-createGraph",
+          "purpose": "Create PCG graph for dungeon generation"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add grid sampler for room placement positions"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add random select node for room type variation"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add StaticMeshSpawner for room mesh placement"
+        },
+        {
+          "tool": "pcg-addNode",
+          "purpose": "Add loop node to connect adjacent rooms with corridors"
+        },
+        {
+          "tool": "pcg-connectNodes",
+          "purpose": "Wire grid to random select to spawner pipeline"
+        },
+        {
+          "tool": "pcg-getInfo",
+          "purpose": "Inspect generated dungeon point count and coverage"
+        }
+      ],
+      "expectedOutcome": "A PCG graph that generates varied dungeon layouts with rooms and connecting corridors",
+      "source": "user-defined",
+      "tags": [
+        "pcg",
+        "dungeon",
+        "procedural",
+        "generation",
+        "rooms"
+      ]
+    },
+    {
+      "id": "learned-ai-eqs-cover-system",
+      "name": "AI Cover System with EQS",
+      "description": "Create an EQS query that finds valid cover positions behind obstacles for enemy AI tactical movement",
+      "domain": "ai",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "AI cover system",
+        "EQS cover positions",
+        "enemy find cover",
+        "tactical AI cover",
+        "AI hide behind objects"
+      ],
+      "prerequisites": [
+        "Enemy AI with behavior tree",
+        "Navigation mesh"
+      ],
+      "steps": [
+        {
+          "tool": "ai-getNavMeshInfo",
+          "purpose": "Verify NavMesh covers cover position areas"
+        },
+        {
+          "tool": "ai-createEqs",
+          "purpose": "Create EQS query for cover point detection"
+        },
+        {
+          "tool": "ai-addBlackboardKey",
+          "purpose": "Add CoverLocation vector key to blackboard"
+        },
+        {
+          "tool": "ai-getBlackboardKeys",
+          "purpose": "Verify all required blackboard keys exist"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add RunEQSQuery node to behavior tree task"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire EQS result to MoveToLocation with cover check"
+        }
+      ],
+      "expectedOutcome": "Enemy AI that tactically moves to valid cover positions detected by EQS during combat",
+      "source": "user-defined",
+      "tags": [
+        "ai",
+        "eqs",
+        "cover",
+        "tactical",
+        "navigation"
+      ]
+    },
+    {
+      "id": "learned-blueprint-dialogue-system",
+      "name": "Create NPC Dialogue System",
+      "description": "Build a dialogue system with conversation trees, NPC response options, and condition checks",
+      "domain": "blueprint",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "dialogue system",
+        "NPC conversation",
+        "branching dialogue",
+        "dialogue tree Blueprint",
+        "NPC dialogue options"
+      ],
+      "prerequisites": [
+        "NPC character Blueprint",
+        "Player interact component"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-createDialogueSystem",
+          "purpose": "Run dialogue system creation workflow"
+        },
+        {
+          "tool": "datatable-create",
+          "purpose": "Create DataTable for dialogue lines and conditions"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add greeting dialogue row with NPC ID and conditions"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add dialogue manager Blueprint with conversation state"
+        },
+        {
+          "tool": "widget-create",
+          "purpose": "Create WBP_DialogueBox with text and choice buttons"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire dialogue data to widget display logic"
+        }
+      ],
+      "expectedOutcome": "A dialogue system displaying branching NPC conversations with player choice buttons",
+      "source": "user-defined",
+      "tags": [
+        "blueprint",
+        "dialogue",
+        "npc",
+        "conversation",
+        "datatable"
+      ]
+    },
+    {
+      "id": "learned-sourcecontrol-checkin",
+      "name": "Source Control Status and Check-In Workflow",
+      "description": "Check source control status, review diffs, and check out files for editing in a controlled workflow",
+      "domain": "sourcecontrol",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "source control check in",
+        "perforce checkout",
+        "review file diffs",
+        "check out files for editing",
+        "source control workflow"
+      ],
+      "prerequisites": [
+        "Source control connection configured"
+      ],
+      "steps": [
+        {
+          "tool": "sourcecontrol-getStatus",
+          "purpose": "Get current source control status of working files"
+        },
+        {
+          "tool": "sourcecontrol-diff",
+          "purpose": "Review diff of modified files before checkout"
+        },
+        {
+          "tool": "sourcecontrol-checkout",
+          "purpose": "Check out files needed for editing"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate assets after checkout"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review source control operation log for errors"
+        }
+      ],
+      "expectedOutcome": "Files properly checked out and validated, ready for editing with source control tracking changes",
+      "source": "user-defined",
+      "tags": [
+        "sourcecontrol",
+        "checkout",
+        "diff",
+        "perforce",
+        "workflow"
+      ]
+    },
+    {
+      "id": "learned-file-config-read-write",
+      "name": "Read and Write Game Config Files",
+      "description": "Read INI configuration files, modify game settings, and write updated config back to disk",
+      "domain": "file",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "read config file",
+        "modify INI settings",
+        "write game config",
+        "update DefaultGame.ini",
+        "config file editing"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "file-search",
+          "purpose": "Search for INI config files in project Config folder"
+        },
+        {
+          "tool": "file-read",
+          "purpose": "Read DefaultGame.ini for current settings"
+        },
+        {
+          "tool": "file-write",
+          "purpose": "Write updated settings to DefaultGame.ini"
+        },
+        {
+          "tool": "project-getSettings",
+          "purpose": "Verify settings are reflected in engine after write"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Check for config parsing errors in log"
+        }
+      ],
+      "expectedOutcome": "Game configuration files updated with new settings properly loaded by the engine",
+      "source": "user-defined",
+      "tags": [
+        "file",
+        "config",
+        "ini",
+        "settings",
+        "project"
+      ]
+    },
+    {
+      "id": "learned-workflow-projectile-system",
+      "name": "Create Projectile with Physics and VFX",
+      "description": "Set up a projectile Blueprint with physics movement, impact detection, and Niagara hit effects",
+      "domain": "workflow",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "create projectile",
+        "bullet with VFX",
+        "projectile Blueprint",
+        "shooting projectile",
+        "projectile impact effect"
+      ],
+      "prerequisites": [
+        "Projectile mesh",
+        "Impact Niagara effect"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-createProjectile",
+          "purpose": "Run projectile creation workflow"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add ProjectileMovementComponent with speed and gravity"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add SphereCollision for impact detection"
+        },
+        {
+          "tool": "niagara-createSystem",
+          "purpose": "Create impact spark Niagara effect"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add OnHit event to spawn impact VFX and apply damage"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire impact event to Niagara spawn and destroy self"
+        }
+      ],
+      "expectedOutcome": "A physics-based projectile that travels realistically and spawns a Niagara VFX on impact",
+      "source": "user-defined",
+      "tags": [
+        "workflow",
+        "projectile",
+        "physics",
+        "niagara",
+        "combat"
+      ]
+    },
+    {
+      "id": "learned-editor-batch-operation",
+      "name": "Batch Editor Operations on Selected Actors",
+      "description": "Select a group of actors and apply batch property changes using editor batch operations",
+      "domain": "editor",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "batch edit actors",
+        "select all and change",
+        "bulk actor properties",
+        "editor batch operation",
+        "mass edit actors"
+      ],
+      "prerequisites": [
+        "Multiple actors in level"
+      ],
+      "steps": [
+        {
+          "tool": "editor-listActors",
+          "purpose": "List all actors to identify targets for batch edit"
+        },
+        {
+          "tool": "editor-setSelection",
+          "purpose": "Select all target actors by type or tag"
+        },
+        {
+          "tool": "editor-getSelection",
+          "purpose": "Verify selection contains expected actors"
+        },
+        {
+          "tool": "editor-batchOperation",
+          "purpose": "Apply batch property change to all selected actors"
+        },
+        {
+          "tool": "editor-getLevelInfo",
+          "purpose": "Verify level actor count and changes applied"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review batch operation log for errors"
+        }
+      ],
+      "expectedOutcome": "Multiple actors updated simultaneously through a batch operation without manual one-by-one editing",
+      "source": "user-defined",
+      "tags": [
+        "editor",
+        "batch",
+        "actors",
+        "properties",
+        "selection"
+      ]
+    },
+    {
+      "id": "learned-widget-main-menu",
+      "name": "Build Main Menu UI Screen",
+      "description": "Create a main menu widget with play, settings, and quit buttons with hover animations",
+      "domain": "widget",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "main menu UI",
+        "create main menu",
+        "start menu widget",
+        "game main menu screen",
+        "menu with play button"
+      ],
+      "prerequisites": [
+        "Background texture or video"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-createUIScreen",
+          "purpose": "Run UI screen creation workflow for main menu"
+        },
+        {
+          "tool": "widget-create",
+          "purpose": "Create WBP_MainMenu Widget Blueprint"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add background image filling entire screen"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add vertical box with Play, Settings, Quit buttons"
+        },
+        {
+          "tool": "widget-setProperty",
+          "purpose": "Configure button styles, fonts, and colors"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add button click events to open level or settings"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire quit button to Quit Game node"
+        }
+      ],
+      "expectedOutcome": "A polished main menu with functional navigation buttons and hover state animations",
+      "source": "user-defined",
+      "tags": [
+        "widget",
+        "main-menu",
+        "ui",
+        "buttons",
+        "navigation"
+      ]
+    },
+    {
+      "id": "learned-gameplay-game-mode-config",
+      "name": "Configure Custom Game Mode and Rules",
+      "description": "Set up a custom game mode with win conditions, player spawning, and score tracking",
+      "domain": "gameplay",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "configure game mode",
+        "custom game rules",
+        "set win conditions",
+        "score system game mode",
+        "game mode setup"
+      ],
+      "prerequisites": [
+        "Player controller and pawn classes"
+      ],
+      "steps": [
+        {
+          "tool": "gameplay-getGameMode",
+          "purpose": "Review current game mode configuration"
+        },
+        {
+          "tool": "gameplay-setGameMode",
+          "purpose": "Set custom game mode as default for level"
+        },
+        {
+          "tool": "blueprint-modifyProperty",
+          "purpose": "Add score tracking and win condition variables"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add CheckWinCondition function called on score change"
+        },
+        {
+          "tool": "datatable-create",
+          "purpose": "Create DataTable for level objectives and score thresholds"
+        },
+        {
+          "tool": "level-getWorldSettings",
+          "purpose": "Verify game mode is assigned in world settings"
+        }
+      ],
+      "expectedOutcome": "A custom game mode with defined win conditions, player rules, and score tracking active",
+      "source": "user-defined",
+      "tags": [
+        "gameplay",
+        "game-mode",
+        "rules",
+        "score",
+        "win-condition"
+      ]
+    },
+    {
+      "id": "learned-context-workflow-discovery",
+      "name": "Discover and Apply Context Workflows",
+      "description": "Use context intelligence tools to find the best workflow for a task and record its outcome",
+      "domain": "context",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "find workflow for task",
+        "context workflow matching",
+        "what workflow should I use",
+        "suggest workflow",
+        "workflow recommendation"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "context-matchIntent",
+          "purpose": "Match developer request to known workflows"
+        },
+        {
+          "tool": "context-getWorkflows",
+          "purpose": "List all available workflows in the knowledge base"
+        },
+        {
+          "tool": "context-getChains",
+          "purpose": "Get tool chains recommended for the matched workflow"
+        },
+        {
+          "tool": "context-getManifest",
+          "purpose": "Review available tools and their capabilities"
+        },
+        {
+          "tool": "context-recordOutcome",
+          "purpose": "Record success or failure outcome after executing workflow"
+        }
+      ],
+      "expectedOutcome": "The best matching workflow identified, executed, and outcome recorded for future improvement",
+      "source": "user-defined",
+      "tags": [
+        "context",
+        "workflow",
+        "matching",
+        "intelligence",
+        "recommendation"
+      ]
+    },
+    {
+      "id": "learned-mesh-import-optimize",
+      "name": "Import and Optimize Static Mesh",
+      "description": "Import a static mesh from FBX, configure LODs, materials, and collision for production use",
+      "domain": "mesh",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "import static mesh",
+        "optimize imported mesh",
+        "FBX mesh import setup",
+        "configure new mesh",
+        "mesh import workflow"
+      ],
+      "prerequisites": [
+        "FBX file for import"
+      ],
+      "steps": [
+        {
+          "tool": "asset-import",
+          "purpose": "Import FBX file as static mesh asset"
+        },
+        {
+          "tool": "mesh-getInfo",
+          "purpose": "Inspect imported mesh polygon count and UV channels"
+        },
+        {
+          "tool": "mesh-setLOD",
+          "purpose": "Configure automatic LOD reduction settings"
+        },
+        {
+          "tool": "mesh-generateCollision",
+          "purpose": "Generate simplified collision for the mesh"
+        },
+        {
+          "tool": "mesh-setMaterial",
+          "purpose": "Assign correct material slots from import"
+        },
+        {
+          "tool": "analyze-assetHealth",
+          "purpose": "Verify mesh has no import errors or warnings"
+        }
+      ],
+      "expectedOutcome": "A production-ready static mesh with LODs, collision, and materials correctly configured",
+      "source": "user-defined",
+      "tags": [
+        "mesh",
+        "import",
+        "fbx",
+        "lod",
+        "optimization"
+      ]
+    },
+    {
+      "id": "learned-blueprint-interactable-chest",
+      "name": "Create Interactable Loot Chest",
+      "description": "Build an interactable chest Blueprint with open animation, loot spawning, and highlight effect",
+      "domain": "blueprint",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "interactable chest",
+        "loot chest Blueprint",
+        "open chest animation",
+        "treasure chest",
+        "interactive loot object"
+      ],
+      "prerequisites": [
+        "Chest mesh with open animation",
+        "Loot items defined in DataTable"
+      ],
+      "steps": [
+        {
+          "tool": "workflow-createInteractable",
+          "purpose": "Run interactable creation workflow for chest"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add BoxCollision for interaction trigger"
+        },
+        {
+          "tool": "anim-createMontage",
+          "purpose": "Create chest open animation montage"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add interact interface implementation"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add loot spawn logic reading from DataTable"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire interaction to open montage and loot spawn"
+        },
+        {
+          "tool": "material-createInstance",
+          "purpose": "Create highlight material instance for hover state"
+        }
+      ],
+      "expectedOutcome": "A chest actor that opens with animation on interaction and spawns randomized loot items",
+      "source": "user-defined",
+      "tags": [
+        "blueprint",
+        "interactable",
+        "chest",
+        "loot",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-level-new-game-area",
+      "name": "Create and Configure New Game Area Level",
+      "description": "Create a new level, configure world settings, add post-process volume, and set up lighting",
+      "domain": "level",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "create new level",
+        "setup game area",
+        "new map setup",
+        "configure level settings",
+        "new level with lighting"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "level-create",
+          "purpose": "Create new level asset for game area"
+        },
+        {
+          "tool": "level-open",
+          "purpose": "Open the new level in editor"
+        },
+        {
+          "tool": "level-getWorldSettings",
+          "purpose": "Review and configure world settings"
+        },
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn directional light, sky atmosphere, and sky light"
+        },
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn post-process volume covering entire level"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Configure post-process exposure and color grading"
+        },
+        {
+          "tool": "level-save",
+          "purpose": "Save the newly configured level"
+        }
+      ],
+      "expectedOutcome": "A new level configured with proper world settings, sky lighting, and post-process volume",
+      "source": "user-defined",
+      "tags": [
+        "level",
+        "setup",
+        "lighting",
+        "post-process",
+        "world-settings"
+      ]
+    },
+    {
+      "id": "learned-context-error-recovery",
+      "name": "Error Recovery and Resolution Learning",
+      "description": "Handle tool failures by matching errors to known resolutions and recording new fixes for future use",
+      "domain": "context",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "handle tool error",
+        "recover from failure",
+        "learn error resolution",
+        "fix and record error",
+        "error recovery workflow"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "context-matchError",
+          "purpose": "Match current error to known resolutions in database"
+        },
+        {
+          "tool": "context-listResolutions",
+          "purpose": "List all learned resolutions for reference"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Get detailed error log for diagnosis"
+        },
+        {
+          "tool": "context-recordResolution",
+          "purpose": "Record new error resolution after manual fix"
+        },
+        {
+          "tool": "context-markResolutionReused",
+          "purpose": "Mark a reused resolution to improve confidence score"
+        }
+      ],
+      "expectedOutcome": "Error identified, fixed using known or new resolution, and the fix recorded for future automation",
+      "source": "user-defined",
+      "tags": [
+        "context",
+        "error",
+        "recovery",
+        "resolution",
+        "learning"
+      ]
+    },
+    {
+      "id": "learned-widget-minimap",
+      "name": "Create Minimap Widget with Scene Capture",
+      "description": "Build a circular minimap widget using a render target scene capture with player and enemy markers",
+      "domain": "widget",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "minimap widget",
+        "create minimap",
+        "top down map UI",
+        "player map widget",
+        "minimap with markers"
+      ],
+      "prerequisites": [
+        "Top-down SceneCapture2D actor",
+        "Marker icon textures"
+      ],
+      "steps": [
+        {
+          "tool": "texture-createRenderTarget",
+          "purpose": "Create render target for minimap capture"
+        },
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn SceneCapture2D above player for top-down view"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Assign render target to scene capture, set orthographic"
+        },
+        {
+          "tool": "widget-create",
+          "purpose": "Create WBP_Minimap widget"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add Image with circular material mask for map"
+        },
+        {
+          "tool": "widget-addElement",
+          "purpose": "Add canvas overlay for enemy and objective markers"
+        },
+        {
+          "tool": "widget-getBindings",
+          "purpose": "Verify render target and actor position bindings"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire player movement to minimap camera follow logic"
+        }
+      ],
+      "expectedOutcome": "A functional circular minimap displaying the world with player and enemy position markers",
+      "source": "user-defined",
+      "tags": [
+        "widget",
+        "minimap",
+        "render-target",
+        "ui",
+        "map"
+      ]
+    },
+    {
+      "id": "learned-physics-vehicle-setup",
+      "name": "Configure Vehicle Physics and Handling",
+      "description": "Set up a wheeled vehicle with realistic physics including suspension, tire friction, and engine torque",
+      "domain": "physics",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "vehicle physics",
+        "car handling setup",
+        "wheeled vehicle physics",
+        "configure car physics",
+        "vehicle suspension"
+      ],
+      "prerequisites": [
+        "Vehicle skeletal mesh with wheel bones"
+      ],
+      "steps": [
+        {
+          "tool": "physics-createAsset",
+          "purpose": "Create physics asset for vehicle body"
+        },
+        {
+          "tool": "physics-createMaterial",
+          "purpose": "Create tire physical material with friction coefficients"
+        },
+        {
+          "tool": "physics-setConstraint",
+          "purpose": "Configure wheel constraint limits for suspension"
+        },
+        {
+          "tool": "physics-setProfile",
+          "purpose": "Assign wheel profiles with tire config"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add WheeledVehicleMovementComponent setup"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire input throttle and steering to vehicle movement"
+        },
+        {
+          "tool": "physics-getInfo",
+          "purpose": "Verify physics asset bone and constraint count"
+        }
+      ],
+      "expectedOutcome": "A driveable vehicle with realistic wheel physics, suspension, and responsive handling",
+      "source": "user-defined",
+      "tags": [
+        "physics",
+        "vehicle",
+        "wheels",
+        "suspension",
+        "handling"
+      ]
+    },
+    {
+      "id": "learned-build-lighting-validation",
+      "name": "Build and Validate Level Lighting",
+      "description": "Build production lightmaps, run map check for lighting errors, and validate quality",
+      "domain": "build",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "build lighting",
+        "lightmap build",
+        "bake lighting",
+        "validate level lighting",
+        "fix lighting build"
+      ],
+      "prerequisites": [
+        "Level with static lights and lightmap UVs on meshes"
+      ],
+      "steps": [
+        {
+          "tool": "editor-getLevelInfo",
+          "purpose": "Check level for lighting rebuild needed flag"
+        },
+        {
+          "tool": "build-getMapCheck",
+          "purpose": "Run map check to find lighting issues before build"
+        },
+        {
+          "tool": "build-lightmaps",
+          "purpose": "Build production quality lightmaps"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review lighting build log for errors or warnings"
+        },
+        {
+          "tool": "analyze-performanceHints",
+          "purpose": "Check lightmap memory usage and texel density"
+        },
+        {
+          "tool": "level-save",
+          "purpose": "Save level after successful lighting build"
+        }
+      ],
+      "expectedOutcome": "Production-quality baked lighting with no errors and optimized lightmap memory usage",
+      "source": "user-defined",
+      "tags": [
+        "build",
+        "lighting",
+        "lightmap",
+        "bake",
+        "validation"
+      ]
+    },
+    {
+      "id": "learned-actor-spline-road",
+      "name": "Create Spline-Based Road Actor",
+      "description": "Build a road Actor that follows a spline path with mesh tiling and automatic UV mapping",
+      "domain": "actor",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "spline road",
+        "create road with spline",
+        "spline mesh actor",
+        "road follows spline",
+        "deform mesh along spline"
+      ],
+      "prerequisites": [
+        "Road segment static mesh with proper UVs"
+      ],
+      "steps": [
+        {
+          "tool": "actor-spawn",
+          "purpose": "Spawn actor to serve as spline road container"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add SplineComponent defining road path"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Add SplineMesh components for road segments"
+        },
+        {
+          "tool": "actor-setProperty",
+          "purpose": "Configure spline points to define road curve"
+        },
+        {
+          "tool": "mesh-getInfo",
+          "purpose": "Verify road mesh UV layout for tiling"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Construction Script to auto-tile SplineMeshes"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire spline point count loop to mesh tiling logic"
+        }
+      ],
+      "expectedOutcome": "A road actor that automatically tiles mesh segments along a spline path with correct UVs",
+      "source": "user-defined",
+      "tags": [
+        "actor",
+        "spline",
+        "road",
+        "mesh",
+        "procedural"
+      ]
+    },
+    {
+      "id": "learned-niagara-smoke-trail",
+      "name": "Create Smoke Trail for Moving Objects",
+      "description": "Build a Niagara smoke trail effect that attaches to moving actors like rockets or vehicles",
+      "domain": "niagara",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "smoke trail effect",
+        "niagara exhaust trail",
+        "rocket smoke trail",
+        "vehicle exhaust particles",
+        "attached trail VFX"
+      ],
+      "prerequisites": [
+        "Smoke sprite texture",
+        "Actor to attach trail to"
+      ],
+      "steps": [
+        {
+          "tool": "niagara-createSystem",
+          "purpose": "Create Niagara system for smoke trail"
+        },
+        {
+          "tool": "niagara-addEmitter",
+          "purpose": "Add sprite emitter for main smoke particles"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Configure smoke lifetime, size scale, and opacity fade"
+        },
+        {
+          "tool": "niagara-setParameter",
+          "purpose": "Set initial velocity relative to object speed"
+        },
+        {
+          "tool": "niagara-compile",
+          "purpose": "Compile Niagara system"
+        },
+        {
+          "tool": "actor-addComponent",
+          "purpose": "Attach Niagara component to moving actor socket"
+        },
+        {
+          "tool": "niagara-listSystems",
+          "purpose": "Verify system is available for attachment"
+        }
+      ],
+      "expectedOutcome": "A smoke trail Niagara system that follows moving actors and creates persistent trailing smoke",
+      "source": "user-defined",
+      "tags": [
+        "niagara",
+        "smoke",
+        "trail",
+        "vfx",
+        "attached"
+      ]
+    },
+    {
+      "id": "learned-datatable-quest-system",
+      "name": "Create Quest Database with DataTable",
+      "description": "Build a quest system database with DataTable rows for quest objectives, rewards, and completion conditions",
+      "domain": "datatable",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "quest database",
+        "quest datatable",
+        "mission system data",
+        "quest reward table",
+        "quest objective tracking"
+      ],
+      "prerequisites": [
+        "FQuestData struct defined"
+      ],
+      "steps": [
+        {
+          "tool": "datatable-create",
+          "purpose": "Create DataTable with FQuestData row structure"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add main story quest with objectives and completion flags"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add side quest with item reward and kill count objective"
+        },
+        {
+          "tool": "datatable-addRow",
+          "purpose": "Add daily challenge quest with time limit"
+        },
+        {
+          "tool": "datatable-getRows",
+          "purpose": "Verify all quest rows have correct data"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add quest manager Blueprint reading DataTable at runtime"
+        },
+        {
+          "tool": "datatable-removeRow",
+          "purpose": "Remove placeholder test row before shipping"
+        }
+      ],
+      "expectedOutcome": "A complete quest DataTable powering a quest manager that tracks player progress and rewards",
+      "source": "user-defined",
+      "tags": [
+        "datatable",
+        "quest",
+        "missions",
+        "objectives",
+        "rewards"
+      ]
+    },
+    {
+      "id": "learned-material-emissive-neon",
+      "name": "Create Neon Sign Emissive Material",
+      "description": "Build an emissive neon material with HDR bloom, color variation, and animated flicker",
+      "domain": "material",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "neon material",
+        "emissive sign material",
+        "glowing neon shader",
+        "HDR bloom material",
+        "animated neon flicker"
+      ],
+      "prerequisites": [
+        "Neon sign mesh with separate emissive material slots"
+      ],
+      "steps": [
+        {
+          "tool": "material-create",
+          "purpose": "Create emissive unlit material for neon tubes"
+        },
+        {
+          "tool": "material-setParameter",
+          "purpose": "Set emissive color and intensity as scalar parameters"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Sine node for animated flicker frequency"
+        },
+        {
+          "tool": "blueprint-createNode",
+          "purpose": "Add Multiply node to modulate emissive intensity"
+        },
+        {
+          "tool": "blueprint-connectPins",
+          "purpose": "Wire sine output to emissive multiplier"
+        },
+        {
+          "tool": "material-createInstance",
+          "purpose": "Create red, blue, and green neon color instances"
+        },
+        {
+          "tool": "mesh-setMaterial",
+          "purpose": "Assign color instances to correct neon tube mesh slots"
+        }
+      ],
+      "expectedOutcome": "A set of animated neon material instances with HDR emissive output that flicker realistically",
+      "source": "user-defined",
+      "tags": [
+        "material",
+        "emissive",
+        "neon",
+        "bloom",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-sequencer-import-mocap",
+      "name": "Import Motion Capture via Sequencer FBX",
+      "description": "Import motion capture FBX data into a Level Sequence and retarget it to the game character skeleton",
+      "domain": "sequencer",
+      "difficulty": "advanced",
+      "intentPatterns": [
+        "import mocap",
+        "motion capture FBX import",
+        "retarget mocap animation",
+        "FBX animation into sequencer",
+        "mocap to character"
+      ],
+      "prerequisites": [
+        "Mocap FBX file",
+        "Game character skeleton with IK retargeter"
+      ],
+      "steps": [
+        {
+          "tool": "sequencer-create",
+          "purpose": "Create Level Sequence for mocap import"
+        },
+        {
+          "tool": "sequencer-open",
+          "purpose": "Open sequence in Sequencer editor"
+        },
+        {
+          "tool": "sequencer-addBinding",
+          "purpose": "Add character actor binding to sequence"
+        },
+        {
+          "tool": "sequencer-importFbx",
+          "purpose": "Import mocap FBX into sequence tracks"
+        },
+        {
+          "tool": "sequencer-getInfo",
+          "purpose": "Verify imported animation track length and frame rate"
+        },
+        {
+          "tool": "anim-getSkeletonInfo",
+          "purpose": "Confirm skeleton compatibility after import"
+        }
+      ],
+      "expectedOutcome": "Mocap animation data imported and applied to the game character via Level Sequence tracks",
+      "source": "user-defined",
+      "tags": [
+        "sequencer",
+        "mocap",
+        "fbx",
+        "import",
+        "animation"
+      ]
+    },
+    {
+      "id": "learned-asset-export-migration",
+      "name": "Export and Migrate Assets Between Projects",
+      "description": "Export assets from one project and prepare them for migration into another UE5 project",
+      "domain": "asset",
+      "difficulty": "intermediate",
+      "intentPatterns": [
+        "export assets",
+        "migrate to another project",
+        "copy assets between projects",
+        "asset migration export",
+        "share assets across projects"
+      ],
+      "prerequisites": [
+        "Source project with assets to export"
+      ],
+      "steps": [
+        {
+          "tool": "content-findAssets",
+          "purpose": "Find all assets to export in source project"
+        },
+        {
+          "tool": "asset-getReferences",
+          "purpose": "Map all dependencies for each export asset"
+        },
+        {
+          "tool": "content-validateAssets",
+          "purpose": "Validate assets before export to catch errors"
+        },
+        {
+          "tool": "asset-export",
+          "purpose": "Export assets with all dependencies to export folder"
+        },
+        {
+          "tool": "asset-setMetadata",
+          "purpose": "Tag exported assets with version and source project info"
+        },
+        {
+          "tool": "file-search",
+          "purpose": "Verify export folder contains all expected files"
+        }
+      ],
+      "expectedOutcome": "A clean asset export package with all dependencies included, ready for import into another project",
+      "source": "user-defined",
+      "tags": [
+        "asset",
+        "export",
+        "migration",
+        "dependencies",
+        "project"
+      ]
+    },
+    {
+      "id": "learned-editor-recent-activity-review",
+      "name": "Review Recent Editor Activity and Changes",
+      "description": "Audit recent editor activity to track which assets were modified, actors moved, or settings changed",
+      "domain": "editor",
+      "difficulty": "beginner",
+      "intentPatterns": [
+        "review recent changes",
+        "editor activity log",
+        "what changed recently",
+        "track editor modifications",
+        "recent asset edits"
+      ],
+      "prerequisites": [],
+      "steps": [
+        {
+          "tool": "editor-getRecentActivity",
+          "purpose": "Get list of recently modified assets and operations"
+        },
+        {
+          "tool": "editor-getLevelInfo",
+          "purpose": "Check current level state and actor count"
+        },
+        {
+          "tool": "content-getAssetDetails",
+          "purpose": "Get details on recently modified assets"
+        },
+        {
+          "tool": "sourcecontrol-diff",
+          "purpose": "Diff files to see exact content changes"
+        },
+        {
+          "tool": "debug-getLog",
+          "purpose": "Review log for any errors during recent operations"
+        }
+      ],
+      "expectedOutcome": "A clear picture of all recent editor changes enabling review and rollback decisions",
+      "source": "user-defined",
+      "tags": [
+        "editor",
+        "activity",
+        "audit",
+        "changes",
+        "review"
+      ]
+    }
+  ]
 }

@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { readdirSync, readFileSync } from 'fs';
+import { describe, it, expect, afterAll } from 'vitest';
+import { readdirSync, readFileSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
@@ -12,6 +12,15 @@ import { getTools } from '../../../src/tools/context/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const WORKFLOWS_FILE = join(DATA_DIR, 'learned-workflows.json');
+
+// Backup production data before tests modify it
+const _backupWorkflows = existsSync(WORKFLOWS_FILE) ? readFileSync(WORKFLOWS_FILE, 'utf-8') : null;
+
+afterAll(() => {
+  if (_backupWorkflows !== null) writeFileSync(WORKFLOWS_FILE, _backupWorkflows, 'utf-8');
+});
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { existsSync, rmSync } from 'fs';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
+import { existsSync, rmSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
@@ -19,6 +19,13 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
 const RESOLUTIONS_FILE = join(DATA_DIR, 'error-resolutions.json');
+
+// Backup production data before tests modify it
+const _backupResolutions = existsSync(RESOLUTIONS_FILE) ? readFileSync(RESOLUTIONS_FILE, 'utf-8') : null;
+
+afterAll(() => {
+  if (_backupResolutions !== null) writeFileSync(RESOLUTIONS_FILE, _backupResolutions, 'utf-8');
+});
 
 function cleanup() {
   if (existsSync(RESOLUTIONS_FILE)) rmSync(RESOLUTIONS_FILE);

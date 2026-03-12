@@ -20,6 +20,7 @@ import {
 } from './error-learning.js';
 import { validateWorkflow, exportWorkflow } from './workflow-schema.js';
 import { appendLearnedWorkflow } from './workflow-store.js';
+import { getRecommendations } from './recommendation-engine.js';
 
 export function getTools(): ToolModule[] {
   return [
@@ -238,6 +239,26 @@ export function getTools(): ToolModule[] {
             id: w.id,
             domain: w.domain,
             stepCount: w.steps.length,
+          }) }],
+        });
+      },
+    },
+    {
+      name: 'context-recommend',
+      description: 'Get proactive tool recommendations based on recent tool usage. Suggests next tools by analyzing workflow step adjacency patterns.',
+      schema: {
+        recentTools: z.array(z.string()).describe('Tools used recently in the current session (most recent last)'),
+        domain: z.string().optional().describe('Optionally filter recommendations to a specific UE domain'),
+        maxResults: z.number().optional().describe('Maximum recommendations to return (default 5)'),
+      },
+      handler: (_ctx, params) => {
+        const p = params as { recentTools: string[]; domain?: string; maxResults?: number };
+        const recommendations = getRecommendations(p.recentTools, p.domain, p.maxResults);
+        return Promise.resolve({
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            status: 'success',
+            count: recommendations.length,
+            recommendations,
           }) }],
         });
       },

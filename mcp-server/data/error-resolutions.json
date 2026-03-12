@@ -1,42 +1,778 @@
 {
   "version": 1,
-  "updatedAt": 1773287004083,
+  "updatedAt": 1773300000000,
   "resolutions": [
     {
-      "id": "res-1773287004081-syzs02",
-      "errorMessage": "Error X",
-      "errorType": "blueprint-error",
-      "sourceTool": "blueprint-connectPins",
-      "developerIntent": "Connect",
-      "attemptedFixes": [],
+      "id": "res-001",
+      "errorMessage": "Error: listen EADDRINUSE: address already in use :::9877",
+      "errorType": "connection-error",
+      "sourceTool": "editor-ping",
+      "developerIntent": "Connect MCP server to Unreal Editor via WebSocket on port 9877",
+      "attemptedFixes": [
+        {
+          "action": "Restart the MCP server process",
+          "result": "Failed — port still occupied after restart",
+          "notes": "Server restart alone does not release the port if a zombie Node.js process holds it"
+        },
+        {
+          "action": "Change port to 9878 in server config",
+          "result": "Failed — UE plugin is hardcoded to connect on 9877 by default"
+        }
+      ],
       "successfulFix": {
-        "description": "Fix",
-        "toolSequence": [],
-        "steps": []
+        "description": "Kill the orphaned process occupying port 9877, then restart the MCP server",
+        "toolSequence": ["editor-ping"],
+        "steps": [
+          "Run `netstat -ano | findstr :9877` (Windows) or `lsof -i :9877` (macOS/Linux) to find the PID",
+          "Kill the process: `taskkill /PID <pid> /F` or `kill -9 <pid>`",
+          "Restart the MCP server with `npm start`",
+          "Call editor-ping to verify the connection is restored"
+        ]
       },
-      "rootCause": "Cause",
-      "tags": [],
+      "rootCause": "A previous MCP server instance crashed without releasing its TCP listener. The OS keeps the port reserved until the owning process is terminated.",
+      "tags": ["websocket", "port", "startup", "connection", "EADDRINUSE"],
       "reuseCount": 0,
-      "createdAt": 1773287004081,
-      "lastUsedAt": 1773287004081
+      "createdAt": 1773200000000,
+      "lastUsedAt": 1773200000000
     },
     {
-      "id": "res-1773287004082-4apu7q",
-      "errorMessage": "Error Y",
-      "errorType": "material-error",
-      "sourceTool": "material-create",
-      "developerIntent": "Create",
-      "attemptedFixes": [],
+      "id": "res-002",
+      "errorMessage": "UEdGraphPin: Cannot connect pins — type mismatch. Source pin type: float, Target pin type: int32. Implicit conversion not allowed in this context.",
+      "errorType": "pin-connection-failure",
+      "sourceTool": "blueprint-connectPins",
+      "developerIntent": "Connect a float output pin to an integer input pin in a Blueprint graph",
+      "attemptedFixes": [
+        {
+          "action": "Retry blueprint-connectPins with swapped source/target order",
+          "toolUsed": "blueprint-connectPins",
+          "result": "Failed — pin direction mismatch produces a different error, type issue unchanged"
+        }
+      ],
       "successfulFix": {
-        "description": "Fix",
-        "toolSequence": [],
-        "steps": []
+        "description": "Insert a Float-to-Int conversion node (Floor, Ceil, Round, or Truncate) between the float output and the integer input",
+        "toolSequence": ["blueprint-createNode", "blueprint-connectPins", "blueprint-connectPins"],
+        "steps": [
+          "Call blueprint-createNode with nodeType 'KismetMathLibrary::FFloor' to add a Floor node to the graph",
+          "Connect the original float output pin to the Floor node's input using blueprint-connectPins",
+          "Connect the Floor node's integer return value pin to the original target integer input pin"
+        ]
       },
-      "rootCause": "Cause",
-      "tags": [],
+      "rootCause": "Unreal's Blueprint type system does not implicitly coerce float to int. An explicit conversion node must be placed in the graph to satisfy the type checker.",
+      "tags": ["blueprint", "type-mismatch", "float", "integer", "conversion", "pin"],
       "reuseCount": 0,
-      "createdAt": 1773287004082,
-      "lastUsedAt": 1773287004082
+      "createdAt": 1773201000000,
+      "lastUsedAt": 1773201000000
+    },
+    {
+      "id": "res-003",
+      "errorMessage": "LogAssetRegistry: Error: Asset not found at path '/Game/Characters/BP_Hero'. The asset may have been moved, deleted, or not yet imported.",
+      "errorType": "asset-not-found",
+      "sourceTool": "actor-spawn",
+      "developerIntent": "Spawn the hero character Blueprint actor into the current level",
+      "attemptedFixes": [
+        {
+          "action": "Search for BP_Hero using content-findAssets with name filter",
+          "toolUsed": "content-findAssets",
+          "result": "Returned empty array — asset does not exist at the expected path"
+        },
+        {
+          "action": "Try spawning with partial path '/Game/BP_Hero'",
+          "toolUsed": "actor-spawn",
+          "result": "Failed — same asset-not-found error with shorter path"
+        }
+      ],
+      "successfulFix": {
+        "description": "Use content-findAssets with a broad search to discover the actual asset path, then spawn with the correct full path",
+        "toolSequence": ["content-findAssets", "actor-spawn"],
+        "steps": [
+          "Call content-findAssets with searchQuery 'BP_Hero' and no path filter to scan all content directories",
+          "Note the full asset path returned (e.g., '/Game/Blueprints/Characters/BP_Hero')",
+          "Call actor-spawn using the discovered full path with the '_C' suffix: '/Game/Blueprints/Characters/BP_Hero.BP_Hero_C'"
+        ]
+      },
+      "rootCause": "The asset was saved in a subdirectory different from the expected location, or the Content Browser folder structure was reorganized after the tool call was authored.",
+      "tags": ["asset", "spawn", "path", "content-browser", "blueprint", "not-found"],
+      "reuseCount": 0,
+      "createdAt": 1773202000000,
+      "lastUsedAt": 1773202000000
+    },
+    {
+      "id": "res-004",
+      "errorMessage": "actor-setTransform failed: Cannot move actor 'SM_WallSection_42' — actor mobility is set to Static. Root component must be Movable or Stationary to allow runtime transform changes.",
+      "errorType": "actor-error",
+      "sourceTool": "actor-setTransform",
+      "developerIntent": "Reposition a static mesh actor in the level at runtime via MCP",
+      "attemptedFixes": [
+        {
+          "action": "Call actor-setTransform with bTeleport flag set to true",
+          "toolUsed": "actor-setTransform",
+          "result": "Failed — the teleport flag controls interpolation, not the mobility restriction"
+        }
+      ],
+      "successfulFix": {
+        "description": "Set the actor's root component mobility to Movable via actor-setProperty before applying the transform",
+        "toolSequence": ["actor-setProperty", "actor-setTransform"],
+        "steps": [
+          "Call actor-setProperty with property 'Mobility' and value 'Movable' on the target actor",
+          "Call actor-setTransform with the desired location, rotation, and scale",
+          "If the actor must remain Static for precomputed lighting, make the transform change only in the editor session before baking"
+        ]
+      },
+      "rootCause": "UE StaticMeshActors default to Static mobility to support Lightmass precomputed lighting. The engine blocks transform mutations on Static components to preserve lighting validity.",
+      "tags": ["mobility", "static", "movable", "transform", "lighting", "actor"],
+      "reuseCount": 0,
+      "createdAt": 1773203000000,
+      "lastUsedAt": 1773203000000
+    },
+    {
+      "id": "res-005",
+      "errorMessage": "Material Compiler Error: Material '/Game/Materials/M_RockSurface' has no connection to Base Color input. Shader will not compile. [Node: Output]",
+      "errorType": "material-compile-error",
+      "sourceTool": "material-create",
+      "developerIntent": "Create a new rock surface material with texture and roughness parameters",
+      "attemptedFixes": [
+        {
+          "action": "Call material-setParameter to set BaseColor as a constant vector",
+          "toolUsed": "material-setParameter",
+          "result": "Failed — setParameter targets existing parameter nodes; it does not wire new nodes to the Output node"
+        }
+      ],
+      "successfulFix": {
+        "description": "Use material-setTexture to assign a texture to the Base Color slot, which creates and connects the required TextureSample node automatically",
+        "toolSequence": ["material-setTexture", "material-setParameter"],
+        "steps": [
+          "Call material-setTexture with slot 'BaseColor' and a valid texture asset path to auto-create and connect a TextureSample node to the Output",
+          "Call material-setParameter to add Roughness and Metallic scalar parameters if needed",
+          "Verify the material compiles by checking that no shader errors appear in the output log"
+        ]
+      },
+      "rootCause": "material-create initializes an empty material graph. The Output node requires at minimum a Base Color connection before the HLSL shader compiler can generate valid code.",
+      "tags": ["material", "base-color", "shader", "compile", "texture", "output-node"],
+      "reuseCount": 0,
+      "createdAt": 1773204000000,
+      "lastUsedAt": 1773204000000
+    },
+    {
+      "id": "res-006",
+      "errorMessage": "StaticMesh: Mesh '/Game/Meshes/SM_Barrel' has no collision geometry. SimpleCollision array is empty and bUseComplexAsSimpleCollision is false. Physics simulation and trace hits will not register.",
+      "errorType": "mesh-error",
+      "sourceTool": "mesh-generateCollision",
+      "developerIntent": "Add collision to an imported barrel mesh for physics simulation",
+      "attemptedFixes": [
+        {
+          "action": "Call mesh-generateCollision with collisionType 'UseComplexAsSimple'",
+          "toolUsed": "mesh-generateCollision",
+          "result": "Failed — LOD0 vertex buffer was not loaded; complex collision requires valid geometry"
+        },
+        {
+          "action": "Call mesh-getInfo to inspect mesh state",
+          "toolUsed": "mesh-getInfo",
+          "result": "Revealed the mesh was imported at LOD1 only with LOD0 missing"
+        }
+      ],
+      "successfulFix": {
+        "description": "Re-import the mesh ensuring LOD0 is included, then generate a convex hull collision on the fully loaded geometry",
+        "toolSequence": ["asset-import", "mesh-generateCollision"],
+        "steps": [
+          "Call asset-import with the original FBX source file and importOptions.minimumLODLevel set to 0",
+          "Call mesh-generateCollision with collisionType 'UseConvexHullDecomposition' and maxHullCount 8",
+          "Verify by calling mesh-getInfo and confirming simpleCollisionCount is greater than 0"
+        ]
+      },
+      "rootCause": "The FBX import was configured to skip LOD0, leaving the static mesh with no base geometry from which a collision hull could be generated.",
+      "tags": ["mesh", "collision", "LOD", "import", "physics", "convex-hull", "barrel"],
+      "reuseCount": 0,
+      "createdAt": 1773205000000,
+      "lastUsedAt": 1773205000000
+    },
+    {
+      "id": "res-007",
+      "errorMessage": "AnimationBlueprintCompiler Error: Montage '/Game/Animations/AM_AttackCombo' targets skeleton 'SK_Mannequin' but assigned mesh skeleton is 'SK_Hero_Skeleton'. Bone count mismatch: expected 67 bones, found 52 bones. Montage will not play.",
+      "errorType": "animation-error",
+      "sourceTool": "anim-createMontage",
+      "developerIntent": "Create an attack combo animation montage for the hero character",
+      "attemptedFixes": [
+        {
+          "action": "Call anim-getSkeletonInfo on both skeletons to compare hierarchies",
+          "toolUsed": "anim-getSkeletonInfo",
+          "result": "Confirmed skeletons are incompatible — bone hierarchy diverges at spine_01, 15 bones unmatched"
+        }
+      ],
+      "successfulFix": {
+        "description": "Retarget the source animation sequences from the Mannequin skeleton to the hero skeleton, then create the montage from the retargeted sequences",
+        "toolSequence": ["anim-getSkeletonInfo", "asset-create", "anim-createMontage"],
+        "steps": [
+          "Call anim-getSkeletonInfo on both SK_Mannequin and SK_Hero_Skeleton to document the bone mapping differences",
+          "Call asset-create with type 'IKRetargeter' to create a retargeter asset mapping SK_Mannequin to SK_Hero_Skeleton",
+          "Run batch retarget to produce hero-skeleton versions of all source animation sequences",
+          "Call anim-createMontage referencing the retargeted sequences and SK_Hero_Skeleton as the target skeleton"
+        ]
+      },
+      "rootCause": "Animations authored on the Mannequin skeleton cannot play directly on a custom hero skeleton with a different bone hierarchy. IK retargeting must be used to translate poses between the two rigs.",
+      "tags": ["animation", "skeleton", "montage", "retarget", "bone-mismatch", "mannequin"],
+      "reuseCount": 0,
+      "createdAt": 1773206000000,
+      "lastUsedAt": 1773206000000
+    },
+    {
+      "id": "res-008",
+      "errorMessage": "NiagaraCompiler: Error in module 'NM_VelocityFromPoint': Expression 'SampleVectorField' references asset '/Game/VFX/VF_Wind' which does not exist or is not loaded. Compilation halted at module index 3.",
+      "errorType": "niagara-error",
+      "sourceTool": "niagara-compile",
+      "developerIntent": "Compile a wind-driven particle system that uses a vector field asset for directional force",
+      "attemptedFixes": [
+        {
+          "action": "Call niagara-compile with forceFullRecompile set to true",
+          "toolUsed": "niagara-compile",
+          "result": "Failed — same missing asset error; full recompile does not resolve missing dependencies"
+        },
+        {
+          "action": "Call niagara-addEmitter to overwrite the emitter and remove the vector field reference",
+          "toolUsed": "niagara-addEmitter",
+          "result": "Failed — addEmitter appends new emitters and cannot remove or replace existing module scripts"
+        }
+      ],
+      "successfulFix": {
+        "description": "Import the missing vector field asset at the exact expected path, then recompile the Niagara system",
+        "toolSequence": ["asset-import", "niagara-compile"],
+        "steps": [
+          "Import the vector field (.fga) file using asset-import with targetPath '/Game/VFX/VF_Wind'",
+          "If no .fga source file is available, call niagara-setParameter to replace the SampleVectorField reference with a simpler constant velocity module",
+          "Call niagara-compile to rebuild the GPU shader for the system"
+        ]
+      },
+      "rootCause": "The Niagara module script referenced a vector field asset that was deleted or never imported. Compilation requires all referenced assets to be present in the asset registry before the GPU shader can be generated.",
+      "tags": ["niagara", "vfx", "vector-field", "compile", "missing-asset", "wind"],
+      "reuseCount": 0,
+      "createdAt": 1773207000000,
+      "lastUsedAt": 1773207000000
+    },
+    {
+      "id": "res-009",
+      "errorMessage": "UMG Binding Error: Widget 'WBP_HUD' — property binding path 'PlayerController.HealthComponent.CurrentHealth' is invalid. Object at path segment 1 ('HealthComponent') returned null. Binding will be silently skipped at runtime.",
+      "errorType": "widget-error",
+      "sourceTool": "widget-addElement",
+      "developerIntent": "Bind a health bar progress widget to the player character's health component property",
+      "attemptedFixes": [
+        {
+          "action": "Shorten binding path to 'PlayerController.Health'",
+          "toolUsed": "widget-addElement",
+          "result": "Failed — PlayerController has no direct Health float property; the value lives in HealthComponent"
+        }
+      ],
+      "successfulFix": {
+        "description": "Replace the property path binding with a Blueprint function binding that safely navigates the component chain",
+        "toolSequence": ["widget-addElement", "blueprint-createNode", "blueprint-connectPins"],
+        "steps": [
+          "In widget-addElement, set bindingType to 'Function' instead of 'Property'",
+          "Create a new Blueprint function 'GetHealthPercent' in the widget graph using blueprint-createNode",
+          "In the function: get owning PlayerController, cast to the correct type, GetComponentByClass(HealthComponent), return CurrentHealth / MaxHealth as a float",
+          "Bind the ProgressBar Percent property to the 'GetHealthPercent' function"
+        ]
+      },
+      "rootCause": "UMG property path bindings evaluate the full chain at widget initialization. HealthComponent is added dynamically and may be null when the widget first constructs, causing the entire binding to be discarded.",
+      "tags": ["widget", "umg", "binding", "null-check", "component", "hud", "health-bar"],
+      "reuseCount": 0,
+      "createdAt": 1773208000000,
+      "lastUsedAt": 1773208000000
+    },
+    {
+      "id": "res-010",
+      "errorMessage": "LandscapeComponent Error: Requested landscape size 8129x8129 requires 256 landscape components at 8x8 quads per section with 2 sections per component. Component count (256) exceeds the maximum allowed (128) for the current World Partition configuration.",
+      "errorType": "landscape-error",
+      "sourceTool": "landscape-create",
+      "developerIntent": "Create a large open-world landscape for an 8km x 8km terrain",
+      "attemptedFixes": [
+        {
+          "action": "Reduce landscape dimensions to 4033x4033 with the same component settings",
+          "toolUsed": "landscape-create",
+          "result": "Succeeded but LOD streaming artifacts appeared at terrain edges; terrain too small for intended gameplay area"
+        }
+      ],
+      "successfulFix": {
+        "description": "Use larger section quads (63 quads per section) to reduce total component count while maintaining the full terrain area",
+        "toolSequence": ["landscape-create", "landscape-setMaterial"],
+        "steps": [
+          "Call landscape-create with sizeX 8129, sizeY 8129, quadsPerSection 63, sectionsPerComponent 2",
+          "This produces 64 landscape components total, well within the 128 component limit",
+          "Enable World Partition in level settings to support runtime LOD streaming for the large terrain",
+          "Call landscape-setMaterial after creation to assign the terrain material layers"
+        ]
+      },
+      "rootCause": "Landscape component count is computed as ((size-1) / (quadsPerSection * sectionsPerComponent))^2. Default settings of 7 quads per section generate too many components for large terrains. Increasing quad size reduces component count quadratically.",
+      "tags": ["landscape", "world-partition", "component-count", "terrain", "open-world", "quads"],
+      "reuseCount": 0,
+      "createdAt": 1773209000000,
+      "lastUsedAt": 1773209000000
+    },
+    {
+      "id": "res-011",
+      "errorMessage": "LevelSequence Binding Error: Sequencer '/Game/Cinematics/CS_Intro' — possessable binding '{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}' refers to actor 'BP_Camera_Crane' which is not present in the currently open level '/Game/Maps/L_MainMenu'. Track will produce no output.",
+      "errorType": "sequencer-error",
+      "sourceTool": "sequencer-addTrack",
+      "developerIntent": "Add a camera movement track to the intro cinematic sequencer",
+      "attemptedFixes": [
+        {
+          "action": "Call level-open to switch to the correct level before adding the track",
+          "toolUsed": "level-open",
+          "result": "Opened L_Intro successfully; actor BP_Camera_Crane is present but sequencer binding still returns null"
+        },
+        {
+          "action": "Call sequencer-open to refresh the sequencer's world context",
+          "result": "Sequencer reopened but track addition still fails with binding-not-found"
+        }
+      ],
+      "successfulFix": {
+        "description": "Spawn the camera actor in the correct level first, then open the sequencer and add the track with a fresh actor reference",
+        "toolSequence": ["level-open", "actor-spawn", "sequencer-open", "sequencer-addTrack"],
+        "steps": [
+          "Call level-open with the cinematic level path (e.g., '/Game/Maps/L_Intro')",
+          "Call actor-spawn to place 'BP_Camera_Crane' in the level if it is missing",
+          "Call sequencer-open on the target sequencer asset to associate it with the current world",
+          "Call sequencer-addTrack providing the newly spawned actor's reference to create a valid possessable binding"
+        ]
+      },
+      "rootCause": "Sequencer possessable bindings resolve actors by GUID at runtime in the level that is loaded when the sequencer plays. If the bound actor does not exist in that level, the binding returns null and the track produces no output.",
+      "tags": ["sequencer", "binding", "possessable", "camera", "level-mismatch", "cinematic"],
+      "reuseCount": 0,
+      "createdAt": 1773210000000,
+      "lastUsedAt": 1773210000000
+    },
+    {
+      "id": "res-012",
+      "errorMessage": "PhysicsConstraintComponent: Constraint '/Game/Physics/PC_DoorHinge' has Swing1=0, Swing2=0, and TwistLimit=0 degrees. All rotational axes are locked; the constraint functions as a weld joint and provides no rotational freedom for hinge simulation.",
+      "errorType": "physics-error",
+      "sourceTool": "physics-setConstraint",
+      "developerIntent": "Set up a door hinge that allows the door to swing open up to 120 degrees",
+      "attemptedFixes": [
+        {
+          "action": "Set AngularSwing1Motion to ACM_Limited with limit 120 degrees",
+          "toolUsed": "physics-setConstraint",
+          "result": "Failed — swing axes control cone motion; door rotated on the wrong axis producing a tilting effect instead of a swing"
+        }
+      ],
+      "successfulFix": {
+        "description": "Configure the Twist axis (local X) for hinge rotation; lock all Swing axes to prevent lateral wobble",
+        "toolSequence": ["physics-setConstraint"],
+        "steps": [
+          "Call physics-setConstraint with angularTwistMotion 'ACM_Limited' and twistLimitDegrees 120",
+          "Set angularSwing1Motion 'ACM_Locked' and angularSwing2Motion 'ACM_Locked'",
+          "Set linearXMotion, linearYMotion, linearZMotion all to 'LCM_Locked' to prevent translation",
+          "Confirm the door mesh pivot axis aligns with the constraint component's local X axis (the twist axis)"
+        ]
+      },
+      "rootCause": "UE physics constraints use the Twist axis (local X) as the primary rotational degree of freedom. Door hinges must use TwistLimit. Swing axes define a cone-shaped range of motion and are inappropriate for single-axis hinge simulation.",
+      "tags": ["physics", "constraint", "hinge", "door", "angular-limits", "twist", "swing"],
+      "reuseCount": 0,
+      "createdAt": 1773211000000,
+      "lastUsedAt": 1773211000000
+    },
+    {
+      "id": "res-013",
+      "errorMessage": "TextureFactory: Cannot import '/tmp/terrain_heightmap.exr' — pixel format EXR_R32F (32-bit float single channel) is not supported by compression format BC1 (DXT1). Supported source formats for BC1: RGB8, RGBA8. Import aborted.",
+      "errorType": "import-error",
+      "sourceTool": "texture-import",
+      "developerIntent": "Import a 32-bit floating point EXR heightmap for landscape displacement",
+      "attemptedFixes": [
+        {
+          "action": "Set compressionSettings to 'TC_Default' in texture import options",
+          "toolUsed": "texture-import",
+          "result": "Failed — TC_Default resolves to BC1 for single-channel textures, same incompatibility"
+        },
+        {
+          "action": "Set compressionSettings to 'TC_Grayscale'",
+          "toolUsed": "texture-import",
+          "result": "Import succeeded but quantized to 8-bit, losing the sub-meter precision required for smooth heightmap displacement"
+        }
+      ],
+      "successfulFix": {
+        "description": "Import the EXR with TC_HDR compression and disable sRGB to preserve the full 32-bit float precision",
+        "toolSequence": ["texture-import", "texture-setCompression"],
+        "steps": [
+          "Call texture-import with compressionSettings 'TC_HDR' and sRGB set to false",
+          "After import, call texture-setCompression to confirm TC_HDR and set mipGenSettings to 'TMGS_NoMipmaps' (heightmaps should not use mipmaps)",
+          "Reference the imported texture in landscape-importHeightmap or use it as a displacement parameter in a material"
+        ]
+      },
+      "rootCause": "BC1/BC4 are block-compressed fixed-point formats that cannot store float data. HDR EXR files require TC_HDR which maps to RGBA16F or R32F on the GPU depending on channel count.",
+      "tags": ["texture", "compression", "EXR", "HDR", "heightmap", "float", "BC1"],
+      "reuseCount": 0,
+      "createdAt": 1773212000000,
+      "lastUsedAt": 1773212000000
+    },
+    {
+      "id": "res-014",
+      "errorMessage": "BlueprintCompiler: Circular dependency detected in compilation queue. '/Game/AI/BP_EnemyController' depends on '/Game/AI/BP_EnemyBase' which has a hard class reference back to '/Game/AI/BP_EnemyController'. Compilation of both assets aborted.",
+      "errorType": "blueprint-error",
+      "sourceTool": "compilation-trigger",
+      "developerIntent": "Compile all AI Blueprints after adding cross-references between the controller and character classes",
+      "attemptedFixes": [
+        {
+          "action": "Compile BP_EnemyBase in isolation before BP_EnemyController",
+          "toolUsed": "compilation-trigger",
+          "result": "BP_EnemyBase compiles alone, but the circular error reappears the moment BP_EnemyController is included in the compilation set"
+        },
+        {
+          "action": "Replace the direct class reference with a soft object reference",
+          "toolUsed": "blueprint-modifyProperty",
+          "result": "Failed — soft references still create a compile-order dependency in this version of UE"
+        }
+      ],
+      "successfulFix": {
+        "description": "Break the circular dependency by introducing a shared Blueprint interface that both classes implement instead of referencing each other directly",
+        "toolSequence": ["asset-create", "blueprint-modifyProperty", "compilation-trigger"],
+        "steps": [
+          "Call asset-create with type 'BlueprintInterface' to create 'BPI_EnemyBehavior' containing required function signatures",
+          "Call blueprint-modifyProperty on BP_EnemyController to remove the hard class reference to BP_EnemyBase and replace it with the interface type",
+          "Implement 'BPI_EnemyBehavior' on BP_EnemyBase",
+          "Call compilation-trigger in dependency order: BPI_EnemyBehavior first, then BP_EnemyBase, then BP_EnemyController"
+        ]
+      },
+      "rootCause": "Blueprint A holding a hard class reference to Blueprint B while B simultaneously holds a hard class reference to A creates a compile graph cycle the UE compiler cannot resolve. Interfaces break the cycle by introducing a third asset that neither class depends on.",
+      "tags": ["blueprint", "circular-dependency", "compile", "interface", "AI", "architecture"],
+      "reuseCount": 0,
+      "createdAt": 1773213000000,
+      "lastUsedAt": 1773213000000
+    },
+    {
+      "id": "res-015",
+      "errorMessage": "SoundCue Compilation Error: SoundCue '/Game/Audio/SC_Footstep' — SoundWave node at index 0 has no SoundWave asset assigned. Cue will produce silence at runtime. [AudioCompiler: TreatWarningsAsErrors is enabled]",
+      "errorType": "audio-error",
+      "sourceTool": "audio-createCue",
+      "developerIntent": "Create a footstep sound cue that randomly selects from three footstep sound variations",
+      "attemptedFixes": [
+        {
+          "action": "Call audio-createCue again with the soundWaves array populated with asset paths",
+          "toolUsed": "audio-createCue",
+          "result": "Failed — asset paths pointed to WAV files not yet imported into the project; paths returned asset-not-found"
+        }
+      ],
+      "successfulFix": {
+        "description": "Import all WAV source files into the project first, then create the sound cue referencing the confirmed asset paths",
+        "toolSequence": ["audio-import", "audio-import", "audio-import", "audio-createCue"],
+        "steps": [
+          "Call audio-import for each WAV file: footstep_grass.wav, footstep_stone.wav, footstep_wood.wav, targeting '/Game/Audio/SFX/'",
+          "Call audio-createCue with cueType 'Random' and soundWaves array set to the three newly created SoundWave asset paths",
+          "Call audio-getInfo on the resulting cue to verify all SoundWave node references are valid and non-null"
+        ]
+      },
+      "rootCause": "audio-createCue references assets by path but does not import source files. SoundWave assets must already be registered in the Content Browser before they can be assigned to a SoundCue node.",
+      "tags": ["audio", "sound-cue", "sound-wave", "import", "footstep", "random"],
+      "reuseCount": 0,
+      "createdAt": 1773214000000,
+      "lastUsedAt": 1773214000000
+    },
+    {
+      "id": "res-016",
+      "errorMessage": "LevelStreaming Error: Cannot add sublevel — map asset '/Game/Maps/Sublevels/SL_Village' not found in asset registry. Ensure the map has been saved through the Unreal Editor and the asset registry has been refreshed before calling this API.",
+      "errorType": "level-error",
+      "sourceTool": "level-open",
+      "developerIntent": "Open and configure a streaming sublevel for the village area of the game world",
+      "attemptedFixes": [
+        {
+          "action": "Call level-open with the full path including the .umap extension",
+          "toolUsed": "level-open",
+          "result": "Failed — UE asset paths must never include file extensions in API calls"
+        },
+        {
+          "action": "Call content-findAssets to locate SL_Village",
+          "toolUsed": "content-findAssets",
+          "result": "Asset not returned — the .umap file exists on disk but was copied externally and has never been opened in the editor"
+        }
+      ],
+      "successfulFix": {
+        "description": "Register the level by creating or opening it through the editor, then save it to ensure the asset registry entry is created",
+        "toolSequence": ["level-create", "level-save"],
+        "steps": [
+          "If the .umap file was copied to disk externally: close and reopen the UE project to trigger a full asset registry directory scan",
+          "If the level does not exist yet: call level-create with path '/Game/Maps/Sublevels/SL_Village'",
+          "Call level-save to persist the level and write its asset registry entry",
+          "Retry level-open — the asset should now be discoverable by the streaming system"
+        ]
+      },
+      "rootCause": "UE's asset registry only tracks .umap files that were created or opened within an editor session. Files copied to the Content directory externally bypass the registry and are invisible to the API until the editor rescans the directory.",
+      "tags": ["level", "streaming", "sublevel", "asset-registry", "map", "umap"],
+      "reuseCount": 0,
+      "createdAt": 1773215000000,
+      "lastUsedAt": 1773215000000
+    },
+    {
+      "id": "res-017",
+      "errorMessage": "Cook Error [ShaderCompileWorker]: Material shader '/Game/Materials/M_Terrain_Blend' failed to compile for platform Android_VULKAN. Error: texture sampler count 17 exceeds hardware limit of 16 for Vulkan ES3.1 feature level. Cooking aborted.",
+      "errorType": "build-error",
+      "sourceTool": "build-cookContent",
+      "developerIntent": "Cook project content for an Android Vulkan platform release build",
+      "attemptedFixes": [
+        {
+          "action": "Retry build-cookContent with shadersOnly flag to isolate the failure",
+          "toolUsed": "build-cookContent",
+          "result": "Failed — shadersOnly still triggers the same shader compilation pipeline for all materials"
+        }
+      ],
+      "successfulFix": {
+        "description": "Reduce the material's texture sampler count below 16 by consolidating textures into arrays and sharing sampler slots",
+        "toolSequence": ["material-create", "build-cookContent"],
+        "steps": [
+          "Open M_Terrain_Blend and count all unique TextureSample nodes — each consumes one hardware sampler",
+          "Replace separate albedo, normal, and roughness textures per terrain layer with Texture2DArray assets (three arrays replace nine or more individual samplers)",
+          "Pack roughness, metallic, and ambient occlusion into a single RGBA texture to reduce per-layer sampler usage",
+          "Call material-create to rebuild the material using array-based sampling with total sampler count <= 16",
+          "Call build-cookContent again for Android_VULKAN to verify the shader compiles cleanly"
+        ]
+      },
+      "rootCause": "Each TextureSample node in a material consumes one hardware sampler register. Vulkan on mobile ES3.1 enforces a hard limit of 16 active samplers per shader stage. Complex terrain blend materials with many layers routinely exceed this limit.",
+      "tags": ["build", "cook", "android", "vulkan", "shader", "sampler-limit", "material", "mobile"],
+      "reuseCount": 0,
+      "createdAt": 1773216000000,
+      "lastUsedAt": 1773216000000
+    },
+    {
+      "id": "res-018",
+      "errorMessage": "Lightmass Warning [LightmapUV]: StaticMesh '/Game/Meshes/SM_Archway' has overlapping UV islands in lightmap UV channel 1. Overlap area: 34.2%. Shadow data will bleed between overlapping triangles producing incorrect lighting in the baked result.",
+      "errorType": "mesh-error",
+      "sourceTool": "build-lightmaps",
+      "developerIntent": "Build production-quality precomputed lightmaps for an interior architectural level",
+      "attemptedFixes": [
+        {
+          "action": "Increase lightmap resolution to 512 on SM_Archway to reduce visible artifacts",
+          "toolUsed": "mesh-setLOD",
+          "result": "Reduced artifact visibility at close range but the UV overlap is still 34% — artifacts return at default LOD"
+        }
+      ],
+      "successfulFix": {
+        "description": "Regenerate the lightmap UV layout using UE's built-in auto-unwrap on import, ensuring UV channel 1 has no overlapping islands",
+        "toolSequence": ["asset-import", "build-lightmaps"],
+        "steps": [
+          "Call mesh-getInfo to confirm the current lightmapCoordinateIndex and whether auto-generated UVs are in use",
+          "Call asset-import with the original FBX source, setting generateLightmapUVs to true and lightmapUVIndex to 1",
+          "Set lightmapCoordinateIndex to 1 and lightmapResolution to 256 in the import settings",
+          "Call build-lightmaps with quality 'Production' after confirming the UV atlas has zero overlap"
+        ]
+      },
+      "rootCause": "The mesh was exported from the DCC application without a dedicated lightmap UV channel. UE Lightmass requires UV channel 1 to be a non-overlapping atlas where each triangle island maps to a unique texel region for correct shadow baking.",
+      "tags": ["lightmap", "UV", "static-mesh", "lightmass", "baking", "shadow-bleed", "archway"],
+      "reuseCount": 0,
+      "createdAt": 1773217000000,
+      "lastUsedAt": 1773217000000
+    },
+    {
+      "id": "res-019",
+      "errorMessage": "SpawnActor failed: Could not find class for asset path '/Game/Blueprints/BP_Projectile'. Blueprint class references must use the generated class suffix format: '/Game/Path/AssetName.AssetName_C'. Native C++ classes use '/Script/ModuleName.ClassName'.",
+      "errorType": "actor-error",
+      "sourceTool": "actor-spawn",
+      "developerIntent": "Spawn a projectile Blueprint actor when the player fires the weapon",
+      "attemptedFixes": [
+        {
+          "action": "Use path '/Game/Blueprints/BP_Projectile.BP_Projectile' (dot-separated asset name)",
+          "toolUsed": "actor-spawn",
+          "result": "Failed — this references the UBlueprint asset object, not the generated UClass"
+        }
+      ],
+      "successfulFix": {
+        "description": "Append the '_C' suffix to the Blueprint asset name to reference the UE-generated UClass for spawning",
+        "toolSequence": ["actor-spawn"],
+        "steps": [
+          "Use the class path format: '/Game/Blueprints/BP_Projectile.BP_Projectile_C'",
+          "The '_C' suffix is mandatory for all Blueprint-derived classes in UE's reflection system",
+          "For native C++ actor classes use '/Script/YourGameModule.AProjectileBase' format instead",
+          "Verify the path is correct by calling content-findAssets to confirm the asset exists first"
+        ]
+      },
+      "rootCause": "When UE compiles a Blueprint, it generates two distinct objects: the UBlueprint asset (BP_Projectile) and its UClass (BP_Projectile_C). SpawnActor requires a UClass reference. Without the '_C' suffix the engine looks for a UBlueprint, not a UClass.",
+      "tags": ["actor-spawn", "blueprint", "class-path", "_C-suffix", "reflection", "projectile"],
+      "reuseCount": 0,
+      "createdAt": 1773218000000,
+      "lastUsedAt": 1773218000000
+    },
+    {
+      "id": "res-020",
+      "errorMessage": "FBX Import Error: Skeletal mesh '/tmp/Hero_v2.fbx' bone count mismatch. Import skeleton has 74 bones, existing target skeleton 'SK_Hero' has 67 bones. New unrecognized bones: [finger_pinky_03_l, finger_pinky_03_r, thumb_03_l, thumb_03_r, eye_l, eye_r, jaw]. Cannot merge incompatible skeletons.",
+      "errorType": "import-error",
+      "sourceTool": "asset-import",
+      "developerIntent": "Update the hero skeletal mesh to a revised version with improved hand and facial rig bones",
+      "attemptedFixes": [
+        {
+          "action": "Import with useLegacySkeleton false to force matching to the existing skeleton",
+          "toolUsed": "asset-import",
+          "result": "Failed — the 7 unrecognized bones cause the skeleton merge to abort regardless of the flag"
+        },
+        {
+          "action": "Delete the existing SK_Hero skeleton and reimport fresh",
+          "toolUsed": "asset-delete",
+          "result": "Abandoned — deleting the skeleton would break all 40+ animations that reference SK_Hero"
+        }
+      ],
+      "successfulFix": {
+        "description": "Import the updated mesh as a new skeleton (SK_Hero_v2), create an IK Retargeter to migrate all existing animations, then update the character Blueprint to use the new assets",
+        "toolSequence": ["asset-import", "asset-create"],
+        "steps": [
+          "Call asset-import with createNewSkeleton true and skeletonAssetName 'SK_Hero_v2' to import the new mesh without conflicting with SK_Hero",
+          "Call asset-create with type 'IKRetargeter', sourceSkeletonPath pointing to SK_Hero, targetSkeletonPath pointing to SK_Hero_v2",
+          "Run batch animation retarget in the IK Retargeter to produce '_v2' variants of all animations under '/Game/Animations/'",
+          "Update the character Blueprint's SkeletalMesh and AnimBlueprint references to the _v2 assets"
+        ]
+      },
+      "rootCause": "Skeleton topology is immutable after animations reference it. Adding bones requires a new skeleton asset because existing animation curves reference bones by index. The only safe migration path is IK retargeting.",
+      "tags": ["import", "FBX", "skeleton", "bone-count", "retarget", "skeletal-mesh", "hero"],
+      "reuseCount": 0,
+      "createdAt": 1773219000000,
+      "lastUsedAt": 1773219000000
+    },
+    {
+      "id": "res-021",
+      "errorMessage": "FoliageSystem Performance Warning: FoliageType 'FT_GrassClump' density 100 instances/m2 over painted area 4096 m2 = 409,600 instances. GPU instanced draw call budget exceeded. Limit: 50,000 instances for meshes above 1024 triangles. Estimated frame time regression: +18ms on target hardware.",
+      "errorType": "mesh-error",
+      "sourceTool": "mesh-setLOD",
+      "developerIntent": "Optimize grass foliage rendering to hit 60fps on target hardware without removing all grass",
+      "attemptedFixes": [
+        {
+          "action": "Reduce LOD0 triangle count via mesh-setLOD to lower per-instance GPU cost",
+          "toolUsed": "mesh-setLOD",
+          "result": "Reduced LOD0 from 2048 to 512 triangles; improved frame time by 4ms but still 8x over the instance count budget"
+        }
+      ],
+      "successfulFix": {
+        "description": "Add aggressive LOD transitions with billboard LOD at distance, set a close culling distance, and reduce paint density significantly",
+        "toolSequence": ["mesh-setLOD"],
+        "steps": [
+          "Call mesh-setLOD to set LOD1 at 128 triangles (screen size 0.1), LOD2 at 32 triangles (screen size 0.02), LOD3 as an impostor billboard",
+          "In the FoliageType settings, set CullDistance.Min to 500cm and CullDistance.Max to 3000cm",
+          "Reduce foliage paint density from 100 to 8 instances/m2 — paint high-density clusters only in hero paths and cinematic areas",
+          "Target total simultaneously visible instances below 50,000 at any given camera frustum",
+          "Use World Partition data layers to stream out foliage in unloaded cells"
+        ]
+      },
+      "rootCause": "Uniform high-density foliage across a large terrain generates millions of GPU draw calls. Even with instancing, each visible cluster requires a draw call. The instance count must be reduced at source; triangle optimization alone is insufficient.",
+      "tags": ["foliage", "performance", "instancing", "LOD", "density", "grass", "optimization", "draw-calls"],
+      "reuseCount": 0,
+      "createdAt": 1773220000000,
+      "lastUsedAt": 1773220000000
+    },
+    {
+      "id": "res-022",
+      "errorMessage": "PCGGraph Validation: Graph '/Game/PCG/PCG_ForestLayout' has no Output node connected to the execution path. All generated point and actor data will be discarded after graph execution. No actors will be spawned in the level.",
+      "errorType": "blueprint-error",
+      "sourceTool": "blueprint-createNode",
+      "developerIntent": "Build a PCG graph that procedurally places trees and rocks across the terrain surface",
+      "attemptedFixes": [
+        {
+          "action": "Add a StaticMeshSpawner node and connect it to the Surface Sampler output",
+          "toolUsed": "blueprint-createNode",
+          "result": "Nodes added and connected but no actors appear in the level — StaticMeshSpawner output is not committed without an Output node"
+        }
+      ],
+      "successfulFix": {
+        "description": "Add an Output node at the terminus of the PCG execution graph and connect it to the last processing node",
+        "toolSequence": ["blueprint-createNode", "blueprint-connectPins"],
+        "steps": [
+          "Call blueprint-createNode with nodeType 'PCGNode_Output' to add the PCG Output node to the graph",
+          "Call blueprint-connectPins to connect the StaticMeshSpawner's 'Out' pin to the Output node's 'In' pin",
+          "Trigger graph regeneration by refreshing the PCGComponent in the level",
+          "Verify actors appear in the world using editor-listActors"
+        ]
+      },
+      "rootCause": "PCG graphs are data flow graphs that require an explicit Output node to commit generated point data back to the world. Without it, all intermediate transforms are computed in memory and then discarded — nothing is written to the level.",
+      "tags": ["pcg", "procedural-content-generation", "output-node", "foliage", "graph", "terrain", "forest"],
+      "reuseCount": 0,
+      "createdAt": 1773221000000,
+      "lastUsedAt": 1773221000000
+    },
+    {
+      "id": "res-023",
+      "errorMessage": "DataTable CSV Import Error: Row 'WeaponData_Shotgun' column 'DamageType' — value 'EDamageType::Explosive' does not match expected struct field type 'TEnumAsByte<EDamageType::Type>'. CSV enum values must use the bare enum identifier without the type prefix. Row skipped.",
+      "errorType": "import-error",
+      "sourceTool": "asset-import",
+      "developerIntent": "Import a weapon statistics CSV file into the FWeaponData DataTable for balance tuning",
+      "attemptedFixes": [
+        {
+          "action": "Change CSV DamageType value to 'Explosive' (removed the 'EDamageType::' prefix)",
+          "result": "DamageType column resolved but a new error appeared on 'DamageMultiplier': expected float, CSV had bare integer '2' with no decimal"
+        },
+        {
+          "action": "Change the FWeaponData struct field from TEnumAsByte to FString to accept any value",
+          "result": "Partial — import succeeded but broke Blueprint logic that reads the field as an enum; had to revert"
+        }
+      ],
+      "successfulFix": {
+        "description": "Correct all CSV column values to match the exact serialization format expected by each struct field type",
+        "toolSequence": ["asset-import"],
+        "steps": [
+          "For enum columns: use only the bare enum value name — 'Explosive' not 'EDamageType::Explosive'",
+          "For float columns: always include a decimal point — '2.0' not '2'; the CSV parser distinguishes float from int by decimal presence",
+          "For FName columns: use plain strings without quotes",
+          "For bool columns: use 'true'/'false' lowercase",
+          "Call asset-import with the corrected CSV and confirm zero rows are skipped in the import log"
+        ]
+      },
+      "rootCause": "DataTable CSV import uses strict per-column type parsing driven by the row struct's UPROPERTY types. Enum paths include the type namespace in C++ source but CSV must supply only the value name. Float fields require decimal notation to be parsed correctly.",
+      "tags": ["datatable", "csv-import", "struct", "enum", "type-mismatch", "serialization"],
+      "reuseCount": 0,
+      "createdAt": 1773222000000,
+      "lastUsedAt": 1773222000000
+    },
+    {
+      "id": "res-024",
+      "errorMessage": "NavigationSystem Error: NavMesh tile generation failed for RecastNavMesh-Default in '/Game/Maps/L_OpenWorld'. World bounds (65536 x 65536 Unreal Units) exceed maximum supported static NavMesh generation area of 10000 x 10000 UU. Use World Partition dynamic NavMesh for large worlds.",
+      "errorType": "build-error",
+      "sourceTool": "build-getMapCheck",
+      "developerIntent": "Generate a complete navigation mesh for a large open-world level for AI pathfinding",
+      "attemptedFixes": [
+        {
+          "action": "Increase TileSizeUU to 2000 in RecastNavMesh settings to reduce tile count",
+          "result": "Tile count reduced but the world bounds pre-check still fails before any tiles are generated"
+        },
+        {
+          "action": "Call build-getMapCheck to identify navigation blockers that may be inflating bounds",
+          "toolUsed": "build-getMapCheck",
+          "result": "No blocking volumes or infinite-bounds actors found — confirmed root cause is world size, not specific obstacles"
+        }
+      ],
+      "successfulFix": {
+        "description": "Switch to World Partition dynamic NavMesh so navigation tiles are generated at runtime around navigation invokers rather than statically for the entire world",
+        "toolSequence": ["build-getMapCheck", "build-cookContent"],
+        "steps": [
+          "In Project Settings > Navigation System, set bGenerateNavigationOnlyAroundNavigationInvokers to true",
+          "Enable World Partition on the level and configure data layers for navigation-relevant geometry",
+          "Add a NavigationInvokerComponent to the player character with GenerationRadius 5000 UU and RemovalRadius 7000 UU",
+          "Set RuntimeGeneration to 'Dynamic' on the RecastNavMesh actor in the level",
+          "Call build-cookContent — the NavMesh will now stream and generate per World Partition cell at runtime"
+        ]
+      },
+      "rootCause": "Static NavMesh generation computes the full navigation graph for the entire world bounds upfront, which exceeds UE's processing limit for large open worlds. World Partition dynamic NavMesh generates only the tiles the player currently needs, in tiles at runtime.",
+      "tags": ["navmesh", "navigation", "world-partition", "open-world", "dynamic-generation", "AI", "pathfinding"],
+      "reuseCount": 0,
+      "createdAt": 1773223000000,
+      "lastUsedAt": 1773223000000
+    },
+    {
+      "id": "res-025",
+      "errorMessage": "UMG ZOrder Conflict Warning: Widgets 'WBP_DialogueBox' and 'WBP_InventoryPanel' in Canvas Panel 'MainHUDCanvas' both have ZOrder=100. Render order between overlapping widgets with equal ZOrder values is non-deterministic and may differ between PIE and packaged builds.",
+      "errorType": "widget-error",
+      "sourceTool": "widget-create",
+      "developerIntent": "Create a main HUD widget that correctly layers dialogue boxes above inventory panels at defined depth levels",
+      "attemptedFixes": [
+        {
+          "action": "Place the widgets at different XY positions in the Canvas Panel to avoid visual overlap",
+          "toolUsed": "widget-addElement",
+          "result": "Widgets are spatially separated but during fade-in/out transitions they overlap temporarily and the render order is non-deterministic"
+        }
+      ],
+      "successfulFix": {
+        "description": "Assign unique ZOrder values with intentional spacing to establish an unambiguous layering hierarchy for all HUD elements",
+        "toolSequence": ["widget-addElement", "widget-setProperty"],
+        "steps": [
+          "Establish a ZOrder convention for the project: Background=0, World UI=10, Gameplay HUD=20, Minimap=30, Inventory=50, Dialogue=60, Pause Menu=80, Modal Dialogs=100, Tooltips=110",
+          "Call widget-setProperty on WBP_InventoryPanel with property 'ZOrder' and value 50",
+          "Call widget-setProperty on WBP_DialogueBox with property 'ZOrder' and value 60",
+          "Use gaps of 10 between reserved layers to allow future widget insertion without renumbering all existing widgets",
+          "Verify correct render order in a packaged build — ZOrder uniqueness guarantees deterministic layering"
+        ]
+      },
+      "rootCause": "UMG Canvas Panel renders equal-ZOrder children in widget tree list order, which is determined by widget array serialization. This order can differ between PIE (editor tree order) and packaged builds (serialized order). Unique ZOrder values eliminate the ambiguity entirely.",
+      "tags": ["widget", "umg", "z-order", "canvas-panel", "layering", "hud", "render-order", "dialogue"],
+      "reuseCount": 0,
+      "createdAt": 1773224000000,
+      "lastUsedAt": 1773224000000
     }
   ]
 }

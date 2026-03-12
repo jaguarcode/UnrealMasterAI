@@ -3,8 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![Tests](https://img.shields.io/badge/Tests-1208%20passed%20·%2071%20files-brightgreen.svg)](mcp-server/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-185-purple.svg)](docs/api-reference/mcp-tools.md)
+[![Tests](https://img.shields.io/badge/Tests-1228%20passed%20·%2073%20files-brightgreen.svg)](mcp-server/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-188-purple.svg)](docs/api-reference/mcp-tools.md)
 [![LLM Hosts](https://img.shields.io/badge/LLM%20Hosts-5-orange.svg)](#multi-llm-support)
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.
@@ -50,6 +50,9 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
 - Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
 - Outcome-weighted recommendations (proven workflows rank higher automatically)
+- 75+ workflow patterns (20 builtin from Epic docs + 55 community-seeded), 25 error resolution patterns
+- Proactive tool recommendations based on workflow step adjacency analysis
+- [Analytics dashboard](docs/analytics.html) for workflow coverage, tool usage, and error resolution metrics
 
 **Multi-LLM Support:**
 
@@ -394,7 +397,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 | Layer | Tests | Status |
 |-------|-------|--------|
-| MCP Server (TypeScript) | 1208 tests across 71 files | All passing |
+| MCP Server (TypeScript) | 1228 tests across 73 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
 | Python Scripts | 166 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
 

@@ -5,7 +5,7 @@ describe('auto-register', () => {
   describe('getAllBuiltinTools', () => {
     it('returns all 185 built-in tools', () => {
       const tools = getAllBuiltinTools();
-      expect(tools.length).toBe(187);
+      expect(tools.length).toBe(188);
     });
 
     it('has no duplicate tool names', () => {

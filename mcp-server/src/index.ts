@@ -16,6 +16,13 @@ if (process.argv.includes('init')) {
   process.exit(0);
 }
 
+// Handle `analytics` subcommand before stdout guard is installed.
+if (process.argv.includes('analytics')) {
+  const { runAnalytics } = await import('./cli/analytics.js');
+  await runAnalytics();
+  process.exit(0);
+}
+
 // Handle `import-workflow` subcommand before stdout guard is installed.
 if (process.argv.includes('import-workflow')) {
   const idx = process.argv.indexOf('import-workflow');

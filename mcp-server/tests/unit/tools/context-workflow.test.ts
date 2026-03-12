@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { existsSync, rmSync, mkdirSync } from 'fs';
+import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
+import { existsSync, rmSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -31,6 +31,17 @@ import type { Workflow } from '../../../src/tools/context/workflow-knowledge.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const WORKFLOWS_FILE = join(DATA_DIR, 'learned-workflows.json');
+const OUTCOMES_FILE = join(DATA_DIR, 'workflow-outcomes.json');
+
+// Backup production data files before tests modify them
+const _backupWorkflows = existsSync(WORKFLOWS_FILE) ? readFileSync(WORKFLOWS_FILE, 'utf-8') : null;
+const _backupOutcomes = existsSync(OUTCOMES_FILE) ? readFileSync(OUTCOMES_FILE, 'utf-8') : null;
+
+afterAll(() => {
+  if (_backupWorkflows !== null) writeFileSync(WORKFLOWS_FILE, _backupWorkflows, 'utf-8');
+  if (_backupOutcomes !== null) writeFileSync(OUTCOMES_FILE, _backupOutcomes, 'utf-8');
+});
 
 describe('Workflow Store - Persistence', () => {
   beforeEach(() => {

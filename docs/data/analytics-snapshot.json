@@ -1,0 +1,281 @@
+{
+  "generatedAt": "2026-03-12T06:31:21.892Z",
+  "workflows": {
+    "total": 88,
+    "builtin": 20,
+    "learned": 68,
+    "byDomain": {
+      "actor": 3,
+      "blueprint": 4,
+      "material": 4,
+      "animation": 2,
+      "level": 2,
+      "audio": 2,
+      "niagara": 3,
+      "widget": 4,
+      "landscape": 2,
+      "sequencer": 3,
+      "mesh": 2,
+      "physics": 2,
+      "foliage": 1,
+      "pcg": 2,
+      "texture": 2,
+      "ai": 2,
+      "datatable": 2,
+      "curve": 1,
+      "gameplay": 2,
+      "content": 1,
+      "debug": 1,
+      "build": 2,
+      "asset": 2,
+      "geoscript": 1,
+      "worldpartition": 1,
+      "slate": 1,
+      "compilation": 1,
+      "project": 1,
+      "refactor": 1,
+      "python": 1,
+      "analyze": 1,
+      "workflow": 3,
+      "sourcecontrol": 1,
+      "file": 1,
+      "editor": 2,
+      "context": 2
+    },
+    "byDifficulty": {
+      "intermediate": 33,
+      "advanced": 18,
+      "beginner": 17
+    },
+    "topDomains": [
+      {
+        "domain": "blueprint",
+        "count": 4
+      },
+      {
+        "domain": "material",
+        "count": 4
+      },
+      {
+        "domain": "widget",
+        "count": 4
+      },
+      {
+        "domain": "actor",
+        "count": 3
+      },
+      {
+        "domain": "niagara",
+        "count": 3
+      },
+      {
+        "domain": "sequencer",
+        "count": 3
+      },
+      {
+        "domain": "workflow",
+        "count": 3
+      },
+      {
+        "domain": "animation",
+        "count": 2
+      },
+      {
+        "domain": "level",
+        "count": 2
+      },
+      {
+        "domain": "audio",
+        "count": 2
+      },
+      {
+        "domain": "landscape",
+        "count": 2
+      },
+      {
+        "domain": "mesh",
+        "count": 2
+      },
+      {
+        "domain": "physics",
+        "count": 2
+      },
+      {
+        "domain": "pcg",
+        "count": 2
+      },
+      {
+        "domain": "texture",
+        "count": 2
+      }
+    ]
+  },
+  "tools": {
+    "totalRegistered": 188,
+    "usedInWorkflows": 163,
+    "topToolsByFrequency": [
+      {
+        "tool": "blueprint-createNode",
+        "count": 35
+      },
+      {
+        "tool": "blueprint-connectPins",
+        "count": 23
+      },
+      {
+        "tool": "debug-getLog",
+        "count": 11
+      },
+      {
+        "tool": "actor-spawn",
+        "count": 8
+      },
+      {
+        "tool": "actor-addComponent",
+        "count": 8
+      },
+      {
+        "tool": "widget-addElement",
+        "count": 8
+      },
+      {
+        "tool": "actor-setProperty",
+        "count": 7
+      },
+      {
+        "tool": "pcg-addNode",
+        "count": 7
+      },
+      {
+        "tool": "datatable-addRow",
+        "count": 7
+      },
+      {
+        "tool": "texture-import",
+        "count": 6
+      },
+      {
+        "tool": "niagara-setParameter",
+        "count": 6
+      },
+      {
+        "tool": "widget-create",
+        "count": 6
+      },
+      {
+        "tool": "content-validateAssets",
+        "count": 6
+      },
+      {
+        "tool": "niagara-createSystem",
+        "count": 5
+      },
+      {
+        "tool": "niagara-addEmitter",
+        "count": 5
+      },
+      {
+        "tool": "analyze-performanceHints",
+        "count": 5
+      },
+      {
+        "tool": "datatable-create",
+        "count": 5
+      },
+      {
+        "tool": "blueprint-modifyProperty",
+        "count": 4
+      },
+      {
+        "tool": "material-create",
+        "count": 4
+      },
+      {
+        "tool": "material-setTexture",
+        "count": 4
+      }
+    ]
+  },
+  "outcomes": {
+    "totalExecutions": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0,
+    "byWorkflow": []
+  },
+  "errorResolutions": {
+    "total": 25,
+    "totalReuses": 0,
+    "byErrorType": {
+      "connection-error": 1,
+      "pin-connection-failure": 1,
+      "asset-not-found": 1,
+      "actor-error": 2,
+      "material-compile-error": 1,
+      "mesh-error": 3,
+      "animation-error": 1,
+      "niagara-error": 1,
+      "widget-error": 2,
+      "landscape-error": 1,
+      "sequencer-error": 1,
+      "physics-error": 1,
+      "import-error": 3,
+      "blueprint-error": 2,
+      "audio-error": 1,
+      "level-error": 1,
+      "build-error": 2
+    },
+    "topReused": [
+      {
+        "id": "res-001",
+        "errorType": "connection-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-002",
+        "errorType": "pin-connection-failure",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-003",
+        "errorType": "asset-not-found",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-004",
+        "errorType": "actor-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-005",
+        "errorType": "material-compile-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-006",
+        "errorType": "mesh-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-007",
+        "errorType": "animation-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-008",
+        "errorType": "niagara-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-009",
+        "errorType": "widget-error",
+        "reuseCount": 0
+      },
+      {
+        "id": "res-010",
+        "errorType": "landscape-error",
+        "reuseCount": 0
+      }
+    ]
+  }
+}

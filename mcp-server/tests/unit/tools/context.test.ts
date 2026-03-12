@@ -2,7 +2,24 @@
  * Unit tests for Phase 5 context intelligence tools.
  * Tests context-autoGather, context-getManifest, context-getChains.
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterAll } from 'vitest';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const WORKFLOWS_FILE = join(DATA_DIR, 'learned-workflows.json');
+const OUTCOMES_FILE = join(DATA_DIR, 'workflow-outcomes.json');
+
+// Backup production data before tests modify it
+const _backupWorkflows = existsSync(WORKFLOWS_FILE) ? readFileSync(WORKFLOWS_FILE, 'utf-8') : null;
+const _backupOutcomes = existsSync(OUTCOMES_FILE) ? readFileSync(OUTCOMES_FILE, 'utf-8') : null;
+
+afterAll(() => {
+  if (_backupWorkflows !== null) writeFileSync(WORKFLOWS_FILE, _backupWorkflows, 'utf-8');
+  if (_backupOutcomes !== null) writeFileSync(OUTCOMES_FILE, _backupOutcomes, 'utf-8');
+});
 
 // --- context-autoGather ---
 describe('context-autoGather', () => {

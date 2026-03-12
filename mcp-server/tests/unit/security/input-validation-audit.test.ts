@@ -21,7 +21,7 @@ describe('MCP Tool Input Validation Audit', () => {
 
   it('returns all 183 registered tools', () => {
     // Snapshot: if this fails a tool was added/removed without being noticed.
-    expect(tools.length).toBe(187);
+    expect(tools.length).toBe(188);
   });
 
   it('every registered tool has a schema object', () => {
@@ -49,7 +49,7 @@ describe('MCP Tool Input Validation Audit', () => {
   it('tool count matches expected value of 183 (snapshot to catch unvalidated additions)', () => {
     // If this fails: a new tool was registered. Update this count AND add
     // a Zod schema for the new tool before merging.
-    expect(tools.length).toBe(187);
+    expect(tools.length).toBe(188);
   });
 
   it('all tool names are non-empty strings', () => {
