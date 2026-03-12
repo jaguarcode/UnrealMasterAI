@@ -3,7 +3,7 @@ import { getAllBuiltinTools } from '../../../src/tools/auto-register.js';
 
 describe('auto-register', () => {
   describe('getAllBuiltinTools', () => {
-    it('returns all 185 built-in tools', () => {
+    it('returns all 188 built-in tools', () => {
       const tools = getAllBuiltinTools();
       expect(tools.length).toBe(188);
     });

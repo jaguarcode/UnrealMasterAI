@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- Updated all documentation to reflect current stats: 185 tools, 166 Python scripts, 1156 tests across 69 files
-- Added Phase 16 (Plugin Extension API) to README roadmap table
-
 ### Added
+- Phase 4.4: Context Intelligence Maturation
+  - Seeded 68 learned workflows across 36 domains (89 total with 21 builtin)
+  - Seeded 25 error resolutions covering real UE error patterns
+  - Proactive recommendation engine (`context-recommend`) based on workflow step adjacency
+  - Analytics dashboard (`docs/analytics.html`) with CLI snapshot generation (`npx unreal-master-mcp-server analytics`)
+  - Test isolation: backup/restore for production data files in 4 test files
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
+
+### Changed
+- Updated all documentation to reflect current stats: 188 tools, 166 Python scripts, 1228 tests across 73 files
+- Tool count: 185 → 188 (added context-recommend, context-exportWorkflow, context-importWorkflow)
+- Added Phase 16 (Plugin Extension API) to README roadmap table
 
 ## [0.5.0] — 2026-03-10
 

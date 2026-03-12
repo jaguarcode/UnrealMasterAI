@@ -50,7 +50,7 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
 - Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
 - Outcome-weighted recommendations (proven workflows rank higher automatically)
-- 75+ workflow patterns (20 builtin from Epic docs + 55 community-seeded), 25 error resolution patterns
+- 89 workflow patterns (21 builtin from Epic docs + 68 community-seeded), 25 error resolution patterns
 - Proactive tool recommendations based on workflow step adjacency analysis
 - [Analytics dashboard](docs/analytics.html) for workflow coverage, tool usage, and error resolution metrics
 
@@ -178,9 +178,7 @@ Copy or symlink `UnrealMasterAgent/` into your Unreal Engine project's `Plugins/
 
 ```json
 {
-  "Plugins": [
-    { "Name": "UnrealMasterAgent", "Enabled": true }
-  ]
+  "Plugins": [{ "Name": "UnrealMasterAgent", "Enabled": true }]
 }
 ```
 
@@ -232,7 +230,7 @@ Unreal Master/
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
 │   │   ├── server.ts        McpServer configuration (auto-registers tools)
-│   │   ├── tools/           185 MCP tool handlers across 37 domains
+│   │   ├── tools/           188 MCP tool handlers across 37 domains
 │   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
 │   │   │   ├── compilation/ Live Coding trigger and status
@@ -314,10 +312,10 @@ Unreal Master/
 
 Work proceeds on two parallel tracks that integrate at milestones:
 
-| Track | Focus | Primary Language |
-|-------|-------|-----------------|
-| Track A | MCP Bridge Server | TypeScript |
-| Track B | UE Agent Plugin | C++ |
+| Track   | Focus             | Primary Language |
+| ------- | ----------------- | ---------------- |
+| Track A | MCP Bridge Server | TypeScript       |
+| Track B | UE Agent Plugin   | C++              |
 
 Both tracks use TDD from the start.
 
@@ -355,51 +353,17 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 ## Technology Stack
 
-| Component | Technology | Version |
-|-----------|-----------|---------|
-| LLM Host | Claude Code (Sonnet / Opus) | Latest |
-| MCP SDK | `@modelcontextprotocol/sdk` | ^1.12.0 |
-| Bridge Server | Node.js + TypeScript | Node 20+, TS 5.5+ |
-| WebSocket | `ws` | ^8.18.0 |
-| Validation | `zod` | ^3.23.0 |
-| Test Runner | `vitest` | ^2.0.0 |
-| UE Plugin | C++ | UE 5.4 |
-| Transport | WebSocket | RFC 6455 |
-| Observability | LangSmith / Langfuse | Latest |
-
----
-
-## Phase Roadmap
-
-| Phase | Goal | Status |
-|-------|------|--------|
-| Phase 0 | Foundation — Project scaffold, schemas, architecture docs | Complete |
-| Phase 1 | Core Communication — WS bridge, UE plugin skeleton, `editor.ping` | Complete |
-| Phase 2 | Blueprint Read — `blueprint.serialize` with full AST JSON | Complete |
-| Phase 3 | Blueprint Write — Node creation, pin connection, property mutation | Complete |
-| Phase 4 | Compilation — Live Coding trigger, compile log capture | Complete |
-| Phase 5 | Self-Healing — Error parse, fix apply, retry loop | Complete |
-| Phase 6 | Slate Generation — Template RAG, code generation, validation | Complete |
-| Phase 7 | Safety + Observability — Human-in-the-loop gate, tracing | Complete |
-| Phase 8 | Polish — Performance, caching, documentation | Complete |
-| Phase 9 | Extended Tools — Actor, material, mesh, level, asset, animation, build, project, gameplay, datatable, source control, debug, Python bridge (85 total tools) | Complete |
-| Phase 10 | Sequencer, AI/Nav, Widget, Editor Utils (112 tools) | Complete |
-| Phase 11 | Texture, Niagara, Audio, Landscape (135 tools) | Complete |
-| Phase 12 | Physics, World Partition, Foliage, Curves, PCG, GeoScript (157 tools) | Complete |
-| Phase 13 | Workflow Orchestration, Analysis, Refactoring (170 tools) | Complete |
-| Phase 14 | Claude Intelligence — Context engine, tool manifest, workflow chains (173 tools) | Complete |
-| Phase 15 | Workflow & Error Learning — Persistent workflows, outcome tracking, error resolution learning, UE synonym expansion, docs integration (183 tools) | Complete |
-| Phase 16 | Plugin Extension API — Auto-registration architecture, tool hooks, custom tools/scripts, server.ts 89% reduction (185 tools) | Complete |
-
----
-
-### Test Summary
-
-| Layer | Tests | Status |
-|-------|-------|--------|
-| MCP Server (TypeScript) | 1228 tests across 73 files | All passing |
-| UE Plugin (C++) | 9 test files | Verified in UE Editor |
-| Python Scripts | 166 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
+| Component     | Technology                  | Version           |
+| ------------- | --------------------------- | ----------------- |
+| LLM Host      | Claude Code (Sonnet / Opus) | Latest            |
+| MCP SDK       | `@modelcontextprotocol/sdk` | ^1.12.0           |
+| Bridge Server | Node.js + TypeScript        | Node 20+, TS 5.5+ |
+| WebSocket     | `ws`                        | ^8.18.0           |
+| Validation    | `zod`                       | ^3.23.0           |
+| Test Runner   | `vitest`                    | ^2.0.0            |
+| UE Plugin     | C++                         | UE 5.4            |
+| Transport     | WebSocket                   | RFC 6455          |
+| Observability | LangSmith / Langfuse        | Latest            |
 
 ---
 
@@ -420,7 +384,7 @@ MIT License — see LICENSE file for details.
 
 ---
 
-*For the full architecture specification, threading model, data flow diagrams, and all Architecture Decision Records, see [ARCHITECTURE.md](./ARCHITECTURE.md).*
+_For the full architecture specification, threading model, data flow diagrams, and all Architecture Decision Records, see [ARCHITECTURE.md](./ARCHITECTURE.md)._
 
 ---
 
@@ -428,20 +392,20 @@ MIT License — see LICENSE file for details.
 
 ### Connection Issues
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| `WebSocket connection failed` | UE plugin not running or wrong port | Verify UE Editor is open with the plugin enabled. Check `UE_WS_PORT` matches in both MCP config and UE plugin settings (default: `9877`). |
-| `editor-ping` returns no response | Plugin not connected | Restart UE Editor. Check Output Log for "UnrealMasterAgent: WebSocket connected" message. |
-| `Tool not found` | MCP server not started | Ensure `.claude/mcp.json` is configured and Claude Code restarted. |
-| Python script errors | PythonScriptPlugin not enabled | Enable "Python Editor Script Plugin" in Edit → Plugins → Scripting. Restart the editor. |
-| `EADDRINUSE` error | Port already in use | Another instance is running on port 9877. Kill it or change `UE_WS_PORT` to a different port. |
+| Symptom                           | Cause                               | Fix                                                                                                                                       |
+| --------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `WebSocket connection failed`     | UE plugin not running or wrong port | Verify UE Editor is open with the plugin enabled. Check `UE_WS_PORT` matches in both MCP config and UE plugin settings (default: `9877`). |
+| `editor-ping` returns no response | Plugin not connected                | Restart UE Editor. Check Output Log for "UnrealMasterAgent: WebSocket connected" message.                                                 |
+| `Tool not found`                  | MCP server not started              | Ensure `.claude/mcp.json` is configured and Claude Code restarted.                                                                        |
+| Python script errors              | PythonScriptPlugin not enabled      | Enable "Python Editor Script Plugin" in Edit → Plugins → Scripting. Restart the editor.                                                   |
+| `EADDRINUSE` error                | Port already in use                 | Another instance is running on port 9877. Kill it or change `UE_WS_PORT` to a different port.                                             |
 
 ### Build Issues
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| `tsc` compilation errors | Missing dependencies | Run `cd mcp-server && npm install` |
-| Plugin compile errors | Missing UE dependencies | Ensure `PythonScriptPlugin` is enabled in your `.uproject` |
+| Symptom                  | Cause                   | Fix                                                        |
+| ------------------------ | ----------------------- | ---------------------------------------------------------- |
+| `tsc` compilation errors | Missing dependencies    | Run `cd mcp-server && npm install`                         |
+| Plugin compile errors    | Missing UE dependencies | Ensure `PythonScriptPlugin` is enabled in your `.uproject` |
 
 ---
 

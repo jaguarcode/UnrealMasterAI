@@ -77,8 +77,11 @@ context-matchIntent(request)
 5. **Python scripts follow standard pattern.** `@execute_wrapper`, `execute(params)`, `make_result()`/`make_error()`.
 
 ## Project Stats
-- **185 MCP tools** across 37 domains
-- **1156 tests** across 69 test files
+- **188 MCP tools** across 37 domains
+- **1228 tests** across 73 test files
 - **166 Python scripts** in `UnrealMasterAgent/Content/Python/uma/`
-- **20 built-in workflows** from Epic's official documentation
-- **60+ UE synonym groups** for intent matching
+- **21 built-in workflows** + 68 learned workflows (89 total)
+- **25 error resolution patterns** for common UE errors
+- **36 UE synonym groups** for intent matching
+- **Proactive recommendation engine** (`context-recommend`) based on workflow step adjacency
+- **Analytics dashboard** at `docs/analytics.html` with CLI snapshot generation
