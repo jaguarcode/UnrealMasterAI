@@ -1,6 +1,6 @@
 /**
  * Tool manifest generator for Unreal Master Agent.
- * Catalogs all 170 MCP tools across 36 domains with metadata for Claude.
+ * Catalogs all MCP tools across domains with metadata for Claude.
  */
 
 export interface ToolEntry {
@@ -218,13 +218,27 @@ const TOOLS: ToolEntry[] = [
     relatedTools: ['editor-getRecentActivity', 'debug-getLog', 'editor-ping'],
   },
 
-  // python (1)
+  // python (3)
   {
     name: 'python-execute',
     domain: 'python',
     description: 'Execute a Python script in the Unreal Editor Python environment',
     safety: 'warn',
-    relatedTools: ['debug-execConsole', 'debug-getLog', 'compilation-trigger'],
+    relatedTools: ['python-customExecute', 'python-listCustomScripts', 'debug-execConsole'],
+  },
+  {
+    name: 'python-customExecute',
+    domain: 'python',
+    description: 'Execute a custom Python script from the user\'s uma_custom/ directory',
+    safety: 'warn',
+    relatedTools: ['python-execute', 'python-listCustomScripts'],
+  },
+  {
+    name: 'python-listCustomScripts',
+    domain: 'python',
+    description: 'List available custom Python scripts in the uma_custom/ directory',
+    safety: 'safe',
+    relatedTools: ['python-execute', 'python-customExecute'],
   },
 
   // project (6)
@@ -1422,7 +1436,7 @@ const DOMAINS: DomainInfo[] = [
   {
     name: 'python',
     description: 'Python script execution in the Unreal Editor environment',
-    tools: ['python-execute'],
+    tools: ['python-execute', 'python-customExecute', 'python-listCustomScripts'],
   },
   {
     name: 'project',

@@ -1,8 +1,8 @@
 # Unreal Master Agent — Future Improvement Plan & Open-Source Roadmap
 
-**Date:** 2026-03-08 (Updated: 2026-03-08)
-**Current Version:** 0.4.0
-**Status:** Phase 0 & Phase 2 Complete — Phase 1, 3-5 Pending
+**Date:** 2026-03-08 (Updated: 2026-03-12)
+**Current Version:** 0.5.0
+**Status:** Phase 0, Phase 2, Phase 4.1 Complete — Phase 1, 3, 4.2-5 Pending
 
 ---
 
@@ -13,19 +13,19 @@
 | Layer | Component | Maturity | Notes |
 |-------|-----------|----------|-------|
 | L1 | Claude Code (MCP Host) | Stable | External — not our code |
-| L2 | MCP Bridge (Node.js/TS) | **High** | 183 tools registered in monolithic `server.ts` (~2000 lines), clean ToolRegistry with dynamic add/remove, Zod schemas |
+| L2 | MCP Bridge (Node.js/TS) | **High** | 185 tools registered via auto-registration architecture (37 domain index.ts modules), clean ToolRegistry with dynamic add/remove, Zod schemas |
 | L3 | UE Plugin (C++) | **High** | 18 source files (9 .cpp + 9 .h). WebSocket client, Blueprint serializer/manipulator, Live Coding, Python bridge, Approval gate. GameThread dispatch correctly enforced. |
-| L3.5 | Python Scripts | **High** | 154 scripts — 153/154 use `@execute_wrapper` consistently. But only 46/154 call `validate_path()` for input validation. |
+| L3.5 | Python Scripts | **High** | 166 scripts — 165/166 use `@execute_wrapper` consistently. But only 46/166 call `validate_path()` for input validation. |
 | L4 | Engine APIs | N/A | UE internals — consumed, not owned |
 | Cross | Context Intelligence | **Medium-High** | 9 files with mature intent matching (60+ synonym groups), multi-signal error similarity engine. Shared `tokenize()` utility extracted (Phase 0). `learned-workflows.json` is empty and `error-resolutions.json` has placeholder data. |
-| Cross | Testing | **High** | 999 TS tests across 59 files (55 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz + resilience tests. |
-| Cross | Documentation | **Medium-High** | Good architecture docs. Port/lint/trademark issues fixed (Phase 0). README has npx quick-start and troubleshooting (Phase 2). API reference still references 85 tools (actual: 183). |
+| Cross | Testing | **High** | 1156 TS tests across 69 files (65 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz + resilience tests. |
+| Cross | Documentation | **Medium-High** | Good architecture docs. Port/lint/trademark issues fixed (Phase 0). README has npx quick-start and troubleshooting (Phase 2). API reference still references 85 tools (actual: 185). |
 
 ### 1.2 Strengths
 
-- **Massive tool coverage**: 183 MCP tools across 37 domains — the most comprehensive UE MCP integration available
+- **Massive tool coverage**: 185 MCP tools across 37 domains — the most comprehensive UE MCP integration available
 - **Clean codebase**: Zero TODO/FIXME/HACK markers in production code
-- **Consistent patterns**: All 154 Python scripts follow `@execute_wrapper` / `execute(params)` / `make_result()` pattern
+- **Consistent patterns**: All 166 Python scripts follow `@execute_wrapper` / `execute(params)` / `make_result()` pattern
 - **Self-healing architecture**: Compile error capture → parse → fix → retry loop (3 max)
 - **Safety architecture**: Approval gate for destructive operations, file operation sandboxing
 - **Context intelligence**: Self-learning system for intent matching, error recovery, and workflow optimization
@@ -44,11 +44,11 @@
 | ~~**Python Code Injection**~~ | ~~Fixed in Phase 0~~ — Base64 encoding in `UMAPythonBridge.cpp` | ~~High~~ **Fixed** |
 | ~~**Versioning**~~ | ~~Fixed in Phase 0~~ — All versions harmonized to `0.1.0` | ~~High~~ **Fixed** |
 | ~~**npm Publishing**~~ | ~~Fixed in Phase 2~~ — `"private"` removed, `bin`, `files`, `engines`, `keywords`, `repository` fields added | ~~High~~ **Fixed** |
-| **API Docs Stale** | `docs/api-reference/mcp-tools.md` references 85 tools (actual: 183) | High |
-| **Path Validation Gap** | Only 46/154 Python scripts call `validate_path()` — 108 scripts skip input validation | High |
+| **API Docs Stale** | `docs/api-reference/mcp-tools.md` references 85 tools (actual: 185) | High |
+| **Path Validation Gap** | Only 46/166 Python scripts call `validate_path()` — 120 scripts skip input validation | High |
 | ~~**Safety Gap**~~ | ~~Fixed in Phase 0~~ — `actor-setArrayRef` added to `WARN_TOOLS` in `safety.ts` | ~~Medium~~ **Fixed** |
 | **Learning System Cold** | `learned-workflows.json` is empty; `error-resolutions.json` has placeholder data | Medium |
-| **No Python Tests** | Zero test coverage for 154 Python scripts (require `unreal` module only available in UE runtime) | Medium |
+| **No Python Tests** | Zero test coverage for 166 Python scripts (require `unreal` module only available in UE runtime) | Medium |
 | **No E2E Tests** | No automated tests that connect MCP server → UE plugin end-to-end | Medium |
 | **TestProject Gitignored** | Referenced in docs but excluded from repo — contributors cannot reproduce dev environment | Medium |
 | ~~**README References**~~ | ~~Fixed in Phase 0~~ — Lint reference removed from README | ~~Medium~~ **Fixed** |
@@ -135,7 +135,7 @@
 - [ ] **E2E test harness**: Headless UE instance + MCP server + automated tool call sequences *(requires UE build environment)*
 - [x] **Python script tests**: pytest suite with mocked `unreal` module — 58 tests covering utils.py, actor_spawn.py, material_create.py, level_create.py, asset_create.py
 - [x] **Coverage gate**: Fail CI if coverage drops below thresholds (lines/functions/statements: 80%, branches: 75%)
-- [x] **Snapshot tests**: Tool schema snapshots lock 183 tool names, domain mappings, and safety classifications
+- [x] **Snapshot tests**: Tool schema snapshots lock 185 tool names, domain mappings, and safety classifications
 - [x] **Fuzz testing**: 143 fuzz tests with 11 input types across 10 tool handlers — validates graceful error handling
 - [ ] **Multi-UE-version CI matrix**: Test plugin build against UE 5.4 and 5.5 minimum *(requires UE build environment)*
 
@@ -152,23 +152,23 @@
 - [x] **Error rate alerting**: Webhook notification when error rate exceeds threshold — `AlertManager` with sliding window, cooldown, `ALERT_WEBHOOK_URL` env var
 
 #### 3.4 Security Hardening
-- [x] **Python `validate_path()` audit**: Created `validate_and_load_asset()` helper in utils.py combining validation + loading. Added `/Script/` to allowed roots. 46/154 scripts use validate_path(); helper available for remaining scripts.
-- [x] **Input validation audit**: Security audit test verifies all 183 tools have Zod input schemas — 9 tests at `tests/unit/security/input-validation-audit.test.ts`
+- [x] **Python `validate_path()` audit**: Created `validate_and_load_asset()` helper in utils.py combining validation + loading. Added `/Script/` to allowed roots. 46/166 scripts use validate_path(); helper available for remaining scripts.
+- [x] **Input validation audit**: Security audit test verifies all 185 tools have Zod input schemas — 9 tests at `tests/unit/security/input-validation-audit.test.ts`
 - [x] **Path traversal prevention**: Enhanced `isPathSafe()` blocks null bytes, URL-encoded traversals (%2e%2e), double-encoded (%252e), UNC paths. New `isAssetPathSafe()` validates /Game/, /Engine/, /Script/ roots. `classifyOperation()` scans 14 asset path params.
 - [x] **WebSocket authentication**: `WS_AUTH_SECRET` env var, `x-uma-auth-token` header validation with `crypto.timingSafeEqual` via HMAC normalization. No auth by default (backward compat).
-- [x] **Rate limiting**: `RateLimiter` class with sliding window, `RATE_LIMIT_PER_MINUTE` env var. Wraps all 183 tools via `server.tool` monkey-patch. Default 0 = disabled.
+- [x] **Rate limiting**: `RateLimiter` class with sliding window, `RATE_LIMIT_PER_MINUTE` env var. Wraps all 185 tools via `server.tool` monkey-patch. Default 0 = disabled.
 - [x] **Dependency audit**: Added `npm run audit:security` script (`npm audit --production --audit-level=moderate`)
 - [x] **PythonScriptPlugin dependency**: Documented in `docs/setup-guide.md` with enabling steps, verification, graceful error handling, and troubleshooting table
 
 ### Phase 4: Ecosystem & Extensibility (v0.5.0) — Weeks 10-14
 > *Goal: Enable community-driven tool and workflow creation*
 
-#### 4.1 Plugin Extension API & Refactoring
-- [ ] **Refactor monolithic `server.ts`**: Split ~2000-line tool registration into auto-registration by domain directory scan (reduces merge conflicts, simplifies adding new tools)
-- [ ] **Custom tool registration**: Allow users to drop `.ts` files in `custom-tools/` directory with auto-discovery
-- [ ] **Tool hooks**: Pre/post execution hooks for logging, validation, transformation
-- [ ] **Custom Python scripts**: Auto-discover user scripts in `Content/Python/uma_custom/`
-- [ ] **Tool manifest endpoint**: `context-getManifest` returns all tools with schemas (already exists — document it)
+#### 4.1 Plugin Extension API & Refactoring — ✅ COMPLETE
+- [x] **Refactor monolithic `server.ts`**: Reduced from 1490 to 158 lines (89% reduction). Tool registrations moved to domain `index.ts` files via `tools/auto-register.ts` directory scan.
+- [x] **Custom tool registration**: Users drop `.ts`/`.js` files in `custom-tools/` directory; `tools/auto-register.ts` auto-discovers and registers them on startup.
+- [x] **Tool hooks**: `ToolHookManager` in `tools/tool-hooks.ts` — register pre/post execution callbacks for logging, validation, and transformation.
+- [x] **Custom Python scripts**: `python-customExecute` and `python-listCustomScripts` tools auto-discover user scripts in `Content/Python/uma_custom/` (tool count: 183 → 185).
+- [x] **Tool manifest endpoint**: `context-getManifest` returns all tools with schemas (already existed — documented via `ToolModule` interface in `tools/tool-module.ts`).
 
 #### 4.2 Workflow Marketplace
 - [ ] **Workflow sharing format**: Standardized JSON schema for importable/exportable workflows
@@ -191,7 +191,7 @@
 > *Goal: Production release with active community*
 
 #### 5.1 v1.0 Release Criteria
-- [ ] All 183 tools have individual documentation with examples
+- [ ] All 185 tools have individual documentation with examples
 - [ ] E2E test suite passes on UE 5.4, 5.5, 5.6, 5.7
 - [ ] npm package published with stable API
 - [ ] UE plugin downloadable from GitHub Releases
@@ -260,10 +260,10 @@
 | Contributors | 1 | 5 | 20 |
 | Open issues | — | <30 | <50 |
 | Test coverage | ~80%* | 85% | 90% |
-| Tool count | 183 | 200 | 220+ |
-| Python scripts | 154 | 170 | 200+ |
+| Tool count | 185 | 200 | 220+ |
+| Python scripts | 166 | 180 | 200+ |
 | Learned workflows | 0 | 50 (seeded) | 100+ (organic) |
-| Documented tools | ~85 | 183 | 220+ |
+| Documented tools | ~85 | 185 | 220+ |
 | Supported UE versions | 5.4-5.7 | 5.4-5.7 | 5.4-5.8 |
 | Supported LLM hosts | 1 | 1 | 3+ |
 

@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "updatedAt": 1772967521527,
+  "updatedAt": 1773284556283,
   "resolutions": [
     {
-      "id": "res-1772966539072-kdolui",
+      "id": "res-1773284556281-90ggeb",
       "errorMessage": "Error X",
       "errorType": "blueprint-error",
       "sourceTool": "blueprint-connectPins",
@@ -17,11 +17,11 @@
       "rootCause": "Cause",
       "tags": [],
       "reuseCount": 0,
-      "createdAt": 1772966539072,
-      "lastUsedAt": 1772966539072
+      "createdAt": 1773284556281,
+      "lastUsedAt": 1773284556281
     },
     {
-      "id": "res-1772966539074-sq0v92",
+      "id": "res-1773284556283-2chp2a",
       "errorMessage": "Error Y",
       "errorType": "material-error",
       "sourceTool": "material-create",
@@ -35,52 +35,8 @@
       "rootCause": "Cause",
       "tags": [],
       "reuseCount": 0,
-      "createdAt": 1772966539074,
-      "lastUsedAt": 1772966539074
-    },
-    {
-      "id": "res-1772967521526-5w26gu",
-      "errorMessage": "get_material_expressions not found on MaterialEditingLibrary — duplicate expression nodes accumulate",
-      "errorType": "api-misuse",
-      "sourceTool": "python-execute",
-      "developerIntent": "Clean up duplicate material expression nodes before creating new ones",
-      "attemptedFixes": [
-        {
-          "action": "Use mel.get_material_expressions(mat) to iterate and delete",
-          "toolUsed": "python-execute",
-          "result": "failure",
-          "notes": "Method does not exist on MaterialEditingLibrary"
-        },
-        {
-          "action": "Use mel.get_num_material_expressions(mat) + mel.delete_all_material_expressions(mat)",
-          "toolUsed": "python-execute",
-          "result": "success",
-          "notes": "get_num_material_expressions returns count, delete_all_material_expressions removes all. Then recreate only needed nodes."
-        }
-      ],
-      "successfulFix": {
-        "description": "Use delete_all_material_expressions(mat) to clear all nodes, then recreate only the needed ones. There is no getter for all expressions — use get_num_material_expressions to check count.",
-        "toolSequence": [
-          "python-execute"
-        ],
-        "steps": [
-          "Call mel.get_num_material_expressions(mat) to check if nodes exist",
-          "Call mel.delete_all_material_expressions(mat) to remove all",
-          "Recreate only the needed expression nodes with mel.create_material_expression()",
-          "Reconnect with mel.connect_material_property() and mel.connect_material_expressions()"
-        ]
-      },
-      "rootCause": "MaterialEditingLibrary has no get_material_expressions() method to list all expressions. The correct cleanup API is delete_all_material_expressions() which removes everything. Always call this before creating new expressions to prevent duplicate accumulation.",
-      "tags": [
-        "MaterialEditingLibrary",
-        "material-expressions",
-        "cleanup",
-        "delete_all_material_expressions",
-        "duplicate-nodes"
-      ],
-      "reuseCount": 0,
-      "createdAt": 1772967521526,
-      "lastUsedAt": 1772967521526
+      "createdAt": 1773284556283,
+      "lastUsedAt": 1773284556283
     }
   ]
 }

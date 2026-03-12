@@ -275,7 +275,9 @@ exports[`tool schema snapshots > domain-to-tools mapping is stable 1`] = `
   {
     "name": "python",
     "tools": [
+      "python-customExecute",
       "python-execute",
+      "python-listCustomScripts",
     ],
   },
   {
@@ -883,8 +885,16 @@ exports[`tool schema snapshots > safety classifications are stable 1`] = `
     "safety": "safe",
   },
   {
+    "name": "python-customExecute",
+    "safety": "warn",
+  },
+  {
     "name": "python-execute",
     "safety": "warn",
+  },
+  {
+    "name": "python-listCustomScripts",
+    "safety": "safe",
   },
   {
     "name": "refactor-renameChain",
@@ -1177,7 +1187,9 @@ exports[`tool schema snapshots > tool names list is stable 1`] = `
   "project-getSettings",
   "project-getStructure",
   "project-snapshot",
+  "python-customExecute",
   "python-execute",
+  "python-listCustomScripts",
   "refactor-renameChain",
   "sequencer-addBinding",
   "sequencer-addTrack",

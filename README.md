@@ -3,8 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![Tests](https://img.shields.io/badge/Tests-1134%20passed-brightgreen.svg)](mcp-server/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-183-purple.svg)](docs/api-reference/mcp-tools.md)
+[![Tests](https://img.shields.io/badge/Tests-1156%20passed%20·%2069%20files-brightgreen.svg)](mcp-server/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-185-purple.svg)](docs/api-reference/mcp-tools.md)
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.
 
@@ -39,7 +39,7 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Build pipeline (lightmaps, content cooking, map check)
 - Source control integration (status, checkout, diff)
 - Gameplay systems (input actions, game mode)
-- Python script execution bridge (154 scripts) for extensible UE automation
+- Python script execution bridge (166 scripts) for extensible UE automation
 - Sequencer/cinematics, AI/navigation, widget/UMG tools
 - Texture, Niagara VFX, audio, landscape pipelines
 - Physics, world partition, foliage, curves, PCG, geometry script tools
@@ -49,6 +49,13 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
 - Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
 - Outcome-weighted recommendations (proven workflows rank higher automatically)
+
+**Extensibility:**
+
+- Custom MCP tools: drop `.ts`/`.js` files in `mcp-server/custom-tools/` for automatic discovery and registration
+- Tool hooks: register pre/post execution callbacks via `ToolHookManager` for logging, validation, or transformation
+- Custom Python scripts: place scripts in `Content/Python/uma_custom/` and invoke them with `python-customExecute`
+- Auto-registration architecture: each domain exposes a `ToolModule` via its own `index.ts` — adding a new domain requires no changes to `server.ts`
 
 ---
 
@@ -83,7 +90,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full architecture document incl
 - **npm** 10+
 - **TypeScript** 5.5+ (installed via devDependencies)
 - **Unreal Engine** 5.4 - 5.7
-- **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python automation (154 scripts)
+- **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python automation (166 scripts)
 - **Claude Code** (latest) with MCP support
 
 ---
@@ -162,7 +169,7 @@ Rebuild the project from source.
 
 ### 5. Enable Python Editor Script Plugin
 
-The Python automation layer (154 scripts) requires the **Python Editor Script Plugin**:
+The Python automation layer (166 scripts) requires the **Python Editor Script Plugin**:
 
 1. Open your UE project → **Edit → Plugins**
 2. Search for **"Python Editor Script Plugin"** under **Scripting**
@@ -205,8 +212,8 @@ Unreal Master/
 ├── mcp-server/              Layer 2: Node.js/TypeScript MCP bridge
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
-│   │   ├── server.ts        McpServer configuration (183 tools registered)
-│   │   ├── tools/           183 MCP tool handlers across 37 domains
+│   │   ├── server.ts        McpServer configuration (auto-registers tools)
+│   │   ├── tools/           185 MCP tool handlers across 37 domains
 │   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
 │   │   │   ├── compilation/ Live Coding trigger and status
@@ -254,7 +261,7 @@ Unreal Master/
 │   └── docs/              Development guides
 │
 ├── UnrealMasterAgent/               Layer 3: C++ UE plugin
-│   ├── Content/Python/uma/  Python scripts for UE automation (154 scripts)
+│   ├── Content/Python/uma/  Python scripts for UE automation (166 scripts)
 │   └── Source/
 │       ├── UnrealMasterAgent/        Main module
 │       │   ├── Safety/               UMAApprovalGate
@@ -363,6 +370,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 | Phase 13 | Workflow Orchestration, Analysis, Refactoring (170 tools) | Complete |
 | Phase 14 | Claude Intelligence — Context engine, tool manifest, workflow chains (173 tools) | Complete |
 | Phase 15 | Workflow & Error Learning — Persistent workflows, outcome tracking, error resolution learning, UE synonym expansion, docs integration (183 tools) | Complete |
+| Phase 16 | Plugin Extension API — Auto-registration architecture, tool hooks, custom tools/scripts, server.ts 89% reduction (185 tools) | Complete |
 
 ---
 
@@ -370,9 +378,9 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 | Layer | Tests | Status |
 |-------|-------|--------|
-| MCP Server (TypeScript) | 826 tests across 54 files | All passing |
+| MCP Server (TypeScript) | 1156 tests across 69 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
-| Python Scripts | 154 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
+| Python Scripts | 166 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
 
 ---
 

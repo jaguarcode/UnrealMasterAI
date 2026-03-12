@@ -1,8 +1,8 @@
 # Unreal Master Agent — Architecture
 
-**Version:** 0.4.1
-**Date:** 2026-02-25 (Updated: 2026-03-08)
-**Status:** Implementation Complete (Phase 0-15 done, 183 MCP tools across 37 domains)
+**Version:** 0.5.0
+**Date:** 2026-02-25 (Updated: 2026-03-12)
+**Status:** Implementation Complete (Phase 0-16, 4.1 done, 185 MCP tools across 37 domains, 166 Python scripts)
 
 ---
 
@@ -293,7 +293,7 @@ Receive WS frame
 
 **Rationale:** UE's Python API (`unreal` module) provides comprehensive access to editor operations including asset management, material editing, actor manipulation, level operations, and more. Python scripts are faster to iterate on than C++ and don't require recompilation.
 
-**Architecture:** 154 Python scripts in `UnrealMasterAgent/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
+**Architecture:** 166 Python scripts in `UnrealMasterAgent/Content/Python/uma/` are executed via the `python-execute` MCP tool. Each script follows a standard pattern with `execute(params)` entry point and `@execute_wrapper` decorator for error handling. The C++ plugin handles low-level Blueprint graph manipulation and WebSocket communication where Python APIs are insufficient.
 
 **Updated from original:** The original decision to minimize Python was revised after discovering that UE's Python API is sufficient for the majority of editor automation tasks. C++ remains essential for Blueprint graph internals (UEdGraph, pin connections) and WebSocket transport.
 
@@ -308,6 +308,59 @@ Receive WS frame
 **Config:** Max 1000 entries, 60-second TTL, LRU eviction.
 
 **Cache key format:** `{category}_{sha256(params)[0:8]}` (e.g., `bp_abc12345`)
+
+---
+
+## 5.1 Auto-Registration Architecture (Phase 4.1)
+
+### Overview
+
+`server.ts` was reduced from 1490 lines to 158 lines by moving all tool registrations into domain-specific `index.ts` files. `src/tools/auto-register.ts` scans all 37 domain directories, imports each domain's `ToolModule`, and registers tools with the MCP server at startup.
+
+### ToolModule Interface
+
+Every domain directory exports a `getTools()` function returning `ToolModule[]` from `src/tools/tool-module.ts`:
+
+```typescript
+interface ToolContext {
+  bridge: WebSocketBridge;
+  logger: Logger;
+  cache: CacheStore;
+  session: SessionManager;
+  approvalGate: ApprovalGate;
+  allowedRoots: string[];
+  slateStore: EmbeddingStore;
+  circuitBreaker?: CircuitBreaker;
+}
+
+interface ToolModule {
+  name: string;
+  description: string;
+  schema: Record<string, z.ZodTypeAny>;
+  handler: (ctx: ToolContext, params: Record<string, unknown>) => Promise<McpToolResult>;
+}
+```
+
+Each domain's `index.ts` exports `getTools(): ToolModule[]` returning declarative tool definitions. `auto-register.ts` collects all modules and registers them on the McpServer. Dependencies (bridge, cache, approvalGate, etc.) are injected via `ToolContext` — no global imports needed.
+
+### Tool Hook System
+
+`src/tools/tool-hooks.ts` exports `ToolHookManager`, which wraps `server.tool` registrations with pre/post execution callbacks:
+
+```typescript
+hookManager.addPreHook(async ({ toolName, params }) => { /* logging, validation, param transform */ });
+hookManager.addPostHook(async ({ toolName, params, result, durationMs }) => { /* metrics, alerting */ });
+```
+
+Hooks run in registration order. Pre-hooks can return modified params or throw to abort execution. Post-hooks receive the result and elapsed time for observability and can transform the result.
+
+### Custom Tool Discovery
+
+On startup, `auto-register.ts` additionally scans `mcp-server/custom-tools/` for `.ts` and `.js` files. Each discovered file is imported and its default export is treated as a `ToolModule`. This allows users to extend the tool set without modifying any project source files.
+
+### Custom Python Scripts
+
+Two new tools (`python-customExecute`, `python-listCustomScripts`) allow users to place Python scripts in `Content/Python/uma_custom/` inside the UE plugin directory. `python-listCustomScripts` lists discovered scripts; `python-customExecute` executes them through the existing Python bridge. User scripts follow the same `@execute_wrapper` / `execute(params)` / `make_result()` pattern as built-in scripts.
 
 ---
 
@@ -423,7 +476,7 @@ Unreal Master/
 ├── mcp-server/              ← Layer 2: Node.js/TypeScript bridge
 │   ├── src/
 │   │   ├── index.ts         (McpServerBootstrap)
-│   │   ├── server.ts        (183 tools registered across 37 domains)
+│   │   ├── server.ts        (185 tools registered across 37 domains)
 │   │   ├── tools/           Tool handlers by domain
 │   │   │   ├── editor/      Editor queries (ping, list-actors, level-info)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
@@ -480,7 +533,7 @@ Unreal Master/
 │
 ├── UnrealMasterAgent/               ← Layer 3: C++ UE Plugin + Python automation
 │   ├── UnrealMasterAgent.uplugin
-│   ├── Content/Python/uma/  154 Python scripts (actor, material, level, sequencer, ai, etc.)
+│   ├── Content/Python/uma/  166 Python scripts (actor, material, level, sequencer, ai, etc.)
 │   └── Source/
 │       ├── UnrealMasterAgent/      Main module
 │       │   ├── UnrealMasterAgent.Build.cs
@@ -503,7 +556,7 @@ Unreal Master/
 │
 └── docs/
     ├── api-reference/
-    │   └── mcp-tools.md              MCP tool API reference (183 tools)
+    │   └── mcp-tools.md              MCP tool API reference (185 tools)
     ├── coding-conventions/
     │   └── README.md                 TypeScript + C++ coding conventions
     ├── slate-templates/              7 Slate UI RAG templates

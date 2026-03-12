@@ -7,8 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated all documentation to reflect current stats: 185 tools, 166 Python scripts, 1156 tests across 69 files
+- Added Phase 16 (Plugin Extension API) to README roadmap table
+
 ### Added
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
+
+## [0.5.0] — 2026-03-10
+
+### Added
+- Plugin Extension API with auto-registration architecture
+- ToolModule interface for declarative tool definitions
+- ToolHookManager for pre/post execution hooks
+- Custom tool discovery from `custom-tools/` directory
+- Custom Python script support via `Content/Python/uma_custom/`
+- `python-customExecute` and `python-listCustomScripts` tools
+
+### Changed
+- Refactored server.ts from 1490 to 158 lines (89% reduction)
+- Tool registrations moved to domain-specific index.ts files (37 domains)
+- Upgraded tool count from 183 to 185
+- Test count increased from 1134 to 1156 across 69 files
 
 ## [0.4.3] — 2026-03-09
 
@@ -90,7 +110,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: npx quick-start, troubleshooting guide, install-plugin reference
 - Epic Games trademark disclaimer
 
-[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.2...HEAD
+[Unreleased]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.3...v0.5.0
+[0.4.3]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/jaguarcode/UnrealMasterAI/compare/v0.1.0...v0.4.0
