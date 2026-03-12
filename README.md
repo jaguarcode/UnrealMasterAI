@@ -8,6 +8,8 @@
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.
 
+[English](./README.md) | [Korean](./README.ko.md)
+
 ---
 
 ## What This Does
