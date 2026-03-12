@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<!-- v1.0.0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integration Guides - Unreal Master Agent</title>
+<meta name="description" content="Set up Unreal Master Agent with Claude Code, Claude Desktop, Cursor, Windsurf, or VS Code + GitHub Copilot. Step-by-step integration guides for every MCP host.">
+<link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/integrations.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/integrations.html">
+<meta property="og:title" content="Integration Guides - Unreal Master Agent">
+<meta property="og:description" content="Set up Unreal Master Agent with Claude Code, Claude Desktop, Cursor, Windsurf, or VS Code + GitHub Copilot.">
+<meta property="og:site_name" content="Unreal Master Agent">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Integration Guides - Unreal Master Agent">
+<meta name="twitter:description" content="Set up Unreal Master Agent with Claude Code, Claude Desktop, Cursor, Windsurf, or VS Code + GitHub Copilot.">
+<meta name="keywords" content="Unreal Engine, MCP, Claude Code, Claude Desktop, Cursor, Windsurf, VS Code, GitHub Copilot, integration, setup">
+<meta name="author" content="JaguarCode">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --black:#000000;
+  --near-black:#0a0a0a;
+  --card-bg:#141414;
+  --card-bg-alt:#1a1a1a;
+  --border-subtle:#222222;
+  --border-alt:#2a2a2a;
+  --white:#ffffff;
+  --gray-light:#a0a0a0;
+  --gray-mid:#666666;
+  --gray-dark:#444444;
+  --blue:#0d6efd;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+
+  /* Host accent colors — used only for the left-border indicator */
+  --accent-claude-code:#d97706;
+  --accent-claude-desktop:#7c3aed;
+  --accent-cursor:#0ea5e9;
+  --accent-windsurf:#10b981;
+  --accent-vscode:#2563eb;
+}
+
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--black);color:var(--white);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+a{color:inherit;text-decoration:none}
+
+.container{max-width:1400px;margin:0 auto;padding:0 2rem}
+
+/* ─── FADE-UP ANIMATION ─── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.fade-up.delay-1{transition-delay:0.1s}
+.fade-up.delay-2{transition-delay:0.2s}
+.fade-up.delay-3{transition-delay:0.3s}
+.fade-up.delay-4{transition-delay:0.4s}
+.fade-up.delay-5{transition-delay:0.5s}
+
+/* ─── NAV ─── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+  height:100%;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  letter-spacing:-0.01em;white-space:nowrap;
+}
+.nav-links{
+  display:flex;align-items:center;gap:2rem;
+  list-style:none;
+}
+.nav-links a{
+  font-size:0.875rem;font-weight:500;color:var(--gray-light);
+  transition:color 0.3s ease;
+}
+.nav-links a:hover{color:var(--blue)}
+.nav-links a[aria-current="page"]{color:var(--white)}
+.nav-links .nav-github{
+  color:var(--white);
+  border:1px solid var(--border-alt);
+  padding:0.4rem 1rem;
+  border-radius:100px;
+  font-size:0.8rem;
+  transition:border-color 0.3s,color 0.3s;
+}
+.nav-links .nav-github:hover{border-color:var(--white);color:var(--white)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);transition:0.3s}
+
+.mobile-menu{
+  display:none;
+  position:fixed;top:60px;left:0;right:0;z-index:99;
+  background:rgba(0,0,0,0.97);
+  border-bottom:1px solid var(--border-subtle);
+  padding:1.5rem 2rem;
+}
+.mobile-menu.open{display:block}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:1rem}
+.mobile-menu a{font-size:1rem;color:var(--gray-light);font-weight:500}
+
+/* ─── HERO ─── */
+.hero{
+  padding:10rem 2rem 5rem;
+  background:var(--black);
+  border-bottom:1px solid var(--border-subtle);
+}
+.hero-inner{max-width:760px}
+.hero-label{
+  display:inline-block;
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);
+  margin-bottom:1.5rem;
+}
+.hero-headline{
+  font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:900;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  color:var(--white);
+  margin-bottom:1.25rem;
+}
+.hero-sub{
+  font-size:1.1rem;
+  color:var(--gray-light);
+  line-height:1.7;
+  max-width:580px;
+  font-weight:400;
+  margin-bottom:2rem;
+}
+.hero-meta{
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+}
+.hero-meta-item{
+  font-size:0.82rem;font-weight:500;
+  color:var(--gray-mid);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.hero-meta-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:var(--border-alt);flex-shrink:0;
+}
+
+/* ─── SECTION SHARED ─── */
+.section{padding:6rem 0}
+.section-alt{background:var(--near-black)}
+.section-border-top{border-top:1px solid var(--border-subtle)}
+.section-label{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);margin-bottom:1rem;
+}
+.section-headline{
+  font-size:clamp(1.75rem,3.5vw,2.75rem);
+  font-weight:900;letter-spacing:-0.03em;
+  color:var(--white);line-height:1.1;
+  margin-bottom:0.75rem;
+}
+.section-sub{
+  font-size:1rem;color:var(--gray-light);
+  line-height:1.7;max-width:560px;
+}
+
+/* ─── HOST JUMP NAV ─── */
+.host-jump{
+  display:flex;align-items:center;gap:0.5rem;
+  flex-wrap:wrap;
+  margin-bottom:3.5rem;
+}
+.host-jump-btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-size:0.78rem;font-weight:600;
+  font-family:var(--font);
+  letter-spacing:0.02em;
+  color:var(--gray-mid);
+  background:none;
+  border:1px solid var(--border-subtle);
+  border-radius:100px;
+  padding:0.35rem 0.9rem;
+  cursor:pointer;
+  text-decoration:none;
+  transition:color 0.2s,border-color 0.2s,background 0.2s;
+}
+.host-jump-btn:hover{color:var(--white);border-color:var(--border-alt);background:var(--card-bg)}
+.host-dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;
+}
+
+/* ─── HOST CARD ─── */
+.host-list{
+  display:flex;flex-direction:column;gap:1px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.host-card{
+  background:var(--card-bg);
+  position:relative;
+  overflow:hidden;
+}
+.host-card::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+}
+.host-card--claude-code::before{background:var(--accent-claude-code)}
+.host-card--claude-desktop::before{background:var(--accent-claude-desktop)}
+.host-card--cursor::before{background:var(--accent-cursor)}
+.host-card--windsurf::before{background:var(--accent-windsurf)}
+.host-card--vscode::before{background:var(--accent-vscode)}
+
+.host-card-inner{
+  padding:2.5rem 2.5rem 2.5rem 3rem;
+}
+
+.host-card-header{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;
+  gap:1.5rem;
+  margin-bottom:2rem;
+}
+.host-card-title-block{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.host-badge{
+  font-size:0.68rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:0.2rem 0.6rem;
+  border-radius:4px;
+  white-space:nowrap;
+}
+.host-badge--claude-code{color:var(--accent-claude-code);border:1px solid rgba(217,119,6,0.3);background:rgba(217,119,6,0.06)}
+.host-badge--claude-desktop{color:var(--accent-claude-desktop);border:1px solid rgba(124,58,237,0.3);background:rgba(124,58,237,0.06)}
+.host-badge--cursor{color:var(--accent-cursor);border:1px solid rgba(14,165,233,0.3);background:rgba(14,165,233,0.06)}
+.host-badge--windsurf{color:var(--accent-windsurf);border:1px solid rgba(16,185,129,0.3);background:rgba(16,185,129,0.06)}
+.host-badge--vscode{color:var(--accent-vscode);border:1px solid rgba(37,99,235,0.3);background:rgba(37,99,235,0.06)}
+
+.host-name{
+  font-size:1.35rem;font-weight:800;
+  color:var(--white);letter-spacing:-0.02em;
+  line-height:1.2;
+}
+.host-prereqs{
+  font-size:0.8rem;font-weight:500;
+  color:var(--gray-mid);
+  white-space:nowrap;
+  flex-shrink:0;
+  padding-top:0.15rem;
+}
+
+.host-body{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2.5rem;
+  align-items:start;
+}
+
+.host-steps-label{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--gray-mid);
+  margin-bottom:1rem;
+}
+.host-steps{
+  list-style:none;
+  display:flex;flex-direction:column;
+  gap:0.85rem;
+}
+.host-step{
+  display:flex;align-items:flex-start;gap:0.875rem;
+}
+.host-step-num{
+  width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--border-alt);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:600;color:var(--gray-mid);
+  flex-shrink:0;margin-top:0.15rem;
+}
+.host-step-text{
+  font-size:0.875rem;color:var(--gray-light);line-height:1.55;
+}
+.host-step-text code{
+  font-family:var(--mono);font-size:0.8rem;
+  color:var(--white);
+  background:var(--border-subtle);
+  padding:0.1rem 0.35rem;border-radius:3px;
+}
+.host-step-text strong{
+  color:var(--white);font-weight:600;
+}
+
+.host-verify{
+  margin-top:1.5rem;
+  padding:0.875rem 1rem;
+  background:var(--near-black);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;
+}
+.host-verify-label{
+  font-size:0.68rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gray-mid);
+  margin-bottom:0.4rem;
+}
+.host-trouble{margin-top:0.75rem;padding:0.6rem 0.85rem;background:rgba(250,204,21,0.04);border:1px solid rgba(250,204,21,0.12);border-radius:6px}
+.host-trouble-label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#facc15;margin-bottom:0.25rem}
+.host-trouble-text{font-size:0.85rem;color:var(--gray-light);line-height:1.5}
+.host-verify-text{
+  font-size:0.82rem;color:var(--gray-light);line-height:1.5;
+}
+
+/* ─── CODE BLOCK ─── */
+.code-block{
+  background:var(--black);
+  border:1px solid var(--border-subtle);
+  border-radius:10px;
+  overflow:hidden;
+}
+.code-block-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.75rem 1.125rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.code-block-title{
+  font-size:0.72rem;font-weight:500;color:var(--gray-mid);
+  font-family:var(--mono);
+}
+.code-block-copy{
+  font-size:0.68rem;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--gray-mid);cursor:pointer;
+  background:none;border:none;font-family:var(--font);
+  transition:color 0.2s;
+  padding:0;
+  line-height:1;
+}
+.code-block-copy:hover{color:var(--white)}
+.code-block-copy:focus-visible{
+  outline:1px solid var(--blue);
+  outline-offset:2px;
+  border-radius:2px;
+}
+.code-block pre{
+  padding:1.25rem;
+  font-family:var(--mono);font-size:0.78rem;
+  line-height:1.75;color:var(--gray-light);
+  overflow-x:auto;
+}
+.code-block pre .key{color:#fff}
+.code-block pre .str{color:#a8d8a8}
+.code-block pre .pun{color:var(--gray-mid)}
+.code-block pre .cm{color:var(--gray-dark)}
+
+.code-block-note{
+  padding:0.6rem 1.125rem;
+  border-top:1px solid var(--border-subtle);
+  font-size:0.72rem;color:var(--gray-dark);
+  font-family:var(--mono);
+}
+
+/* ─── CONFIG LOCATION PILL ─── */
+.config-path{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:var(--mono);font-size:0.75rem;
+  color:var(--gray-mid);
+  background:var(--near-black);
+  border:1px solid var(--border-subtle);
+  border-radius:6px;
+  padding:0.35rem 0.75rem;
+  margin-bottom:1rem;
+}
+.config-path-label{
+  font-family:var(--font);font-size:0.68rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gray-dark);
+  margin-right:0.25rem;
+}
+
+/* ─── COMMON SECTION ─── */
+.reqs-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:4rem;
+}
+.req-card{
+  background:var(--card-bg);
+  padding:2rem;
+  transition:background 0.3s;
+}
+.req-card:hover{background:var(--card-bg-alt)}
+.req-card-icon{
+  width:32px;height:32px;
+  border-radius:7px;
+  background:var(--border-alt);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1rem;
+  font-size:0.9rem;
+}
+.req-card-title{
+  font-size:0.9rem;font-weight:700;
+  color:var(--white);margin-bottom:0.4rem;
+  letter-spacing:-0.01em;
+}
+.req-card-desc{
+  font-size:0.85rem;color:var(--gray-light);line-height:1.6;
+}
+.req-card-desc code{
+  font-family:var(--mono);font-size:0.78rem;
+  color:var(--white);
+  background:var(--border-subtle);
+  padding:0.1rem 0.35rem;border-radius:3px;
+}
+
+/* ─── TROUBLE TABLE ─── */
+.trouble-table{
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:4rem;
+}
+.trouble-table thead tr{
+  background:var(--card-bg);
+  border-bottom:1px solid var(--border-subtle);
+}
+.trouble-table th{
+  text-align:left;
+  padding:0.875rem 1.5rem;
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gray-mid);
+}
+.trouble-table tbody tr{
+  background:var(--near-black);
+  border-bottom:1px solid var(--border-subtle);
+  transition:background 0.2s;
+}
+.trouble-table tbody tr:last-child{border-bottom:none}
+.trouble-table tbody tr:hover{background:var(--card-bg)}
+.trouble-table td{
+  padding:1rem 1.5rem;
+  font-size:0.875rem;
+  color:var(--gray-light);
+  line-height:1.55;
+  vertical-align:top;
+}
+.trouble-table td:first-child{
+  color:var(--white);font-weight:500;
+  font-family:var(--mono);font-size:0.8rem;
+  white-space:nowrap;
+}
+.trouble-table td code{
+  font-family:var(--mono);font-size:0.78rem;
+  color:var(--white);
+  background:var(--border-subtle);
+  padding:0.1rem 0.35rem;border-radius:3px;
+}
+
+/* ─── SSE SECTION ─── */
+.sse-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  align-items:start;
+}
+.sse-desc{
+  font-size:0.9rem;color:var(--gray-light);
+  line-height:1.75;margin-bottom:1.25rem;
+}
+
+/* ─── FOOTER ─── */
+.footer{
+  background:var(--near-black);
+  border-top:1px solid var(--border-subtle);
+  padding:3rem 0;
+}
+.footer-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+}
+.footer-main{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  margin-bottom:2rem;
+  padding-bottom:2rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.footer-brand-name{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  margin-bottom:0.4rem;
+}
+.footer-brand-license{
+  font-size:0.8rem;color:var(--gray-mid);
+}
+.footer-links{
+  display:flex;gap:1.75rem;align-items:center;flex-wrap:wrap;
+}
+.footer-links a{
+  font-size:0.85rem;color:var(--gray-light);
+  transition:color 0.3s;
+}
+.footer-links a:hover{color:var(--white)}
+.footer-disclaimer{
+  font-size:0.78rem;color:var(--gray-dark);line-height:1.6;
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .host-body{grid-template-columns:1fr;gap:1.75rem}
+  .sse-layout{grid-template-columns:1fr;gap:2rem}
+  .reqs-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:768px){
+  .section{padding:4rem 0}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero{padding:8rem 2rem 4rem}
+  .host-card-inner{padding:2rem 1.75rem 2rem 2rem}
+  .host-card-header{flex-direction:column;gap:0.75rem}
+  .host-prereqs{white-space:normal}
+  .footer-main{flex-direction:column;gap:1.5rem}
+}
+
+@media(max-width:480px){
+  .container{padding:0 1.25rem}
+  .hero-headline{font-size:2rem}
+  .host-card-inner{padding:1.5rem 1.25rem 1.5rem 1.5rem}
+  .trouble-table td:first-child{white-space:normal}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Unreal Master Agent</a>
+    <ul class="nav-links">
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="index.html#architecture">Architecture</a></li>
+      <li><a href="index.html#tools">Tools</a></li>
+      <li><a href="index.html#install">Install</a></li>
+      <li><a href="workflows.html">Workflows</a></li>
+      <li><a href="integrations.html" aria-current="page">Integrations</a></li>
+      <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener" class="nav-github">GitHub</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu(this)">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+  <ul>
+    <li><a href="index.html#features" onclick="closeMobile()">Features</a></li>
+    <li><a href="index.html#architecture" onclick="closeMobile()">Architecture</a></li>
+    <li><a href="index.html#tools" onclick="closeMobile()">Tools</a></li>
+    <li><a href="index.html#install" onclick="closeMobile()">Install</a></li>
+    <li><a href="workflows.html" onclick="closeMobile()">Workflows</a></li>
+    <li><a href="integrations.html" onclick="closeMobile()">Integrations</a></li>
+    <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<header class="hero" aria-label="Page hero">
+  <div class="container">
+    <div class="hero-inner fade-up">
+      <p class="hero-label">Setup Guides</p>
+      <h1 class="hero-headline">Integration Guides</h1>
+      <p class="hero-sub">Set up Unreal Master Agent with your preferred AI coding assistant. Pick your host below and follow the three-step config.</p>
+      <div class="hero-meta" role="list" aria-label="Integration statistics">
+        <span class="hero-meta-item" role="listitem">5 hosts supported</span>
+        <span class="hero-meta-dot" aria-hidden="true"></span>
+        <span class="hero-meta-item" role="listitem">stdio &amp; SSE transport</span>
+        <span class="hero-meta-dot" aria-hidden="true"></span>
+        <span class="hero-meta-item" role="listitem">Node.js 20+ required</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HOST SECTIONS -->
+  <section class="section" aria-labelledby="hosts-heading">
+    <div class="container">
+
+      <div class="fade-up" style="margin-bottom:2.5rem">
+        <p class="section-label">Hosts</p>
+        <h2 class="section-headline" id="hosts-heading">Choose Your Host</h2>
+        <p class="section-sub">Each guide includes prerequisites, config file location, a ready-to-paste snippet, and a verification step.</p>
+      </div>
+
+      <!-- JUMP NAV -->
+      <nav class="host-jump fade-up delay-1" aria-label="Jump to host section">
+        <a class="host-jump-btn" href="#claude-code">
+          <span class="host-dot" style="background:var(--accent-claude-code)" aria-hidden="true"></span>
+          Claude Code
+        </a>
+        <a class="host-jump-btn" href="#claude-desktop">
+          <span class="host-dot" style="background:var(--accent-claude-desktop)" aria-hidden="true"></span>
+          Claude Desktop
+        </a>
+        <a class="host-jump-btn" href="#cursor">
+          <span class="host-dot" style="background:var(--accent-cursor)" aria-hidden="true"></span>
+          Cursor
+        </a>
+        <a class="host-jump-btn" href="#windsurf">
+          <span class="host-dot" style="background:var(--accent-windsurf)" aria-hidden="true"></span>
+          Windsurf
+        </a>
+        <a class="host-jump-btn" href="#vscode">
+          <span class="host-dot" style="background:var(--accent-vscode)" aria-hidden="true"></span>
+          VS Code
+        </a>
+      </nav>
+
+      <!-- HOST CARDS -->
+      <div class="host-list" role="list">
+
+        <!-- ─── 1. CLAUDE CODE ─── -->
+        <article class="host-card host-card--claude-code fade-up" id="claude-code" role="listitem" aria-labelledby="host-title-claude-code">
+          <div class="host-card-inner">
+            <div class="host-card-header">
+              <div class="host-card-title-block">
+                <span class="host-badge host-badge--claude-code">CLI</span>
+                <h3 class="host-name" id="host-title-claude-code">Claude Code</h3>
+              </div>
+              <span class="host-prereqs">Node.js &ge;20 &middot; Claude Code CLI</span>
+            </div>
+
+            <div class="host-body">
+              <div>
+                <p class="host-steps-label">Setup</p>
+                <ol class="host-steps" aria-label="Claude Code setup steps">
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">1</span>
+                    <span class="host-step-text">Create or open <code>.mcp.json</code> in your project root (or <code>~/.claude/mcp.json</code> for global scope).</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">2</span>
+                    <span class="host-step-text">Paste the config snippet on the right, then save. Alternatively run <code>npx unreal-master-mcp-server init --host=claude-code</code> to write it automatically.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">3</span>
+                    <span class="host-step-text">Open your UE project, then start a new Claude session with <code>claude</code> in the terminal.</span>
+                  </li>
+                </ol>
+                <div class="host-verify">
+                  <p class="host-verify-label">Verification</p>
+                  <p class="host-verify-text">Run <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">/tools</code> in the Claude Code session — the tool list should include <strong style="color:var(--white);font-weight:600">unreal-master-agent</strong> entries.</p>
+                </div>
+                <div class="host-trouble">
+                  <p class="host-trouble-label">Troubleshooting</p>
+                  <p class="host-trouble-text">If tools don't appear, verify <code style="font-family:var(--mono);font-size:0.8rem">.mcp.json</code> is in the project root (not a subdirectory). Restart the Claude Code session after editing the config.</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="code-block" role="region" aria-label="Claude Code MCP configuration">
+                  <div class="code-block-header">
+                    <span class="code-block-title">.mcp.json</span>
+                    <button class="code-block-copy" onclick="copySnippet(this,'claude-code')" aria-label="Copy Claude Code config">Copy</button>
+                  </div>
+                  <pre aria-label="Claude Code MCP server configuration"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">: [</span><span class="str">"-y"</span><span class="pun">,</span> <span class="str">"unreal-master-mcp-server"</span><span class="pun">]</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─── 2. CLAUDE DESKTOP ─── -->
+        <article class="host-card host-card--claude-desktop fade-up" id="claude-desktop" role="listitem" aria-labelledby="host-title-claude-desktop">
+          <div class="host-card-inner">
+            <div class="host-card-header">
+              <div class="host-card-title-block">
+                <span class="host-badge host-badge--claude-desktop">App</span>
+                <h3 class="host-name" id="host-title-claude-desktop">Claude Desktop</h3>
+              </div>
+              <span class="host-prereqs">Node.js &ge;20 &middot; Claude Desktop app</span>
+            </div>
+
+            <div class="host-body">
+              <div>
+                <p class="host-steps-label">Setup</p>
+                <ol class="host-steps" aria-label="Claude Desktop setup steps">
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">1</span>
+                    <span class="host-step-text">Locate <code>claude_desktop_config.json</code> — see the config paths on the right for your OS.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">2</span>
+                    <span class="host-step-text">Paste the <code>mcpServers</code> block into the file, or run <code>npx unreal-master-mcp-server init --host=claude</code> to auto-write it.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">3</span>
+                    <span class="host-step-text">Quit and reopen Claude Desktop so it picks up the new config.</span>
+                  </li>
+                </ol>
+                <div class="host-verify">
+                  <p class="host-verify-label">Verification</p>
+                  <p class="host-verify-text">A hammer icon should appear in the Claude Desktop toolbar. Click it to confirm the MCP server list includes <strong style="color:var(--white);font-weight:600">unreal-master-agent</strong>.</p>
+                </div>
+                <div class="host-trouble">
+                  <p class="host-trouble-label">Troubleshooting</p>
+                  <p class="host-trouble-text">If the MCP icon doesn't appear, fully quit Claude Desktop (check system tray) and relaunch. Verify the config file path matches your OS — Windows: <code style="font-family:var(--mono);font-size:0.78rem">%APPDATA%\Claude\</code>, macOS: <code style="font-family:var(--mono);font-size:0.78rem">~/Library/Application Support/Claude/</code>.</p>
+                </div>
+              </div>
+
+              <div>
+                <div style="margin-bottom:0.875rem">
+                  <div class="config-path">
+                    <span class="config-path-label">Windows</span>%APPDATA%\Claude\claude_desktop_config.json
+                  </div>
+                  <div class="config-path">
+                    <span class="config-path-label">macOS</span>~/Library/Application Support/Claude/claude_desktop_config.json
+                  </div>
+                </div>
+                <div class="code-block" role="region" aria-label="Claude Desktop MCP configuration">
+                  <div class="code-block-header">
+                    <span class="code-block-title">claude_desktop_config.json</span>
+                    <button class="code-block-copy" onclick="copySnippet(this,'claude-desktop')" aria-label="Copy Claude Desktop config">Copy</button>
+                  </div>
+                  <pre aria-label="Claude Desktop MCP server configuration"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">: [</span><span class="str">"-y"</span><span class="pun">,</span> <span class="str">"unreal-master-mcp-server"</span><span class="pun">]</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─── 3. CURSOR ─── -->
+        <article class="host-card host-card--cursor fade-up" id="cursor" role="listitem" aria-labelledby="host-title-cursor">
+          <div class="host-card-inner">
+            <div class="host-card-header">
+              <div class="host-card-title-block">
+                <span class="host-badge host-badge--cursor">Editor</span>
+                <h3 class="host-name" id="host-title-cursor">Cursor</h3>
+              </div>
+              <span class="host-prereqs">Node.js &ge;20 &middot; Cursor editor</span>
+            </div>
+
+            <div class="host-body">
+              <div>
+                <p class="host-steps-label">Setup</p>
+                <ol class="host-steps" aria-label="Cursor setup steps">
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">1</span>
+                    <span class="host-step-text">Create <code>.cursor/mcp.json</code> in your project root (per-project), or run <code>npx unreal-master-mcp-server init --host=cursor</code> to generate it.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">2</span>
+                    <span class="host-step-text">Paste the config snippet on the right into that file and save.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">3</span>
+                    <span class="host-step-text">Reload the Cursor window (<strong>Cmd/Ctrl+Shift+P</strong> &rarr; <strong>Reload Window</strong>) so the server is registered.</span>
+                  </li>
+                </ol>
+                <div class="host-verify">
+                  <p class="host-verify-label">Verification</p>
+                  <p class="host-verify-text">Open <strong style="color:var(--white);font-weight:600">Cursor Settings &rarr; MCP</strong>. The <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">unreal-master-agent</code> server should appear with a green connected status.</p>
+                </div>
+                <div class="host-trouble">
+                  <p class="host-trouble-label">Troubleshooting</p>
+                  <p class="host-trouble-text">If the server shows as disconnected, ensure <code style="font-family:var(--mono);font-size:0.78rem">.cursor/mcp.json</code> is in the workspace root. Restart Cursor after config changes. Check the Output panel (MCP channel) for error messages.</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="code-block" role="region" aria-label="Cursor MCP configuration">
+                  <div class="code-block-header">
+                    <span class="code-block-title">.cursor/mcp.json</span>
+                    <button class="code-block-copy" onclick="copySnippet(this,'cursor')" aria-label="Copy Cursor config">Copy</button>
+                  </div>
+                  <pre aria-label="Cursor MCP server configuration"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">: [</span><span class="str">"-y"</span><span class="pun">,</span> <span class="str">"unreal-master-mcp-server"</span><span class="pun">]</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─── 4. WINDSURF ─── -->
+        <article class="host-card host-card--windsurf fade-up" id="windsurf" role="listitem" aria-labelledby="host-title-windsurf">
+          <div class="host-card-inner">
+            <div class="host-card-header">
+              <div class="host-card-title-block">
+                <span class="host-badge host-badge--windsurf">Editor</span>
+                <h3 class="host-name" id="host-title-windsurf">Windsurf</h3>
+              </div>
+              <span class="host-prereqs">Node.js &ge;20 &middot; Windsurf editor</span>
+            </div>
+
+            <div class="host-body">
+              <div>
+                <p class="host-steps-label">Setup</p>
+                <ol class="host-steps" aria-label="Windsurf setup steps">
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">1</span>
+                    <span class="host-step-text">Open or create <code>~/.codeium/windsurf/mcp_config.json</code>. Run <code>npx unreal-master-mcp-server init --host=windsurf</code> to write the file automatically.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">2</span>
+                    <span class="host-step-text">Paste the config snippet on the right and save the file.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">3</span>
+                    <span class="host-step-text">Restart Windsurf or click <strong>Refresh</strong> in the MCP panel for the server to connect.</span>
+                  </li>
+                </ol>
+                <div class="host-verify">
+                  <p class="host-verify-label">Verification</p>
+                  <p class="host-verify-text">Open Windsurf's <strong style="color:var(--white);font-weight:600">MCP panel</strong> from the sidebar. The server connection status for <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">unreal-master-agent</code> should show as active.</p>
+                </div>
+                <div class="host-trouble">
+                  <p class="host-trouble-label">Troubleshooting</p>
+                  <p class="host-trouble-text">If the server doesn't connect, verify the config at <code style="font-family:var(--mono);font-size:0.78rem">~/.codeium/windsurf/mcp_config.json</code> is valid JSON. Restart Windsurf after editing. Ensure Node.js 20+ is in your system PATH.</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="config-path">
+                  <span class="config-path-label">Config</span>~/.codeium/windsurf/mcp_config.json
+                </div>
+                <div class="code-block" role="region" aria-label="Windsurf MCP configuration">
+                  <div class="code-block-header">
+                    <span class="code-block-title">mcp_config.json</span>
+                    <button class="code-block-copy" onclick="copySnippet(this,'windsurf')" aria-label="Copy Windsurf config">Copy</button>
+                  </div>
+                  <pre aria-label="Windsurf MCP server configuration"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">: [</span><span class="str">"-y"</span><span class="pun">,</span> <span class="str">"unreal-master-mcp-server"</span><span class="pun">]</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ─── 5. VS CODE ─── -->
+        <article class="host-card host-card--vscode fade-up" id="vscode" role="listitem" aria-labelledby="host-title-vscode">
+          <div class="host-card-inner">
+            <div class="host-card-header">
+              <div class="host-card-title-block">
+                <span class="host-badge host-badge--vscode">Extension</span>
+                <h3 class="host-name" id="host-title-vscode">VS Code + GitHub Copilot</h3>
+              </div>
+              <span class="host-prereqs">Node.js &ge;20 &middot; VS Code &middot; Copilot v0.3+</span>
+            </div>
+
+            <div class="host-body">
+              <div>
+                <p class="host-steps-label">Setup</p>
+                <ol class="host-steps" aria-label="VS Code setup steps">
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">1</span>
+                    <span class="host-step-text">Install the <strong>GitHub Copilot</strong> extension (v0.3+) from the VS Code Marketplace if not already present.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">2</span>
+                    <span class="host-step-text">Create <code>.vscode/mcp.json</code> in your workspace root, or run <code>npx unreal-master-mcp-server init --host=vscode</code>. Note: VS Code uses a <code>servers</code> key with <code>"type": "stdio"</code>.</span>
+                  </li>
+                  <li class="host-step">
+                    <span class="host-step-num" aria-hidden="true">3</span>
+                    <span class="host-step-text">Reload the VS Code window. The MCP server starts automatically when Copilot Chat is opened.</span>
+                  </li>
+                </ol>
+                <div class="host-verify">
+                  <p class="host-verify-label">Verification</p>
+                  <p class="host-verify-text">Open <strong style="color:var(--white);font-weight:600">Copilot Chat</strong> and type <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">@unreal</code> — MCP tools from the server should autocomplete in the chat input.</p>
+                </div>
+                <div class="host-trouble">
+                  <p class="host-trouble-label">Troubleshooting</p>
+                  <p class="host-trouble-text">If MCP tools don't appear, ensure GitHub Copilot extension is v0.3+ and agent mode is enabled. Verify <code style="font-family:var(--mono);font-size:0.78rem">.vscode/mcp.json</code> uses the <code style="font-family:var(--mono);font-size:0.78rem">servers</code> key (not <code style="font-family:var(--mono);font-size:0.78rem">mcpServers</code>). Reload VS Code window after config changes.</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="code-block" role="region" aria-label="VS Code MCP configuration">
+                  <div class="code-block-header">
+                    <span class="code-block-title">.vscode/mcp.json</span>
+                    <button class="code-block-copy" onclick="copySnippet(this,'vscode')" aria-label="Copy VS Code config">Copy</button>
+                  </div>
+                  <pre aria-label="VS Code MCP server configuration"><span class="pun">{</span>
+  <span class="key">"servers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"type"</span><span class="pun">:</span> <span class="str">"stdio"</span><span class="pun">,</span>
+      <span class="key">"command"</span><span class="pun">:</span> <span class="str">"npx"</span><span class="pun">,</span>
+      <span class="key">"args"</span><span class="pun">: [</span><span class="str">"-y"</span><span class="pun">,</span> <span class="str">"unreal-master-mcp-server"</span><span class="pun">]</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+                  <div class="code-block-note">Note: VS Code uses "servers" (not "mcpServers") and requires "type": "stdio"</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /host-list -->
+    </div>
+  </section>
+
+  <!-- COMMON REQUIREMENTS -->
+  <section class="section section-alt section-border-top" aria-labelledby="requirements-heading">
+    <div class="container">
+
+      <div class="fade-up" style="margin-bottom:3rem">
+        <p class="section-label">Prerequisites</p>
+        <h2 class="section-headline" id="requirements-heading">Common Requirements</h2>
+        <p class="section-sub">All integrations share these baseline requirements regardless of which host you choose.</p>
+      </div>
+
+      <div class="reqs-grid" role="list">
+        <div class="req-card fade-up" role="listitem">
+          <div class="req-card-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="#666" stroke-width="1.4"/><path d="M4.5 7h5M7 4.5v5" stroke="#666" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="req-card-title">Node.js 20 or later</h3>
+          <p class="req-card-desc">The MCP server runs via <code>npx</code>. Node.js 20+ is required for native fetch, ESM support, and the <code>--experimental-vm-modules</code> flag used internally. Check with <code>node --version</code>.</p>
+        </div>
+        <div class="req-card fade-up delay-1" role="listitem">
+          <div class="req-card-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L1.5 4.5v5L7 12.5l5.5-3v-5L7 1.5z" stroke="#666" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="req-card-title">Unreal Engine 5.4–5.7</h3>
+          <p class="req-card-desc">The UnrealMasterAgent plugin requires UE 5.4 or later. Open your project, go to <strong>Edit &rarr; Plugins</strong>, and enable both <strong>UnrealMasterAgent</strong> and the built-in <strong>Python Editor Script Plugin</strong>.</p>
+        </div>
+        <div class="req-card fade-up delay-2" role="listitem">
+          <div class="req-card-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#666" stroke-width="1.4"/><path d="M7 4.5v3l1.5 1.5" stroke="#666" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="req-card-title">WebSocket port 9877</h3>
+          <p class="req-card-desc">The MCP bridge connects to the UE plugin over WebSocket on port <code>9877</code>. Ensure this port is free on your machine. Override it by setting the <code>UE_WS_PORT</code> environment variable in the config.</p>
+        </div>
+        <div class="req-card fade-up delay-3" role="listitem">
+          <div class="req-card-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 2 2 4-5" stroke="#666" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="req-card-title">Plugin installed in project</h3>
+          <p class="req-card-desc">Copy the <code>UnrealMasterAgent/</code> folder from the repository into your project's <code>Plugins/</code> directory. Rebuild the project in your IDE so the C++ plugin compiles against your engine version.</p>
+        </div>
+      </div>
+
+      <!-- ONE-AT-A-TIME LIMITATION -->
+      <div class="fade-up" style="margin:3rem 0 2rem;padding:1.5rem 2rem;border:1px solid #d97706;border-radius:8px;background:rgba(217,119,6,0.06)">
+        <h3 style="color:#d97706;font-size:1rem;font-weight:700;margin-bottom:0.5rem">One AI Host at a Time</h3>
+        <p style="color:var(--gray-light);font-size:0.9rem;line-height:1.6;margin-bottom:0.75rem">Each MCP server instance opens a WebSocket connection to Unreal Engine on port <code style="color:var(--white)">9877</code>. Because each AI host (Claude Code, Cursor, VS Code, etc.) spawns its own server process, <strong style="color:var(--white)">only one AI host can be connected to a given UE instance at a time</strong>. Starting a second host will fail with <code style="color:var(--white)">EADDRINUSE</code>.</p>
+        <p style="color:var(--gray-light);font-size:0.9rem;line-height:1.6;margin-bottom:0">
+          <strong style="color:var(--white)">To switch hosts:</strong> Close or disconnect the current AI host first, then start the new one.<br>
+          <strong style="color:var(--white)">To use a different port for testing:</strong> Set <code style="color:var(--white)">"UE_WS_PORT": "9878"</code> in the <code style="color:var(--white)">env</code> block of your host config &mdash; but note the UE plugin must also connect to that same port.
+        </p>
+      </div>
+
+      <!-- TROUBLESHOOTING -->
+      <div class="fade-up" style="margin-bottom:2rem">
+        <p class="section-label">Support</p>
+        <h2 class="section-headline" id="troubleshooting-heading">Troubleshooting</h2>
+        <p class="section-sub" style="margin-bottom:2rem">Common issues and their fixes. If a problem persists, open an issue on GitHub with your host name and Node.js version.</p>
+      </div>
+
+      <div class="fade-up delay-1">
+        <table class="trouble-table" aria-labelledby="troubleshooting-heading">
+          <thead>
+            <tr>
+              <th scope="col">Symptom</th>
+              <th scope="col">Likely cause</th>
+              <th scope="col">Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Server not connecting</td>
+              <td>Wrong Node.js version or config file in wrong location</td>
+              <td>Run <code>node --version</code> and confirm it is 20+. Double-check that the config file is in the path expected by your host (see each guide above). Restart the editor after saving.</td>
+            </tr>
+            <tr>
+              <td>Tools not appearing</td>
+              <td>Unreal Engine is not running or the plugin is not enabled</td>
+              <td>Launch your UE project first, then start your AI session. Confirm <strong>UnrealMasterAgent</strong> shows as enabled in Edit &rarr; Plugins. The server only exposes tools once the UE WebSocket handshake succeeds.</td>
+            </tr>
+            <tr>
+              <td>WebSocket errors</td>
+              <td>Port 9877 is already in use or the plugin failed to load</td>
+              <td>Check that nothing else is listening on port 9877 (<code>netstat -an | grep 9877</code>). If occupied, set <code>"UE_WS_PORT": "9878"</code> in the <code>env</code> block of your config and restart both UE and the AI host.</td>
+            </tr>
+            <tr>
+              <td>npx command not found</td>
+              <td>Node.js is installed but not on the system PATH seen by the editor</td>
+              <td>Use an absolute path in the config: replace <code>"command": "npx"</code> with the full path from <code>which npx</code> (macOS/Linux) or <code>where npx</code> (Windows). Alternatively, add Node.js to your system PATH and restart the editor.</td>
+            </tr>
+            <tr>
+              <td>Permission denied on macOS</td>
+              <td>Gatekeeper blocking the npx binary on first run</td>
+              <td>Run <code>npx unreal-master-mcp-server</code> once manually in the terminal to trigger the Gatekeeper approval dialog, then relaunch the host.</td>
+            </tr>
+            <tr>
+              <td><code>EADDRINUSE</code> on port 9877</td>
+              <td>Another AI host's MCP server is already running and holding the WebSocket port</td>
+              <td>Only one AI host can connect to a UE instance at a time. Close the other host first, or find and kill the old process: <code>netstat -ano | grep 9877</code> then <code>taskkill /PID &lt;pid&gt; /F</code> (Windows) or <code>kill &lt;pid&gt;</code> (macOS/Linux).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SSE TRANSPORT -->
+      <div class="fade-up" style="margin-bottom:2rem">
+        <p class="section-label">Advanced</p>
+        <h2 class="section-headline" id="sse-heading">SSE Transport</h2>
+      </div>
+
+      <div class="sse-layout fade-up delay-1">
+        <div>
+          <p class="sse-desc">By default the MCP server uses <strong style="color:var(--white);font-weight:600">stdio</strong> transport — the host process spawns the server as a child process and communicates over stdin/stdout. This works for all five hosts listed above and is the recommended setup for local development.</p>
+          <p class="sse-desc">For <strong style="color:var(--white);font-weight:600">remote or web-based setups</strong> (e.g. a shared dev server, a containerised UE instance, or a host that only supports HTTP), switch to <strong style="color:var(--white);font-weight:600">SSE (Server-Sent Events)</strong> transport. The server listens on an HTTP port and the host connects over HTTP instead of spawning a subprocess.</p>
+          <p class="sse-desc">Start the server in SSE mode and point your host config at the HTTP endpoint. The SSE server also accepts a <code>UE_WS_PORT</code> environment variable for the upstream UE WebSocket connection.</p>
+        </div>
+        <div>
+          <div class="code-block" role="region" aria-label="SSE transport configuration">
+            <div class="code-block-header">
+              <span class="code-block-title">Terminal — start SSE server</span>
+              <button class="code-block-copy" onclick="copySnippet(this,'sse-start')" aria-label="Copy SSE start command">Copy</button>
+            </div>
+            <pre aria-label="Start MCP server in SSE mode"><span class="cm"># Start server in SSE mode on port 3000</span>
+npx unreal-master-mcp-server --transport=sse --port=3000</pre>
+          </div>
+          <div style="height:1px;background:var(--border-subtle);margin:1.25rem 0"></div>
+          <div class="code-block" role="region" aria-label="SSE host configuration">
+            <div class="code-block-header">
+              <span class="code-block-title">Host config — SSE endpoint</span>
+              <button class="code-block-copy" onclick="copySnippet(this,'sse-config')" aria-label="Copy SSE host config">Copy</button>
+            </div>
+            <pre aria-label="SSE MCP host configuration example"><span class="pun">{</span>
+  <span class="key">"mcpServers"</span><span class="pun">: {</span>
+    <span class="key">"unreal-master-agent"</span><span class="pun">: {</span>
+      <span class="key">"transport"</span><span class="pun">:</span> <span class="str">"sse"</span><span class="pun">,</span>
+      <span class="key">"url"</span><span class="pun">:</span> <span class="str">"http://localhost:3000/sse"</span>
+    <span class="pun">}</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-main">
+      <div>
+        <p class="footer-brand-name">Unreal Master Agent</p>
+        <p class="footer-brand-license">Released under the MIT License</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/unreal-master-mcp-server" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">API Reference</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+      </nav>
+    </div>
+    <p class="footer-disclaimer">Unreal Engine is a trademark of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.</p>
+  </div>
+</footer>
+
+<script>
+// ─── Snippet registry ───
+var SNIPPETS = {
+  'claude-code': '{\n  "mcpServers": {\n    "unreal-master-agent": {\n      "command": "npx",\n      "args": ["-y", "unreal-master-mcp-server"]\n    }\n  }\n}',
+  'claude-desktop': '{\n  "mcpServers": {\n    "unreal-master-agent": {\n      "command": "npx",\n      "args": ["-y", "unreal-master-mcp-server"]\n    }\n  }\n}',
+  'cursor': '{\n  "mcpServers": {\n    "unreal-master-agent": {\n      "command": "npx",\n      "args": ["-y", "unreal-master-mcp-server"]\n    }\n  }\n}',
+  'windsurf': '{\n  "mcpServers": {\n    "unreal-master-agent": {\n      "command": "npx",\n      "args": ["-y", "unreal-master-mcp-server"]\n    }\n  }\n}',
+  'vscode': '{\n  "servers": {\n    "unreal-master-agent": {\n      "type": "stdio",\n      "command": "npx",\n      "args": ["-y", "unreal-master-mcp-server"]\n    }\n  }\n}',
+  'sse-start': 'npx unreal-master-mcp-server --transport=sse --port=3000',
+  'sse-config': '{\n  "mcpServers": {\n    "unreal-master-agent": {\n      "transport": "sse",\n      "url": "http://localhost:3000/sse"\n    }\n  }\n}'
+};
+
+function copySnippet(btn, key) {
+  var text = SNIPPETS[key];
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  }).catch(function() {
+    // no-op — clipboard API unavailable
+  });
+}
+
+// ─── Mobile menu ───
+function toggleMenu(btn) {
+  var menu = document.getElementById('mobileMenu');
+  var isOpen = menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  var btn = document.querySelector('.hamburger');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+// ─── Scroll fade-up animations ───
+(function() {
+  var elements = document.querySelectorAll('.fade-up');
+  if (!('IntersectionObserver' in window)) {
+    elements.forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  elements.forEach(function(el) { observer.observe(el); });
+})();
+
+// ─── Nav scroll behaviour ───
+(function() {
+  var nav = document.querySelector('.nav');
+  window.addEventListener('scroll', function() {
+    nav.style.background = window.scrollY > 40
+      ? 'rgba(0,0,0,0.95)'
+      : 'rgba(0,0,0,0.8)';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

@@ -3,8 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![Tests](https://img.shields.io/badge/Tests-1156%20passed%20·%2069%20files-brightgreen.svg)](mcp-server/)
+[![Tests](https://img.shields.io/badge/Tests-1208%20passed%20·%2071%20files-brightgreen.svg)](mcp-server/)
 [![MCP Tools](https://img.shields.io/badge/MCP%20Tools-185-purple.svg)](docs/api-reference/mcp-tools.md)
+[![LLM Hosts](https://img.shields.io/badge/LLM%20Hosts-5-orange.svg)](#multi-llm-support)
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.
 
@@ -49,6 +50,10 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
 - Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
 - Outcome-weighted recommendations (proven workflows rank higher automatically)
+
+**Multi-LLM Support:**
+
+Works with Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code + GitHub Copilot — any MCP-compatible AI editor.
 
 **Extensibility:**
 
@@ -105,9 +110,19 @@ cd mcp-server
 npm install
 ```
 
-### 2. Configure MCP
+### 2. Configure for your AI editor
 
-Add the server to `.claude/mcp.json` (project root):
+```bash
+npx unreal-master-mcp-server init --host=claude      # Claude Desktop (default)
+npx unreal-master-mcp-server init --host=cursor      # Cursor
+npx unreal-master-mcp-server init --host=windsurf    # Windsurf
+npx unreal-master-mcp-server init --host=vscode      # VS Code + Copilot
+npx unreal-master-mcp-server init --host=claude-code # Claude Code CLI
+```
+
+> **Note:** Only one AI host can connect to a UE instance at a time. Each host spawns its own MCP server process which binds WebSocket port `9877`. Close the current host before switching to another. See the [Integration Guides](docs/integrations.html) for details.
+
+Or manually add to `.claude/mcp.json` (project root):
 
 ```json
 {
@@ -379,7 +394,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 
 | Layer | Tests | Status |
 |-------|-------|--------|
-| MCP Server (TypeScript) | 1156 tests across 69 files | All passing |
+| MCP Server (TypeScript) | 1208 tests across 71 files | All passing |
 | UE Plugin (C++) | 9 test files | Verified in UE Editor |
 | Python Scripts | 166 scripts in `UnrealMasterAgent/Content/Python/uma/` | Verified live |
 

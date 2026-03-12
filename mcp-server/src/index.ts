@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
  * MCP Bridge Server Entry Point.
- * Initializes WebSocket bridge, then McpServer with StdioServerTransport.
+ * Initializes WebSocket bridge, then McpServer with the selected transport.
+ * Transport is selected via --transport=<type> flag or MCP_TRANSPORT env var.
+ * Supported: stdio (default), sse, streamable-http.
  *
- * CRITICAL: No output to stdout except JSON-RPC messages.
+ * CRITICAL (stdio mode): No output to stdout except JSON-RPC messages.
  * All logging goes to stderr via the logger module.
  */
 
@@ -27,21 +29,27 @@ if (process.argv.includes('import-workflow')) {
   process.exit(0);
 }
 
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { installStdoutGuard, createLogger } from './observability/logger.js';
 import { createServer } from './server.js';
 import { WebSocketBridge } from './transport/websocket-bridge.js';
 import { RateLimiter } from './state/rate-limiter.js';
+import { parseTransportType, startTransport } from './transport/transport-factory.js';
 
-// Install stdout guard FIRST — before any other code can pollute stdout
-installStdoutGuard();
+// Determine transport type before installing the stdout guard — SSE/HTTP transports
+// do not require the guard since they don't use stdout for JSON-RPC framing.
+const transportType = parseTransportType(process.argv, process.env);
+
+// Install stdout guard only for stdio transport (stdout is the JSON-RPC channel).
+if (transportType === 'stdio') {
+  installStdoutGuard();
+}
 
 const logger = createLogger(
   (process.env.LOG_LEVEL as 'debug' | 'info' | 'warn' | 'error') ?? 'info'
 );
 
 async function main() {
-  logger.info('Starting Unreal Master Agent MCP Bridge Server');
+  logger.info(`Starting Unreal Master Agent MCP Bridge Server (transport: ${transportType})`);
 
   const wsPort = parseInt(process.env.UE_WS_PORT ?? '9877', 10);
   const authSecret = process.env.WS_AUTH_SECRET;
@@ -55,10 +63,7 @@ async function main() {
   const rateLimiter = new RateLimiter();
   const mcpServer = createServer(logger, bridge, { rateLimiter });
 
-  const transport = new StdioServerTransport();
-  await mcpServer.connect(transport);
-
-  logger.info('MCP Bridge Server connected via stdio transport');
+  await startTransport(mcpServer, transportType, { logger });
 }
 
 main().catch((error) => {

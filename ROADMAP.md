@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-08 (Updated: 2026-03-12)
 **Current Version:** 0.5.0
-**Status:** Phase 0, Phase 2, Phase 4.1 Complete — Phase 1, 3, 4.2-5 Pending
+**Status:** Phase 0, Phase 2, Phase 4.1-4.3 Complete — Phase 1, 3, 4.4-5 Pending
 
 ---
 
@@ -177,10 +177,10 @@
 - [x] **Workflow gallery**: `docs/workflows.html` — static gallery page with domain filters, difficulty badges, copy-paste import commands
 - [x] **MCP tools**: `context-exportWorkflow` and `context-importWorkflow` for in-session workflow sharing (tool count: 185 → 187)
 
-#### 4.3 Multi-LLM Support
-- [ ] Abstract MCP transport to support other LLM hosts (Cursor, Windsurf, VS Code + Copilot)
-- [ ] Document integration with each supported host
-- [ ] Test matrix: Claude Code + Cursor + Windsurf across UE 5.4-5.7
+#### 4.3 Multi-LLM Support — ✅ COMPLETE
+- [x] Abstract MCP transport to support other LLM hosts (Cursor, Windsurf, VS Code + Copilot)
+- [x] Document integration with each supported host
+- [x] Test matrix: Claude Code + Cursor + Windsurf across UE 5.4-5.7
 
 #### 4.4 Context Intelligence Maturation
 - [ ] **Seed the learning system**: Pre-populate `learned-workflows.json` with 50+ common UE workflows
@@ -266,7 +266,7 @@
 | Learned workflows | 0 | 50 (seeded) | 100+ (organic) |
 | Documented tools | ~85 | 185 | 220+ |
 | Supported UE versions | 5.4-5.7 | 5.4-5.7 | 5.4-5.8 |
-| Supported LLM hosts | 1 | 1 | 3+ |
+| Supported LLM hosts | 5 | 5 | 5+ |
 
 *estimated — no coverage reporting in CI yet
 
