@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "level-arena-combat",
+    "name": "Set Up a Combat Arena Level",
+    "description": "Create a new level with floor, walls, lighting, player start, and navigation mesh for AI — ready for combat gameplay testing.",
+    "domain": "level",
+    "difficulty": "beginner",
+    "intentPatterns": [
+      "create a combat arena",
+      "set up a test level for fighting",
+      "make a simple arena level",
+      "create level for AI combat",
+      "build a test arena"
+    ],
+    "prerequisites": ["An open UE project"],
+    "steps": [
+      { "tool": "level-create", "purpose": "Create a new empty level" },
+      { "tool": "level-open", "purpose": "Open the newly created level" },
+      { "tool": "actor-spawn", "purpose": "Spawn a large floor plane (StaticMeshActor with floor mesh)" },
+      { "tool": "actor-spawn", "purpose": "Spawn wall actors around the perimeter", "repeat": true },
+      { "tool": "actor-spawn", "purpose": "Add a PlayerStart actor for spawn point" },
+      { "tool": "actor-spawn", "purpose": "Add directional light for basic illumination" },
+      { "tool": "actor-spawn", "purpose": "Add a SkyLight for ambient lighting" },
+      { "tool": "ai-configureNavMesh", "purpose": "Add and configure NavMeshBoundsVolume for AI pathfinding" },
+      { "tool": "level-setWorldSettings", "purpose": "Set the GameMode to your combat game mode", "optional": true },
+      { "tool": "level-save", "purpose": "Save the level" }
+    ],
+    "expectedOutcome": "A ready-to-play arena level with floor, walls, lighting, player spawn, and AI navigation mesh",
+    "source": "community",
+    "tags": ["level", "arena", "combat", "AI", "navmesh", "beginner"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "anim-locomotion-blend",
+    "name": "Set Up Locomotion Blend Space",
+    "description": "Create a 2D blend space for character locomotion that blends between idle, walk, and run animations based on speed and direction.",
+    "domain": "animation",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a locomotion blend space",
+      "set up walk run blend",
+      "make movement animation blend",
+      "blend space for character movement",
+      "animation blending idle walk run"
+    ],
+    "prerequisites": ["Idle, walk, and run animation sequences imported", "A character skeleton asset"],
+    "steps": [
+      { "tool": "anim-getSkeletonInfo", "purpose": "Verify the skeleton asset and its bone hierarchy" },
+      { "tool": "anim-listSequences", "purpose": "List available animation sequences to find idle, walk, run" },
+      { "tool": "anim-getBlendSpace", "purpose": "Check if a blend space already exists for this skeleton", "optional": true },
+      { "tool": "asset-create", "purpose": "Create a new BlendSpace asset for 2D locomotion" },
+      { "tool": "actor-setProperty", "purpose": "Configure blend space axes: X=Direction (-180 to 180), Y=Speed (0 to 600)" },
+      { "tool": "anim-createMontage", "purpose": "Create animation montage for special actions (jump, attack)", "optional": true },
+      { "tool": "compilation-trigger", "purpose": "Compile to verify the animation setup" }
+    ],
+    "expectedOutcome": "A 2D blend space that smoothly transitions between idle, walk, and run based on character speed and direction",
+    "source": "community",
+    "tags": ["animation", "blend-space", "locomotion", "character", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

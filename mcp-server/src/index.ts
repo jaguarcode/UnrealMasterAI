@@ -14,6 +14,19 @@ if (process.argv.includes('init')) {
   process.exit(0);
 }
 
+// Handle `import-workflow` subcommand before stdout guard is installed.
+if (process.argv.includes('import-workflow')) {
+  const idx = process.argv.indexOf('import-workflow');
+  const source = process.argv[idx + 1];
+  if (!source) {
+    console.error('Usage: unreal-master-mcp-server import-workflow <path-or-url>');
+    process.exit(1);
+  }
+  const { runImportWorkflow } = await import('./cli/import-workflow.js');
+  await runImportWorkflow(source);
+  process.exit(0);
+}
+
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { installStdoutGuard, createLogger } from './observability/logger.js';
 import { createServer } from './server.js';

@@ -170,11 +170,12 @@
 - [x] **Custom Python scripts**: `python-customExecute` and `python-listCustomScripts` tools auto-discover user scripts in `Content/Python/uma_custom/` (tool count: 183 → 185).
 - [x] **Tool manifest endpoint**: `context-getManifest` returns all tools with schemas (already existed — documented via `ToolModule` interface in `tools/tool-module.ts`).
 
-#### 4.2 Workflow Marketplace
-- [ ] **Workflow sharing format**: Standardized JSON schema for importable/exportable workflows
-- [ ] **Community workflow repo**: GitHub repository of community-contributed workflow templates
-- [ ] **Import CLI**: `npx unreal-master-mcp-server import-workflow <url>`
-- [ ] **Workflow gallery**: Web page showcasing popular workflows with one-click install
+#### 4.2 Workflow Marketplace — ✅ COMPLETE
+- [x] **Workflow sharing format**: `WorkflowShareSchema` (Zod) with version, author metadata, validation via `validateWorkflow()` and `exportWorkflow()` (`src/tools/context/workflow-schema.ts`)
+- [x] **Community workflow repo**: `workflows/` directory with 10 seed workflow templates across 10 domains + README with contribution guide
+- [x] **Import CLI**: `npx unreal-master-mcp-server import-workflow <path-or-url>` — validates and imports from local files or HTTPS URLs
+- [x] **Workflow gallery**: `docs/workflows.html` — static gallery page with domain filters, difficulty badges, copy-paste import commands
+- [x] **MCP tools**: `context-exportWorkflow` and `context-importWorkflow` for in-session workflow sharing (tool count: 185 → 187)
 
 #### 4.3 Multi-LLM Support
 - [ ] Abstract MCP transport to support other LLM hosts (Cursor, Windsurf, VS Code + Copilot)

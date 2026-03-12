@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "mat-pbr-weathered",
+    "name": "Create a Weathered PBR Material",
+    "description": "Build a physically-based material with base color, roughness, normal, and weathering effects using material parameter instances for runtime tweaking.",
+    "domain": "material",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a weathered material",
+      "make a PBR material with wear",
+      "create rusty metal material",
+      "aged surface material",
+      "material with roughness variation"
+    ],
+    "prerequisites": ["Base color, normal, and roughness texture assets imported"],
+    "steps": [
+      { "tool": "material-create", "purpose": "Create a new Material asset" },
+      { "tool": "texture-import", "purpose": "Import base color texture if not already present", "optional": true },
+      { "tool": "material-setTexture", "purpose": "Assign base color texture to the material" },
+      { "tool": "material-setTexture", "purpose": "Assign normal map texture" },
+      { "tool": "material-setTexture", "purpose": "Assign roughness/metallic texture" },
+      { "tool": "material-setParameter", "purpose": "Add a scalar parameter for weathering intensity (0-1)" },
+      { "tool": "material-setParameter", "purpose": "Add a vector parameter for tint color override" },
+      { "tool": "material-createInstance", "purpose": "Create a Material Instance for per-actor customization" },
+      { "tool": "material-setParameter", "purpose": "Set default weathering intensity on the instance" }
+    ],
+    "expectedOutcome": "A PBR material with weathering controls exposed as parameters, plus a Material Instance ready for per-actor customization",
+    "source": "community",
+    "tags": ["material", "PBR", "weathered", "texture", "instance", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

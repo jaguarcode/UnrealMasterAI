@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "audio-ambient-soundscape",
+    "name": "Create an Ambient Soundscape",
+    "description": "Set up a layered ambient audio environment with background music, environmental sounds with attenuation, and randomized ambient sound cues.",
+    "domain": "audio",
+    "difficulty": "beginner",
+    "intentPatterns": [
+      "create ambient sounds",
+      "set up background audio",
+      "add environmental soundscape",
+      "ambient audio for level",
+      "background music and sound effects"
+    ],
+    "prerequisites": ["Audio files imported (WAV/OGG)", "An open level"],
+    "steps": [
+      { "tool": "audio-import", "purpose": "Import ambient audio files if not already in the project", "optional": true },
+      { "tool": "audio-listAssets", "purpose": "List available audio assets to select from" },
+      { "tool": "audio-createCue", "purpose": "Create a Sound Cue with random variation for ambient loops" },
+      { "tool": "audio-setAttenuation", "purpose": "Configure 3D attenuation settings for spatial audio falloff" },
+      { "tool": "actor-spawn", "purpose": "Spawn an AmbientSound actor for background music (2D, no attenuation)" },
+      { "tool": "actor-spawn", "purpose": "Spawn AmbientSound actors at key positions for environmental sounds", "repeat": true },
+      { "tool": "actor-setProperty", "purpose": "Set volume multiplier and auto-activate on each sound actor" },
+      { "tool": "level-save", "purpose": "Save the level with audio setup" }
+    ],
+    "expectedOutcome": "A layered ambient soundscape with background music, spatialized environmental sounds, and randomized audio cues",
+    "source": "community",
+    "tags": ["audio", "ambient", "soundscape", "music", "beginner"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

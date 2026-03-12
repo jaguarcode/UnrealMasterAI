@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "niagara-rain-system",
+    "name": "Create a Rain Particle System",
+    "description": "Build a Niagara rain VFX system with falling droplets, splash effects on collision, and configurable intensity for weather systems.",
+    "domain": "niagara",
+    "difficulty": "advanced",
+    "intentPatterns": [
+      "create rain particles",
+      "make a rain effect",
+      "niagara rain system",
+      "weather rain VFX",
+      "falling rain drops particle"
+    ],
+    "prerequisites": ["Niagara plugin enabled in the project"],
+    "steps": [
+      { "tool": "niagara-createSystem", "purpose": "Create a new Niagara System for rain" },
+      { "tool": "niagara-addEmitter", "purpose": "Add a fountain/spray emitter as the base rain emitter" },
+      { "tool": "niagara-setParameter", "purpose": "Set spawn rate to 500+ particles per second for rain density" },
+      { "tool": "niagara-setParameter", "purpose": "Set particle lifetime to 1-2 seconds for fall duration" },
+      { "tool": "niagara-setParameter", "purpose": "Configure gravity force for realistic fall speed" },
+      { "tool": "niagara-setParameter", "purpose": "Set particle size to thin elongated shape for rain streaks" },
+      { "tool": "niagara-addEmitter", "purpose": "Add a second emitter for splash effects on collision" },
+      { "tool": "niagara-setParameter", "purpose": "Configure collision module for ground impact detection" },
+      { "tool": "niagara-compile", "purpose": "Compile the Niagara system" },
+      { "tool": "actor-spawn", "purpose": "Spawn the rain system in the level to preview" }
+    ],
+    "expectedOutcome": "A complete rain VFX system with configurable density, realistic fall physics, and splash effects on ground collision",
+    "source": "community",
+    "tags": ["niagara", "VFX", "rain", "weather", "particles", "advanced"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "readme": "Adjust spawn rate for rain intensity. For indoor scenes, reduce the spawn box size. The splash emitter uses collision events from the rain emitter.",
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

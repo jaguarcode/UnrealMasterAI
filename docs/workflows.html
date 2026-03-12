@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<!-- v1.0.0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workflow Gallery - Unreal Master Agent</title>
+<meta name="description" content="Community workflow templates for Unreal Master Agent. Import ready-made Blueprint, material, level, animation, and gameplay workflows directly into your project.">
+<link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/workflows.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/workflows.html">
+<meta property="og:title" content="Workflow Gallery - Unreal Master Agent">
+<meta property="og:description" content="Community workflow templates for Unreal Master Agent. Import ready-made Blueprint, material, level, animation, and gameplay workflows.">
+<meta property="og:site_name" content="Unreal Master Agent">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Workflow Gallery - Unreal Master Agent">
+<meta name="twitter:description" content="Community workflow templates for Unreal Master Agent. Import ready-made Blueprint, material, level, animation, and gameplay workflows.">
+<meta name="keywords" content="Unreal Engine, Claude Code, MCP, workflow templates, Blueprint, material, animation, game development">
+<meta name="author" content="JaguarCode">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --black:#000000;
+  --near-black:#0a0a0a;
+  --card-bg:#141414;
+  --card-bg-alt:#1a1a1a;
+  --border-subtle:#222222;
+  --border-alt:#2a2a2a;
+  --white:#ffffff;
+  --gray-light:#a0a0a0;
+  --gray-mid:#666666;
+  --gray-dark:#444444;
+  --blue:#0d6efd;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --diff-beginner:#4ade80;
+  --diff-intermediate:#facc15;
+  --diff-advanced:#f87171;
+}
+
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--black);color:var(--white);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+a{color:inherit;text-decoration:none}
+
+.container{max-width:1400px;margin:0 auto;padding:0 2rem}
+
+/* ─── FADE-UP ANIMATION ─── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.fade-up.delay-1{transition-delay:0.1s}
+.fade-up.delay-2{transition-delay:0.2s}
+.fade-up.delay-3{transition-delay:0.3s}
+.fade-up.delay-4{transition-delay:0.4s}
+.fade-up.delay-5{transition-delay:0.5s}
+
+/* ─── NAV ─── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+  height:100%;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  letter-spacing:-0.01em;white-space:nowrap;
+}
+.nav-links{
+  display:flex;align-items:center;gap:2rem;
+  list-style:none;
+}
+.nav-links a{
+  font-size:0.875rem;font-weight:500;color:var(--gray-light);
+  transition:color 0.3s ease;
+}
+.nav-links a:hover{color:var(--blue)}
+.nav-links a[aria-current="page"]{color:var(--white)}
+.nav-links .nav-github{
+  color:var(--white);
+  border:1px solid var(--border-alt);
+  padding:0.4rem 1rem;
+  border-radius:100px;
+  font-size:0.8rem;
+  transition:border-color 0.3s,color 0.3s;
+}
+.nav-links .nav-github:hover{border-color:var(--white);color:var(--white)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);transition:0.3s}
+
+.mobile-menu{
+  display:none;
+  position:fixed;top:60px;left:0;right:0;z-index:99;
+  background:rgba(0,0,0,0.97);
+  border-bottom:1px solid var(--border-subtle);
+  padding:1.5rem 2rem;
+}
+.mobile-menu.open{display:block}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:1rem}
+.mobile-menu a{font-size:1rem;color:var(--gray-light);font-weight:500}
+
+/* ─── HERO ─── */
+.hero{
+  padding:10rem 2rem 5rem;
+  background:var(--black);
+  border-bottom:1px solid var(--border-subtle);
+}
+.hero-inner{max-width:760px}
+.hero-label{
+  display:inline-block;
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);
+  margin-bottom:1.5rem;
+}
+.hero-headline{
+  font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:900;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  color:var(--white);
+  margin-bottom:1.25rem;
+}
+.hero-sub{
+  font-size:1.1rem;
+  color:var(--gray-light);
+  line-height:1.7;
+  max-width:580px;
+  font-weight:400;
+  margin-bottom:2rem;
+}
+.hero-meta{
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+}
+.hero-meta-item{
+  font-size:0.82rem;font-weight:500;
+  color:var(--gray-mid);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.hero-meta-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:var(--border-alt);flex-shrink:0;
+}
+
+/* ─── SECTION SHARED ─── */
+.section{padding:6rem 0}
+.section-label{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gray-mid);margin-bottom:1rem;
+}
+.section-headline{
+  font-size:clamp(1.75rem,3.5vw,2.75rem);
+  font-weight:900;letter-spacing:-0.03em;
+  color:var(--white);line-height:1.1;
+  margin-bottom:0.75rem;
+}
+.section-sub{
+  font-size:1rem;color:var(--gray-light);
+  line-height:1.7;max-width:520px;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{
+  display:flex;align-items:center;gap:0.5rem;
+  flex-wrap:wrap;
+  margin-bottom:3rem;
+}
+.filter-btn{
+  font-size:0.78rem;font-weight:600;
+  font-family:var(--font);
+  letter-spacing:0.04em;
+  color:var(--gray-mid);
+  background:none;
+  border:1px solid var(--border-subtle);
+  border-radius:100px;
+  padding:0.35rem 0.9rem;
+  cursor:pointer;
+  transition:color 0.2s,border-color 0.2s,background 0.2s;
+}
+.filter-btn:hover{color:var(--white);border-color:var(--border-alt)}
+.filter-btn.active{color:var(--white);border-color:var(--gray-mid);background:var(--card-bg)}
+
+/* ─── WORKFLOW GRID ─── */
+.workflow-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;
+  background:var(--border-subtle);
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+/* ─── WORKFLOW CARD ─── */
+.workflow-card{
+  background:var(--card-bg);
+  padding:2rem;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  transition:background 0.3s;
+}
+.workflow-card:hover{background:var(--card-bg-alt)}
+.workflow-card[hidden]{display:none}
+
+.workflow-card-header{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:0.75rem;
+}
+.workflow-badges{
+  display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;
+}
+.badge-domain{
+  font-size:0.68rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gray-mid);
+  border:1px solid var(--border-alt);
+  border-radius:4px;
+  padding:0.15rem 0.5rem;
+  white-space:nowrap;
+}
+.badge-difficulty{
+  font-size:0.72rem;font-weight:600;
+  letter-spacing:0.04em;
+}
+.badge-difficulty[data-level="beginner"]{color:var(--diff-beginner)}
+.badge-difficulty[data-level="intermediate"]{color:var(--diff-intermediate)}
+.badge-difficulty[data-level="advanced"]{color:var(--diff-advanced)}
+
+.workflow-step-count{
+  font-size:0.75rem;font-weight:500;
+  color:var(--gray-dark);
+  white-space:nowrap;
+  flex-shrink:0;
+  margin-top:0.1rem;
+}
+
+.workflow-name{
+  font-size:1.05rem;font-weight:700;
+  color:var(--white);
+  letter-spacing:-0.01em;
+  margin-bottom:0.5rem;
+  line-height:1.3;
+}
+.workflow-desc{
+  font-size:0.875rem;color:var(--gray-light);
+  line-height:1.65;
+  margin-bottom:1.25rem;
+  flex:1;
+}
+
+/* ─── IMPORT BLOCK ─── */
+.import-block{
+  background:var(--black);
+  border:1px solid var(--border-subtle);
+  border-radius:8px;
+  overflow:hidden;
+}
+.import-block-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.5rem 0.875rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.import-block-label{
+  font-family:var(--mono);
+  font-size:0.68rem;
+  color:var(--gray-dark);
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.import-copy-btn{
+  font-size:0.68rem;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--gray-mid);
+  cursor:pointer;
+  background:none;border:none;
+  font-family:var(--font);
+  transition:color 0.2s;
+  padding:0;
+  line-height:1;
+}
+.import-copy-btn:hover{color:var(--white)}
+.import-copy-btn:focus-visible{
+  outline:1px solid var(--blue);
+  outline-offset:2px;
+  border-radius:2px;
+}
+.import-block code{
+  display:block;
+  font-family:var(--mono);
+  font-size:0.72rem;
+  color:var(--gray-light);
+  line-height:1.6;
+  padding:0.75rem 0.875rem;
+  word-break:break-all;
+  white-space:pre-wrap;
+}
+
+/* ─── FOOTER ─── */
+.footer{
+  background:var(--near-black);
+  border-top:1px solid var(--border-subtle);
+  padding:3rem 0;
+}
+.footer-inner{
+  max-width:1400px;margin:0 auto;padding:0 2rem;
+}
+.footer-main{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  margin-bottom:2rem;
+  padding-bottom:2rem;
+  border-bottom:1px solid var(--border-subtle);
+}
+.footer-brand-name{
+  font-size:0.95rem;font-weight:700;color:var(--white);
+  margin-bottom:0.4rem;
+}
+.footer-brand-license{
+  font-size:0.8rem;color:var(--gray-mid);
+}
+.footer-links{
+  display:flex;gap:1.75rem;align-items:center;flex-wrap:wrap;
+}
+.footer-links a{
+  font-size:0.85rem;color:var(--gray-light);
+  transition:color 0.3s;
+}
+.footer-links a:hover{color:var(--white)}
+.footer-disclaimer{
+  font-size:0.78rem;color:var(--gray-dark);line-height:1.6;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{
+  grid-column:1/-1;
+  padding:4rem 2rem;
+  text-align:center;
+}
+.empty-state p{
+  font-size:0.95rem;color:var(--gray-mid);
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .workflow-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:768px){
+  .section{padding:4rem 0}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .workflow-grid{grid-template-columns:1fr}
+  .hero{padding:8rem 2rem 4rem}
+  .footer-main{flex-direction:column;gap:1.5rem}
+}
+
+@media(max-width:480px){
+  .container{padding:0 1.25rem}
+  .hero-headline{font-size:2rem}
+  .workflow-card{padding:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Unreal Master Agent</a>
+    <ul class="nav-links">
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="index.html#architecture">Architecture</a></li>
+      <li><a href="index.html#tools">Tools</a></li>
+      <li><a href="index.html#install">Install</a></li>
+      <li><a href="workflows.html" aria-current="page">Workflows</a></li>
+      <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener" class="nav-github">GitHub</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu(this)">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+  <ul>
+    <li><a href="index.html#features" onclick="closeMobile()">Features</a></li>
+    <li><a href="index.html#architecture" onclick="closeMobile()">Architecture</a></li>
+    <li><a href="index.html#tools" onclick="closeMobile()">Tools</a></li>
+    <li><a href="index.html#install" onclick="closeMobile()">Install</a></li>
+    <li><a href="workflows.html" onclick="closeMobile()">Workflows</a></li>
+    <li><a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<header class="hero" aria-label="Page hero">
+  <div class="container">
+    <div class="hero-inner fade-up">
+      <p class="hero-label">Community Templates</p>
+      <h1 class="hero-headline">Workflow Gallery</h1>
+      <p class="hero-sub">Ready-made workflows for common Unreal Engine tasks. Import any template in one command and let Claude execute the full step sequence in your project.</p>
+      <div class="hero-meta" role="list" aria-label="Gallery statistics">
+        <span class="hero-meta-item" role="listitem">10 workflows</span>
+        <span class="hero-meta-dot" aria-hidden="true"></span>
+        <span class="hero-meta-item" role="listitem">8 domains</span>
+        <span class="hero-meta-dot" aria-hidden="true"></span>
+        <span class="hero-meta-item" role="listitem">beginner &rarr; advanced</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- WORKFLOW GALLERY -->
+<main>
+  <section class="section" aria-labelledby="gallery-heading">
+    <div class="container">
+      <div class="fade-up" style="margin-bottom:2.5rem">
+        <p class="section-label">Templates</p>
+        <h2 class="section-headline" id="gallery-heading">All Workflows</h2>
+        <p class="section-sub">Copy the import command for any workflow and run it in your terminal. Claude handles the rest.</p>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar fade-up delay-1" role="group" aria-label="Filter workflows by domain">
+        <button class="filter-btn active" data-filter="all" onclick="filterWorkflows(this, 'all')">All</button>
+        <button class="filter-btn" data-filter="blueprint" onclick="filterWorkflows(this, 'blueprint')">Blueprint</button>
+        <button class="filter-btn" data-filter="material" onclick="filterWorkflows(this, 'material')">Material</button>
+        <button class="filter-btn" data-filter="level" onclick="filterWorkflows(this, 'level')">Level</button>
+        <button class="filter-btn" data-filter="character" onclick="filterWorkflows(this, 'character')">Character</button>
+        <button class="filter-btn" data-filter="animation" onclick="filterWorkflows(this, 'animation')">Animation</button>
+        <button class="filter-btn" data-filter="niagara" onclick="filterWorkflows(this, 'niagara')">Niagara</button>
+        <button class="filter-btn" data-filter="audio" onclick="filterWorkflows(this, 'audio')">Audio</button>
+        <button class="filter-btn" data-filter="landscape" onclick="filterWorkflows(this, 'landscape')">Landscape</button>
+        <button class="filter-btn" data-filter="physics" onclick="filterWorkflows(this, 'physics')">Physics</button>
+        <button class="filter-btn" data-filter="gameplay" onclick="filterWorkflows(this, 'gameplay')">Gameplay</button>
+      </div>
+
+      <!-- GRID -->
+      <div class="workflow-grid" role="list" id="workflowGrid" aria-label="Workflow templates">
+
+        <!-- 1. bp-interactive-door -->
+        <article class="workflow-card fade-up" role="listitem" data-domain="blueprint">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">blueprint</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">11 steps</span>
+          </div>
+          <h3 class="workflow-name">Create an Interactive Door Blueprint</h3>
+          <p class="workflow-desc">Build a fully functional interactive door with open/close states, overlap triggers, smooth timeline animation, and optional sound cue integration.</p>
+          <div class="import-block" role="region" aria-label="Import command for bp-interactive-door">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'bp-interactive-door')" aria-label="Copy import command for bp-interactive-door">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/bp-interactive-door.json</code>
+          </div>
+        </article>
+
+        <!-- 2. mat-pbr-weathered -->
+        <article class="workflow-card fade-up delay-1" role="listitem" data-domain="material">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">material</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">9 steps</span>
+          </div>
+          <h3 class="workflow-name">Create a Weathered PBR Material</h3>
+          <p class="workflow-desc">Author a physically-based weathered surface material with layered rust, dirt, and edge-wear masks driven by world-space position and curvature inputs.</p>
+          <div class="import-block" role="region" aria-label="Import command for mat-pbr-weathered">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'mat-pbr-weathered')" aria-label="Copy import command for mat-pbr-weathered">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/mat-pbr-weathered.json</code>
+          </div>
+        </article>
+
+        <!-- 3. level-arena-combat -->
+        <article class="workflow-card fade-up delay-2" role="listitem" data-domain="level">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">level</span>
+              <span class="badge-difficulty" data-level="beginner">beginner</span>
+            </div>
+            <span class="workflow-step-count">10 steps</span>
+          </div>
+          <h3 class="workflow-name">Set Up a Combat Arena Level</h3>
+          <p class="workflow-desc">Lay out a combat-ready arena level with spawn points, nav mesh bounds, cover geometry placement, ambient lighting, and a configured game mode.</p>
+          <div class="import-block" role="region" aria-label="Import command for level-arena-combat">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'level-arena-combat')" aria-label="Copy import command for level-arena-combat">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/level-arena-combat.json</code>
+          </div>
+        </article>
+
+        <!-- 4. char-third-person -->
+        <article class="workflow-card fade-up delay-3" role="listitem" data-domain="character">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">character</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">9 steps</span>
+          </div>
+          <h3 class="workflow-name">Set Up a Third-Person Character</h3>
+          <p class="workflow-desc">Configure a complete third-person character with skeletal mesh, spring-arm camera, movement component, input bindings, and a basic animation Blueprint.</p>
+          <div class="import-block" role="region" aria-label="Import command for char-third-person">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'char-third-person')" aria-label="Copy import command for char-third-person">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/char-third-person.json</code>
+          </div>
+        </article>
+
+        <!-- 5. anim-locomotion-blend -->
+        <article class="workflow-card fade-up" role="listitem" data-domain="animation">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">animation</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">7 steps</span>
+          </div>
+          <h3 class="workflow-name">Set Up Locomotion Blend Space</h3>
+          <p class="workflow-desc">Create a 2D blend space for directional locomotion, wiring idle, walk, and run animations along speed and direction axes with smoothed transitions.</p>
+          <div class="import-block" role="region" aria-label="Import command for anim-locomotion-blend">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'anim-locomotion-blend')" aria-label="Copy import command for anim-locomotion-blend">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/anim-locomotion-blend.json</code>
+          </div>
+        </article>
+
+        <!-- 6. niagara-rain-system -->
+        <article class="workflow-card fade-up delay-1" role="listitem" data-domain="niagara">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">niagara</span>
+              <span class="badge-difficulty" data-level="advanced">advanced</span>
+            </div>
+            <span class="workflow-step-count">10 steps</span>
+          </div>
+          <h3 class="workflow-name">Create a Rain Particle System</h3>
+          <p class="workflow-desc">Build a Niagara rain system with GPU sprites, collision-responsive splash emitters, wind-driven drift, and depth-fade material for realistic precipitation.</p>
+          <div class="import-block" role="region" aria-label="Import command for niagara-rain-system">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'niagara-rain-system')" aria-label="Copy import command for niagara-rain-system">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/niagara-rain-system.json</code>
+          </div>
+        </article>
+
+        <!-- 7. audio-ambient-soundscape -->
+        <article class="workflow-card fade-up delay-2" role="listitem" data-domain="audio">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">audio</span>
+              <span class="badge-difficulty" data-level="beginner">beginner</span>
+            </div>
+            <span class="workflow-step-count">8 steps</span>
+          </div>
+          <h3 class="workflow-name">Create an Ambient Soundscape</h3>
+          <p class="workflow-desc">Assemble a layered ambient soundscape using Sound Cues, attenuation shapes, random-play nodes, and audio volume bounds for environmental immersion.</p>
+          <div class="import-block" role="region" aria-label="Import command for audio-ambient-soundscape">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'audio-ambient-soundscape')" aria-label="Copy import command for audio-ambient-soundscape">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/audio-ambient-soundscape.json</code>
+          </div>
+        </article>
+
+        <!-- 8. landscape-terrain-paint -->
+        <article class="workflow-card fade-up delay-3" role="listitem" data-domain="landscape">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">landscape</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">9 steps</span>
+          </div>
+          <h3 class="workflow-name">Create and Paint a Landscape Terrain</h3>
+          <p class="workflow-desc">Generate a landscape actor, sculpt height data, apply a layered landscape material, and paint grass, rock, and dirt layers with weight-blended textures.</p>
+          <div class="import-block" role="region" aria-label="Import command for landscape-terrain-paint">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'landscape-terrain-paint')" aria-label="Copy import command for landscape-terrain-paint">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/landscape-terrain-paint.json</code>
+          </div>
+        </article>
+
+        <!-- 9. physics-destructible -->
+        <article class="workflow-card fade-up" role="listitem" data-domain="physics">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">physics</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">10 steps</span>
+          </div>
+          <h3 class="workflow-name">Set Up a Destructible Object</h3>
+          <p class="workflow-desc">Configure a physics asset with simulated rigid bodies, breakable constraints, a Chaos destruction field, and Blueprint-driven hit-response logic.</p>
+          <div class="import-block" role="region" aria-label="Import command for physics-destructible">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'physics-destructible')" aria-label="Copy import command for physics-destructible">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/physics-destructible.json</code>
+          </div>
+        </article>
+
+        <!-- 10. gameplay-pickup-system -->
+        <article class="workflow-card fade-up delay-1" role="listitem" data-domain="gameplay">
+          <div class="workflow-card-header">
+            <div class="workflow-badges">
+              <span class="badge-domain">gameplay</span>
+              <span class="badge-difficulty" data-level="intermediate">intermediate</span>
+            </div>
+            <span class="workflow-step-count">11 steps</span>
+          </div>
+          <h3 class="workflow-name">Create a Pickup / Collectible System</h3>
+          <p class="workflow-desc">Implement a reusable pickup system with overlap detection, inventory interface, respawn timers, visual feedback particles, and a configurable item data table.</p>
+          <div class="import-block" role="region" aria-label="Import command for gameplay-pickup-system">
+            <div class="import-block-header">
+              <span class="import-block-label">Import command</span>
+              <button class="import-copy-btn" onclick="copyImport(this, 'gameplay-pickup-system')" aria-label="Copy import command for gameplay-pickup-system">Copy</button>
+            </div>
+            <code>npx unreal-master-mcp-server import-workflow https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/gameplay-pickup-system.json</code>
+          </div>
+        </article>
+
+        <!-- empty state (shown when filter has no results) -->
+        <div class="empty-state" id="emptyState" hidden aria-live="polite">
+          <p>No workflows match that filter.</p>
+        </div>
+
+      </div><!-- /workflow-grid -->
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-main">
+      <div>
+        <p class="footer-brand-name">Unreal Master Agent</p>
+        <p class="footer-brand-license">Released under the MIT License</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/unreal-master-mcp-server" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">API Reference</a>
+        <a href="https://github.com/jaguarcode/UnrealMasterAI/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+      </nav>
+    </div>
+    <p class="footer-disclaimer">Unreal Engine is a trademark of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.</p>
+  </div>
+</footer>
+
+<script>
+// ─── Mobile menu ───
+function toggleMenu(btn) {
+  var menu = document.getElementById('mobileMenu');
+  var isOpen = menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  var btn = document.querySelector('.hamburger');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+// ─── Domain filter ───
+function filterWorkflows(btn, domain) {
+  // Update active button
+  document.querySelectorAll('.filter-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+
+  var cards = document.querySelectorAll('.workflow-card');
+  var visible = 0;
+  cards.forEach(function(card) {
+    if (domain === 'all' || card.getAttribute('data-domain') === domain) {
+      card.hidden = false;
+      visible++;
+    } else {
+      card.hidden = true;
+    }
+  });
+
+  var empty = document.getElementById('emptyState');
+  empty.hidden = visible > 0;
+}
+
+// ─── Copy import command ───
+function copyImport(btn, slug) {
+  var url = 'https://raw.githubusercontent.com/jaguarcode/UnrealMasterAI/main/workflows/' + slug + '.json';
+  var command = 'npx unreal-master-mcp-server import-workflow ' + url;
+  navigator.clipboard.writeText(command).then(function() {
+    var original = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.setAttribute('aria-label', 'Copied!');
+    setTimeout(function() {
+      btn.textContent = original;
+      btn.setAttribute('aria-label', 'Copy import command for ' + slug);
+    }, 2000);
+  }).catch(function() {
+    // Fallback: select the code element text
+    var block = btn.closest('.import-block');
+    if (block) {
+      var code = block.querySelector('code');
+      if (code) {
+        var range = document.createRange();
+        range.selectNodeContents(code);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  });
+}
+
+// ─── Scroll fade-up animations ───
+(function() {
+  var elements = document.querySelectorAll('.fade-up');
+  if (!('IntersectionObserver' in window)) {
+    elements.forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  elements.forEach(function(el) { observer.observe(el); });
+})();
+
+// ─── Nav scroll behaviour ───
+(function() {
+  var nav = document.querySelector('.nav');
+  window.addEventListener('scroll', function() {
+    nav.style.background = window.scrollY > 40
+      ? 'rgba(0,0,0,0.95)'
+      : 'rgba(0,0,0,0.8)';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

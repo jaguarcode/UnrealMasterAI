@@ -18,6 +18,8 @@ import {
   contextMarkResolutionReused,
   contextListResolutions,
 } from './error-learning.js';
+import { validateWorkflow, exportWorkflow } from './workflow-schema.js';
+import { appendLearnedWorkflow } from './workflow-store.js';
 
 export function getTools(): ToolModule[] {
   return [
@@ -188,6 +190,57 @@ export function getTools(): ToolModule[] {
       },
       handler: (_ctx, params) =>
         contextListResolutions(params as { errorType?: string; sourceTool?: string }),
+    },
+    {
+      name: 'context-exportWorkflow',
+      description: 'Export a workflow in the standardized shareable JSON format. Use this to share workflows with the community or save them as files.',
+      schema: {
+        workflowId: z.string().describe('ID of the workflow to export (built-in or learned)'),
+        authorName: z.string().optional().describe('Author name for the export (default: "unknown")'),
+        authorUrl: z.string().optional().describe('Author URL (e.g., GitHub profile)'),
+      },
+      handler: (_ctx, params) => {
+        const p = params as { workflowId: string; authorName?: string; authorUrl?: string };
+        const all = getAllWorkflows();
+        const workflow = all.find((w) => w.id === p.workflowId);
+        if (!workflow) {
+          return Promise.resolve({
+            content: [{ type: 'text' as const, text: JSON.stringify({ status: 'error', message: `Workflow not found: ${p.workflowId}` }) }],
+          });
+        }
+        const author = { name: p.authorName ?? 'unknown', url: p.authorUrl };
+        const exported = exportWorkflow(workflow, author);
+        return Promise.resolve({
+          content: [{ type: 'text' as const, text: JSON.stringify({ status: 'success', message: `Exported workflow: ${workflow.name}`, workflow: exported }) }],
+        });
+      },
+    },
+    {
+      name: 'context-importWorkflow',
+      description: 'Import a workflow from the standardized shareable JSON format. Validates the workflow and adds it to the persistent learned-workflows store.',
+      schema: {
+        workflow: z.any().describe('The complete workflow share JSON object (with version, workflow, author, createdAt fields)'),
+      },
+      handler: (_ctx, params) => {
+        const p = params as { workflow: unknown };
+        const result = validateWorkflow(p.workflow);
+        if (!result.valid) {
+          return Promise.resolve({
+            content: [{ type: 'text' as const, text: JSON.stringify({ status: 'error', message: 'Invalid workflow format', errors: result.errors }) }],
+          });
+        }
+        const w = result.workflow.workflow;
+        appendLearnedWorkflow(w as import('./workflow-knowledge.js').Workflow);
+        return Promise.resolve({
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            status: 'success',
+            message: `Imported workflow: ${w.name}`,
+            id: w.id,
+            domain: w.domain,
+            stepCount: w.steps.length,
+          }) }],
+        });
+      },
     },
   ];
 }

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "gameplay-pickup-system",
+    "name": "Create a Pickup/Collectible System",
+    "description": "Build a reusable pickup actor Blueprint with overlap detection, collection feedback (sound + VFX), respawn timer, and score tracking via Game Mode.",
+    "domain": "gameplay",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a pickup system",
+      "make collectible items",
+      "build a coin pickup",
+      "health pickup actor",
+      "item collection with score"
+    ],
+    "prerequisites": ["A mesh for the pickup item", "An open UE project with a level and Game Mode"],
+    "steps": [
+      { "tool": "actor-spawn", "purpose": "Spawn an Empty Actor as the pickup base" },
+      { "tool": "actor-addComponent", "purpose": "Add a StaticMeshComponent for the pickup visual" },
+      { "tool": "actor-addComponent", "purpose": "Add a SphereCollision component for overlap detection" },
+      { "tool": "actor-setProperty", "purpose": "Set collision to OverlapAllDynamic, mesh to rotate slowly" },
+      { "tool": "asset-create", "purpose": "Convert to a Blueprint Class" },
+      { "tool": "blueprint-createNode", "purpose": "Add OnComponentBeginOverlap event" },
+      { "tool": "blueprint-createNode", "purpose": "Add DestroyActor or SetActorHiddenInGame for collection" },
+      { "tool": "blueprint-createNode", "purpose": "Add PlaySoundAtLocation for collection feedback" },
+      { "tool": "blueprint-connectPins", "purpose": "Wire overlap → sound → destroy sequence" },
+      { "tool": "blueprint-createNode", "purpose": "Add a SetTimerByFunctionName for respawn delay", "optional": true },
+      { "tool": "compilation-trigger", "purpose": "Compile the pickup Blueprint" }
+    ],
+    "expectedOutcome": "A reusable pickup Blueprint that detects player overlap, plays collection feedback, and optionally respawns after a delay",
+    "source": "community",
+    "tags": ["gameplay", "pickup", "collectible", "blueprint", "score", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "readme": "Duplicate the pickup Blueprint and change the mesh/sound for different item types (health, ammo, coins). Connect to your Game Mode for score tracking.",
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

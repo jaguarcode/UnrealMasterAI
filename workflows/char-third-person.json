@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "char-third-person",
+    "name": "Set Up a Third-Person Character",
+    "description": "Create a playable third-person character with skeletal mesh, camera boom, input bindings, and basic movement using the Character Movement Component.",
+    "domain": "character",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a third person character",
+      "set up third person player",
+      "make a playable character",
+      "character with camera boom",
+      "third person controller setup"
+    ],
+    "prerequisites": ["A skeletal mesh with animations", "An open UE project with a level"],
+    "steps": [
+      { "tool": "workflow-createCharacter", "purpose": "Use the character creation workflow to set up the base character Blueprint" },
+      { "tool": "actor-addComponent", "purpose": "Add a SpringArmComponent (camera boom) for third-person view" },
+      { "tool": "actor-addComponent", "purpose": "Add a CameraComponent attached to the spring arm" },
+      { "tool": "actor-setProperty", "purpose": "Set spring arm length, rotation lag, and camera settings" },
+      { "tool": "gameplay-addInputAction", "purpose": "Add Move input action for WASD movement" },
+      { "tool": "gameplay-addInputAction", "purpose": "Add Look input action for mouse camera control" },
+      { "tool": "gameplay-addInputAction", "purpose": "Add Jump input action" },
+      { "tool": "gameplay-setGameMode", "purpose": "Set the GameMode default pawn to this character" },
+      { "tool": "compilation-trigger", "purpose": "Compile to verify the character setup" }
+    ],
+    "expectedOutcome": "A playable third-person character with camera boom, input bindings, and basic movement ready for gameplay testing",
+    "source": "community",
+    "tags": ["character", "third-person", "camera", "input", "movement", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

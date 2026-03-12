@@ -56,6 +56,7 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Tool hooks: register pre/post execution callbacks via `ToolHookManager` for logging, validation, or transformation
 - Custom Python scripts: place scripts in `Content/Python/uma_custom/` and invoke them with `python-customExecute`
 - Auto-registration architecture: each domain exposes a `ToolModule` via its own `index.ts` — adding a new domain requires no changes to `server.ts`
+- Workflow Marketplace: standardized JSON sharing format, `context-exportWorkflow`/`context-importWorkflow` tools, CLI import from file or URL, [10 community workflow templates](workflows/)
 
 ---
 

@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "physics-destructible",
+    "name": "Set Up a Destructible Object",
+    "description": "Create a physics-enabled destructible actor with collision, fracture configuration, and impulse response for breakable objects like crates and barrels.",
+    "domain": "physics",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a destructible object",
+      "make a breakable crate",
+      "physics destructible actor",
+      "set up object that breaks on impact",
+      "fracture mesh for destruction"
+    ],
+    "prerequisites": ["A static mesh asset for the object", "An open level"],
+    "steps": [
+      { "tool": "mesh-getInfo", "purpose": "Inspect the source mesh for poly count and bounds" },
+      { "tool": "mesh-generateCollision", "purpose": "Generate collision for the mesh if not present" },
+      { "tool": "physics-createAsset", "purpose": "Create a physics asset for the mesh" },
+      { "tool": "physics-createMaterial", "purpose": "Create a physics material with appropriate friction and restitution" },
+      { "tool": "actor-spawn", "purpose": "Spawn the mesh as a StaticMeshActor in the level" },
+      { "tool": "actor-setProperty", "purpose": "Set mobility to Movable for physics simulation" },
+      { "tool": "actor-setProperty", "purpose": "Enable Simulate Physics on the mesh component" },
+      { "tool": "physics-setProfile", "purpose": "Assign the physics profile with destruction threshold" },
+      { "tool": "physics-setConstraint", "purpose": "Configure break force threshold for destruction trigger", "optional": true },
+      { "tool": "level-save", "purpose": "Save the level" }
+    ],
+    "expectedOutcome": "A physics-enabled destructible object that breaks apart when hit with sufficient force, with configurable break thresholds",
+    "source": "community",
+    "tags": ["physics", "destructible", "collision", "fracture", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "bp-interactive-door",
+    "name": "Create an Interactive Door Blueprint",
+    "description": "Build a door actor that opens and closes when the player overlaps a trigger volume, using Timeline-driven rotation in the Blueprint Event Graph.",
+    "domain": "blueprint",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create an interactive door",
+      "make a door that opens",
+      "blueprint door with trigger",
+      "automatic opening door",
+      "door with overlap event"
+    ],
+    "prerequisites": ["An open UE project with a level", "A door static mesh asset"],
+    "steps": [
+      { "tool": "actor-spawn", "purpose": "Spawn an Empty Actor to serve as the door root" },
+      { "tool": "actor-addComponent", "purpose": "Add a StaticMeshComponent for the door mesh" },
+      { "tool": "actor-addComponent", "purpose": "Add a BoxCollision component as the trigger volume" },
+      { "tool": "actor-setProperty", "purpose": "Set collision preset to OverlapAllDynamic on the trigger" },
+      { "tool": "asset-create", "purpose": "Convert to a Blueprint Class for adding logic" },
+      { "tool": "blueprint-createNode", "purpose": "Add OnComponentBeginOverlap event node" },
+      { "tool": "blueprint-createNode", "purpose": "Add a Timeline node for smooth door rotation" },
+      { "tool": "blueprint-connectPins", "purpose": "Wire overlap event to Timeline Play input" },
+      { "tool": "blueprint-createNode", "purpose": "Add SetRelativeRotation node driven by Timeline output" },
+      { "tool": "blueprint-connectPins", "purpose": "Connect Timeline float output to rotation Z axis" },
+      { "tool": "compilation-trigger", "purpose": "Compile the Blueprint to verify it works" }
+    ],
+    "expectedOutcome": "A reusable door Blueprint that smoothly opens when the player enters the trigger volume and closes when they leave",
+    "source": "community",
+    "tags": ["blueprint", "door", "interactive", "trigger", "timeline", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "readme": "This workflow creates a classic interactive door. After importing, customize the door mesh, rotation angle (default 90°), and Timeline duration to match your game's style.",
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

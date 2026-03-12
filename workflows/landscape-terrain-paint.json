@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "landscape-terrain-paint",
+    "name": "Create and Paint a Landscape Terrain",
+    "description": "Create a landscape actor, import or sculpt a heightmap, assign a landscape material with multiple layers, and configure auto-painting rules.",
+    "domain": "landscape",
+    "difficulty": "intermediate",
+    "intentPatterns": [
+      "create a landscape",
+      "set up terrain",
+      "make outdoor terrain with materials",
+      "landscape with grass and rock layers",
+      "paint landscape material layers"
+    ],
+    "prerequisites": ["An open UE project", "Landscape material textures imported"],
+    "steps": [
+      { "tool": "landscape-create", "purpose": "Create a new Landscape actor with specified dimensions" },
+      { "tool": "landscape-importHeightmap", "purpose": "Import a heightmap for terrain shape", "optional": true },
+      { "tool": "material-create", "purpose": "Create a landscape material with layer blend node" },
+      { "tool": "material-setTexture", "purpose": "Assign grass texture to first layer" },
+      { "tool": "material-setTexture", "purpose": "Assign rock texture to second layer" },
+      { "tool": "material-setTexture", "purpose": "Assign dirt/path texture to third layer" },
+      { "tool": "landscape-setMaterial", "purpose": "Assign the landscape material to the terrain" },
+      { "tool": "landscape-getInfo", "purpose": "Verify landscape setup and material assignment" },
+      { "tool": "level-save", "purpose": "Save the level" }
+    ],
+    "expectedOutcome": "A landscape terrain with multi-layer material ready for painting with grass, rock, and dirt surfaces",
+    "source": "community",
+    "tags": ["landscape", "terrain", "material", "outdoor", "intermediate"]
+  },
+  "author": {
+    "name": "JaguarCode",
+    "url": "https://github.com/jaguarcode"
+  },
+  "createdAt": "2026-03-12T00:00:00.000Z"
+}

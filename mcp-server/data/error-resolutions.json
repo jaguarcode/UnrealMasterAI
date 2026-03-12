@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "updatedAt": 1773284556283,
+  "updatedAt": 1773287004083,
   "resolutions": [
     {
-      "id": "res-1773284556281-90ggeb",
+      "id": "res-1773287004081-syzs02",
       "errorMessage": "Error X",
       "errorType": "blueprint-error",
       "sourceTool": "blueprint-connectPins",
@@ -17,11 +17,11 @@
       "rootCause": "Cause",
       "tags": [],
       "reuseCount": 0,
-      "createdAt": 1773284556281,
-      "lastUsedAt": 1773284556281
+      "createdAt": 1773287004081,
+      "lastUsedAt": 1773287004081
     },
     {
-      "id": "res-1773284556283-2chp2a",
+      "id": "res-1773287004082-4apu7q",
       "errorMessage": "Error Y",
       "errorType": "material-error",
       "sourceTool": "material-create",
@@ -35,8 +35,8 @@
       "rootCause": "Cause",
       "tags": [],
       "reuseCount": 0,
-      "createdAt": 1773284556283,
-      "lastUsedAt": 1773284556283
+      "createdAt": 1773287004082,
+      "lastUsedAt": 1773287004082
     }
   ]
 }
