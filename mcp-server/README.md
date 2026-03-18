@@ -4,9 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-183-purple.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-188-purple.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
 
-MCP server that gives Claude AI bidirectional control over Unreal Engine — **183 tools across 37 domains** for Blueprints, materials, actors, levels, sequencer, AI, and more.
+MCP server that gives Claude AI bidirectional control over Unreal Engine — **188 tools across 37 domains** for Blueprints, materials, actors, levels, sequencer, AI, and more.
 
 ## Quick Start
 
@@ -71,7 +71,7 @@ Generates the MCP config snippet, validates Node.js version, and detects your UE
 | **Context** | 15 | Intent matching, workflow learning, error recovery |
 | + 23 more | ... | Texture, audio, PCG, foliage, curves, debug, build... |
 
-[Full API Reference (183 tools)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
+[Full API Reference (188 tools)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
 
 ## Architecture
 
@@ -113,9 +113,26 @@ npm test
 npm run test:coverage
 ```
 
+## Community Workflows
+
+Browse, share, and import community-created workflows at **[Workflow Community](https://unreal-workflow-web.vercel.app)**.
+
+- 22+ official workflows covering 14+ UE domains
+- Community-created workflows with ratings and reviews
+- Integration guides for Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code
+
+### Import a Workflow
+
+```bash
+npx unreal-master-mcp-server import-workflow <url>
+```
+
+Import any workflow from the community platform or a local `.mcp.json` file directly into your MCP server's learned-workflows store.
+
 ## Links
 
 - [GitHub Repository](https://github.com/jaguarcode/UnrealMasterAI)
+- [Workflow Community](https://unreal-workflow-web.vercel.app)
 - [Documentation](https://jaguarcode.github.io/UnrealMasterAI/)
 - [API Reference](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
 - [Contributing Guide](https://github.com/jaguarcode/UnrealMasterAI/blob/main/CONTRIBUTING.md)
