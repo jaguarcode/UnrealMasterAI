@@ -33,7 +33,8 @@ if (process.argv.includes('import-workflow')) {
   }
   const { runImportWorkflow } = await import('./cli/import-workflow.js');
   await runImportWorkflow(source);
-  process.exit(0);
+  // Let Node.js exit naturally to avoid libuv assertion error on Windows
+  setTimeout(() => process.exit(0), 100);
 }
 
 import { installStdoutGuard, createLogger } from './observability/logger.js';
