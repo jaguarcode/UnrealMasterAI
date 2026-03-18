@@ -1,29 +1,44 @@
 /**
  * CLI command: import-workflow
- * Imports a workflow JSON file from a local path or HTTPS URL into the
- * persistent learned-workflows store.
+ * Imports a workflow JSON file from a local path, HTTPS URL, or community
+ * workflow ID into the persistent learned-workflows store.
  *
  * Usage:
- *   unreal-master-mcp-server import-workflow <path-or-url>
+ *   unreal-master-mcp-server import-workflow <path-or-url-or-id>
  */
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { validateWorkflow } from '../tools/context/workflow-schema.js';
 import { appendLearnedWorkflow } from '../tools/context/workflow-store.js';
 import type { Workflow } from '../tools/context/workflow-knowledge.js';
 
+const COMMUNITY_API = 'https://unrealworkflow-production.up.railway.app/api/v1';
+
+function resolveSource(source: string): string {
+  if (source.startsWith('https://') || source.startsWith('http://')) {
+    return source;
+  }
+  if (existsSync(source)) {
+    return source;
+  }
+  // Treat as community workflow ID — resolve to download URL
+  return `${COMMUNITY_API}/workflows/${source}/download`;
+}
+
 export async function runImportWorkflow(source: string): Promise<void> {
+  const resolved = resolveSource(source);
   let raw: string;
 
   try {
-    if (source.startsWith('https://') || source.startsWith('http://')) {
-      const response = await fetch(source);
+    if (resolved.startsWith('https://') || resolved.startsWith('http://')) {
+      console.error(`Fetching workflow from ${resolved.includes(COMMUNITY_API) ? 'Workflow Community' : resolved}...`);
+      const response = await fetch(resolved);
       if (!response.ok) {
-        console.error(`Error: HTTP ${response.status} ${response.statusText} — ${source}`);
+        console.error(`Error: HTTP ${response.status} ${response.statusText} — ${resolved}`);
         process.exit(1);
       }
       raw = await response.text();
     } else {
-      raw = readFileSync(source, 'utf-8');
+      raw = readFileSync(resolved, 'utf-8');
     }
   } catch (err) {
     console.error(`Error reading source: ${err instanceof Error ? err.message : String(err)}`);
