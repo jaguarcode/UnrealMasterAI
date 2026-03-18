@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.4] — 2026-03-18
+
+### Fixed
+- CLI `import-workflow` no longer starts the MCP server after import
+- Resolved Windows libuv assertion error on process exit
+- Version bump for npm publish
+
+## [0.5.3] — 2026-03-18
+
+### Fixed
+- Version bump for npm publish with community ID resolution
+
+## [0.5.2] — 2026-03-18
+
 ### Added
+- Community workflow ID resolution in `import-workflow` CLI command
+  - `npx unreal-master-mcp-server import-workflow <id>` fetches from Workflow Community API
+  - Accepts local file paths, HTTPS URLs, or community workflow IDs
+- Workflow Community Platform section in README and npm README
+- Community platform link: https://unreal-workflow-web.vercel.app
+
+### Changed
+- Updated tool count from 183 to 188 in npm README and package description
+- Added `import-workflow` documentation with community usage examples
+
+## [0.5.1] — 2026-03-18
+
+### Added
+- Community Workflows section in npm README
+- Links to Workflow Community platform
+- Updated npm package description with 188 tools
+
+### Changed
 - Phase 4.4: Context Intelligence Maturation
   - Seeded 68 learned workflows across 36 domains (89 total with 21 builtin)
   - Seeded 25 error resolutions covering real UE error patterns
@@ -15,8 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Analytics dashboard (`docs/analytics.html`) with CLI snapshot generation (`npx unreal-master-mcp-server analytics`)
   - Test isolation: backup/restore for production data files in 4 test files
 - Phase 1: OSS Foundation — governance files, CI pipeline, CHANGELOG, contributor guide
-
-### Changed
 - Updated all documentation to reflect current stats: 188 tools, 166 Python scripts, 1228 tests across 73 files
 - Tool count: 185 → 188 (added context-recommend, context-exportWorkflow, context-importWorkflow)
 - Added Phase 16 (Plugin Extension API) to README roadmap table

@@ -68,7 +68,7 @@ Browse, share, and discover community-created workflows at the **[Workflow Commu
 - **Community-contributed workflows** with ratings and reviews
 - **Create and share** your own workflows with the community
 - **Integration guides** for Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code
-- **One-click import** of workflows as `.mcp.json` files
+- **CLI import** — `npx unreal-master-mcp-server import-workflow <id>` to import any workflow directly
 - **Full-text search** and filtering by domain and difficulty
 
 Visit the platform: https://unreal-workflow-web.vercel.app
