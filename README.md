@@ -58,6 +58,23 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 
 Works with Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code + GitHub Copilot — any MCP-compatible AI editor.
 
+---
+
+## Workflow Community Platform
+
+Browse, share, and discover community-created workflows at the **[Workflow Community](https://unreal-workflow-web.vercel.app)** platform:
+
+- **22+ official workflows** covering 14+ UE domains (Blueprint, Material, Level, Character, Animation, Niagara, Audio, Landscape, Physics, Gameplay, Sequencer, AI/Nav, Widget, Mesh)
+- **Community-contributed workflows** with ratings and reviews
+- **Create and share** your own workflows with the community
+- **Integration guides** for Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code
+- **One-click import** of workflows as `.mcp.json` files
+- **Full-text search** and filtering by domain and difficulty
+
+Visit the platform: https://unreal-workflow-web.vercel.app
+
+See [UnrealWorkflow](https://github.com/jaguarcode/UnrealWorkflow) for the community platform source code.
+
 **Extensibility:**
 
 - Custom MCP tools: drop `.ts`/`.js` files in `mcp-server/custom-tools/` for automatic discovery and registration
