@@ -5,11 +5,14 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
+import { homedir } from 'os';
 import { fileURLToPath } from 'url';
 import type { Workflow } from './workflow-knowledge.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+// Use user-global path so data persists across npx runs and is shared with the MCP server
+const DATA_DIR = process.env.UMA_DATA_DIR
+  || join(homedir(), '.unreal-master', 'data');
 const WORKFLOWS_FILE = join(DATA_DIR, 'learned-workflows.json');
 const OUTCOMES_FILE = join(DATA_DIR, 'workflow-outcomes.json');
 

@@ -12,13 +12,15 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
+import { homedir } from 'os';
 import { fileURLToPath } from 'url';
 import type { McpToolResult } from '../editor/ping.js';
 import { getRecoveryStrategy, type RecoveryStrategy } from './error-recovery.js';
 import { tokenize } from '../../utils/tokenize.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const DATA_DIR = process.env.UMA_DATA_DIR
+  || join(homedir(), '.unreal-master', 'data');
 const RESOLUTIONS_FILE = join(DATA_DIR, 'error-resolutions.json');
 
 // ── Types ──
