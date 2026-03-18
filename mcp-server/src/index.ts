@@ -9,33 +9,36 @@
  * All logging goes to stderr via the logger module.
  */
 
-// Handle `init` subcommand before anything else so stdout is never guarded.
-if (process.argv.includes('init')) {
+// Handle CLI subcommands before anything else so stdout is never guarded.
+const args = process.argv;
+
+if (args.includes('init')) {
   const { runInit } = await import('./cli/init.js');
   await runInit();
   process.exit(0);
 }
 
-// Handle `analytics` subcommand before stdout guard is installed.
-if (process.argv.includes('analytics')) {
+if (args.includes('analytics')) {
   const { runAnalytics } = await import('./cli/analytics.js');
   await runAnalytics();
   process.exit(0);
 }
 
-// Handle `import-workflow` subcommand before stdout guard is installed.
-if (process.argv.includes('import-workflow')) {
-  const idx = process.argv.indexOf('import-workflow');
-  const source = process.argv[idx + 1];
+if (args.includes('import-workflow')) {
+  const idx = args.indexOf('import-workflow');
+  const source = args[idx + 1];
   if (!source) {
-    console.error('Usage: unreal-master-mcp-server import-workflow <path-or-url>');
+    console.error('Usage: unreal-master-mcp-server import-workflow <path-or-url-or-id>');
     process.exit(1);
   }
   const { runImportWorkflow } = await import('./cli/import-workflow.js');
   await runImportWorkflow(source);
-  // Let Node.js exit naturally to avoid libuv assertion error on Windows
   setTimeout(() => process.exit(0), 100);
+  // Prevent server from starting — await a never-resolving promise
+  await new Promise(() => {});
 }
+
+// --- MCP Server startup (only reached if no CLI subcommand matched) ---
 
 import { installStdoutGuard, createLogger } from './observability/logger.js';
 import { createServer } from './server.js';
