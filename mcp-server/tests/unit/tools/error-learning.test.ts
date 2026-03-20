@@ -16,8 +16,7 @@ import {
   type ErrorResolution,
 } from '../../../src/tools/context/error-learning.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const DATA_DIR = process.env.UMA_DATA_DIR || join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'data');
 const RESOLUTIONS_FILE = join(DATA_DIR, 'error-resolutions.json');
 
 // Backup production data before tests modify it

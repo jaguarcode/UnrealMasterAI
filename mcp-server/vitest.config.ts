@@ -5,6 +5,9 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    env: {
+      UMA_DATA_DIR: './test-data',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

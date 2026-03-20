@@ -29,8 +29,7 @@ import {
 } from '../../../src/tools/context/workflow-knowledge.js';
 import type { Workflow } from '../../../src/tools/context/workflow-knowledge.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '..', '..', '..', 'data');
+const DATA_DIR = process.env.UMA_DATA_DIR || join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'data');
 const WORKFLOWS_FILE = join(DATA_DIR, 'learned-workflows.json');
 const OUTCOMES_FILE = join(DATA_DIR, 'workflow-outcomes.json');
 
