@@ -5,14 +5,16 @@
  */
 
 import { getAllWorkflows, type Workflow } from './workflow-knowledge.js';
-import { getOutcomeStats } from './workflow-store.js';
+import { getWeightedOutcomeStats } from './workflow-store.js';
 import { tokenize } from '../../utils/tokenize.js';
+import { EmbeddingStore } from '../../rag/embedding-store.js';
 
 export interface IntentMatch {
   workflow: Workflow;
   score: number;
   confidence: number;
   matchedPatterns: string[];
+  semanticScore?: number;
   outcomeInfo?: {
     successRate: number;
     totalExecutions: number;
@@ -146,6 +148,75 @@ function expandWithSynonyms(tokens: string[]): { expanded: string[]; synonymHits
   return { expanded: Array.from(expanded), synonymHits };
 }
 
+// ── Semantic (TF-IDF) index over workflows ──
+// Lazily built and cached; rebuilt automatically when the set of workflow ids changes.
+let semanticIndex: EmbeddingStore | null = null;
+let semanticIndexKey = '';
+let forceRebuild = false;
+
+/**
+ * Force the semantic index to rebuild on next use.
+ * Called after external mutations to the workflow set (e.g. learnWorkflow, import).
+ */
+export function invalidateIntentIndex(): void {
+  forceRebuild = true;
+}
+
+function buildWorkflowDocId(workflow: Workflow): string {
+  return workflow.id;
+}
+
+function computeIndexKey(workflows: Workflow[]): string {
+  return `${workflows.length}:${workflows.map((w) => w.id).sort().join(',')}`;
+}
+
+/**
+ * Get the semantic index, rebuilding it if the workflow set has changed
+ * (or invalidateIntentIndex() was called) since the last build.
+ */
+function getSemanticIndex(workflows: Workflow[]): EmbeddingStore {
+  const key = computeIndexKey(workflows);
+
+  if (semanticIndex === null || forceRebuild || key !== semanticIndexKey) {
+    const store = new EmbeddingStore();
+    for (const workflow of workflows) {
+      store.addDocument({
+        id: buildWorkflowDocId(workflow),
+        title: workflow.name,
+        content: `${workflow.description}\n${workflow.intentPatterns.join('\n')}\n${workflow.tags.join(' ')}`,
+        keywords: [...workflow.tags, workflow.domain],
+      });
+    }
+    store.reindex();
+    semanticIndex = store;
+    semanticIndexKey = key;
+    forceRebuild = false;
+  }
+
+  return semanticIndex;
+}
+
+/**
+ * Query the semantic index and return normalized scores per workflow id.
+ * semanticNorm(workflow) = rawScore / maxRawScore across results (0 when no results or max is 0).
+ */
+function semanticScores(workflows: Workflow[], expandedTokens: string[]): Map<string, number> {
+  const index = getSemanticIndex(workflows);
+  const query = expandedTokens.join(' ');
+  const results = index.search(query, workflows.length || 5);
+
+  const scores = new Map<string, number>();
+  if (results.length === 0) return scores;
+
+  const maxRaw = results.reduce((max, r) => Math.max(max, r.score), 0);
+  if (maxRaw === 0) return scores;
+
+  for (const r of results) {
+    scores.set(r.document.id, r.score / maxRaw);
+  }
+  return scores;
+}
+
 /**
  * Calculate similarity score between a query and a pattern.
  * Uses token overlap with bonus for consecutive word matches.
@@ -237,7 +308,7 @@ function scoreWorkflow(
  * Workflows with high success rates get boosted; low success rates get penalized.
  */
 function outcomeConfidence(workflowId: string): { boost: number; info?: IntentMatch['outcomeInfo'] } {
-  const stats = getOutcomeStats(workflowId);
+  const stats = getWeightedOutcomeStats(workflowId, 90);
   if (!stats || stats.totalExecutions === 0) {
     return { boost: 0 };
   }
@@ -248,9 +319,9 @@ function outcomeConfidence(workflowId: string): { boost: number; info?: IntentMa
     recentTrend: stats.recentTrend,
   };
 
-  // Confidence grows with more data: boost range [-0.2, +0.3]
-  const dataBasis = Math.min(stats.totalExecutions / 10, 1); // Saturates at 10 executions
-  const successBias = (stats.successRate - 0.5) * 0.6; // [-0.3, +0.3]
+  // Confidence grows with more (recency-weighted) data: boost range [-0.2, +0.3]
+  const dataBasis = Math.min(stats.effectiveExecutions / 10, 1); // Saturates at 10 effective executions
+  const successBias = (stats.weightedSuccessRate - 0.5) * 0.6; // [-0.3, +0.3]
   const trendBonus = stats.recentTrend === 'improving' ? 0.05
     : stats.recentTrend === 'declining' ? -0.05
     : 0;
@@ -269,6 +340,7 @@ export function matchIntent(query: string, maxResults = 5): IntentMatchResult {
   const queryTokens = tokenize(query);
   const { expanded: expandedTokens, synonymHits } = expandWithSynonyms(queryTokens);
   const workflows = getAllWorkflows();
+  const semanticNorm = semanticScores(workflows, expandedTokens);
 
   const scored: IntentMatch[] = workflows
     .map((workflow) => {
@@ -278,10 +350,21 @@ export function matchIntent(query: string, maxResults = 5): IntentMatchResult {
       // Synonym expansion bonus: if synonyms contributed to the match
       const synonymBonus = synonymHits > 0 && matchedPatterns.length > 0 ? 0.05 : 0;
 
-      const finalScore = score + boost + synonymBonus;
+      // Semantic (TF-IDF) similarity, normalized against the top result for this query
+      const semanticScore = semanticNorm.get(workflow.id) ?? 0;
+
+      // Blend additively so existing keyword-based scores never decrease
+      const finalScore = score + 0.3 * semanticScore + boost + synonymBonus;
       const confidence = Math.min(1, Math.max(0, finalScore));
 
-      return { workflow, score: finalScore, confidence, matchedPatterns, outcomeInfo: info };
+      return {
+        workflow,
+        score: finalScore,
+        confidence,
+        matchedPatterns,
+        semanticScore,
+        outcomeInfo: info,
+      };
     })
     .filter((m) => m.score > 0.2) // Minimum relevance threshold
     .sort((a, b) => b.score - a.score)

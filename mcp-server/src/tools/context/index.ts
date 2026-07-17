@@ -21,6 +21,10 @@ import {
 import { validateWorkflow, exportWorkflow } from './workflow-schema.js';
 import { appendLearnedWorkflow } from './workflow-store.js';
 import { getRecommendations } from './recommendation-engine.js';
+import { invalidateIntentIndex } from './intent-matcher.js';
+import { mineWorkflowCandidates } from './sequence-miner.js';
+import { getUsageTracker } from './usage-tracker.js';
+import { getWorkflowTracker } from './workflow-tracker.js';
 
 export function getTools(): ToolModule[] {
   return [
@@ -232,6 +236,8 @@ export function getTools(): ToolModule[] {
         }
         const w = result.workflow.workflow;
         appendLearnedWorkflow(w as import('./workflow-knowledge.js').Workflow);
+        // The workflow set changed — force the semantic intent index to rebuild.
+        invalidateIntentIndex();
         return Promise.resolve({
           content: [{ type: 'text' as const, text: JSON.stringify({
             status: 'success',
@@ -245,20 +251,60 @@ export function getTools(): ToolModule[] {
     },
     {
       name: 'context-recommend',
-      description: 'Get proactive tool recommendations based on recent tool usage. Suggests next tools by analyzing workflow step adjacency patterns.',
+      description: 'Get proactive tool recommendations based on recent tool usage. Blends known-workflow adjacency with your own observed session transitions. Omit recentTools to use the server\'s automatically tracked recent history.',
       schema: {
-        recentTools: z.array(z.string()).describe('Tools used recently in the current session (most recent last)'),
+        recentTools: z.array(z.string()).optional().describe('Tools used recently in the current session (most recent last). Omit to use the server\'s automatically tracked history.'),
         domain: z.string().optional().describe('Optionally filter recommendations to a specific UE domain'),
         maxResults: z.number().optional().describe('Maximum recommendations to return (default 5)'),
       },
       handler: (_ctx, params) => {
-        const p = params as { recentTools: string[]; domain?: string; maxResults?: number };
+        const p = params as { recentTools?: string[]; domain?: string; maxResults?: number };
         const recommendations = getRecommendations(p.recentTools, p.domain, p.maxResults);
         return Promise.resolve({
           content: [{ type: 'text' as const, text: JSON.stringify({
             status: 'success',
             count: recommendations.length,
             recommendations,
+          }) }],
+        });
+      },
+    },
+    {
+      name: 'context-suggestWorkflows',
+      description: 'Mine your recent tool usage for frequently repeated sequences that are not yet known workflows. Surfaces emerging workflow candidates you can formalize with context-learnWorkflow.',
+      schema: {
+        minSupport: z.number().optional().describe('Minimum number of occurrences required to surface a candidate (default 3)'),
+        maxResults: z.number().optional().describe('Maximum candidates to return (default 10)'),
+      },
+      handler: (_ctx, params) => {
+        const p = params as { minSupport?: number; maxResults?: number };
+        const candidates = mineWorkflowCandidates(getUsageTracker().getAllEvents(), {
+          minSupport: p.minSupport,
+          maxResults: p.maxResults,
+        });
+        return Promise.resolve({
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            status: 'success',
+            count: candidates.length,
+            candidates,
+            guidance: 'Formalize a candidate with context-learnWorkflow (give it an id, name, intentPatterns; use the sequence as steps).',
+          }) }],
+        });
+      },
+    },
+    {
+      name: 'context-getUsageStats',
+      description: 'Get automatically tracked usage statistics: total events, recent tools, per-tool call/success stats, and the currently active auto-tracked workflow (if any).',
+      schema: {},
+      handler: () => {
+        const tracker = getUsageTracker();
+        return Promise.resolve({
+          content: [{ type: 'text' as const, text: JSON.stringify({
+            status: 'success',
+            totalEvents: tracker.getAllEvents().length,
+            recentTools: tracker.getRecentTools(10),
+            toolStats: tracker.getToolStats().slice(0, 20),
+            activeWorkflow: getWorkflowTracker().getProgress(),
           }) }],
         });
       },

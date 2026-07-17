@@ -11,13 +11,16 @@ import {
   getWorkflowById,
   type Workflow,
 } from './workflow-knowledge.js';
-import { matchIntent } from './intent-matcher.js';
+import { matchIntent, invalidateIntentIndex } from './intent-matcher.js';
 import {
   recordOutcome,
   getOutcomeStats,
   getAllOutcomeStats,
   type WorkflowOutcome,
 } from './workflow-store.js';
+import { getWorkflowTracker } from './workflow-tracker.js';
+import { getUsageTracker } from './usage-tracker.js';
+import { mineWorkflowCandidates } from './sequence-miner.js';
 
 export interface LearnWorkflowParams {
   id: string;
@@ -74,6 +77,8 @@ export async function contextLearnWorkflow(
     };
 
     addLearnedWorkflow(workflow);
+    // The workflow set changed — force the semantic intent index to rebuild.
+    invalidateIntentIndex();
 
     return {
       content: [
@@ -108,7 +113,7 @@ export async function contextMatchIntent(
   try {
     const result = matchIntent(params.query, params.maxResults ?? 5);
 
-    const output = {
+    const output: Record<string, unknown> = {
       status: 'success',
       query: result.query,
       matchCount: result.matches.length,
@@ -136,6 +141,37 @@ export async function contextMatchIntent(
         outcomeInfo: m.outcomeInfo ?? null,
       })),
     };
+
+    // High-confidence match → begin auto-tracking this workflow so its outcome
+    // is recorded automatically once the tool-call stream completes its steps.
+    if (result.topRecommendation && result.confidence >= 0.5) {
+      const wf = result.topRecommendation;
+      getWorkflowTracker().start(
+        { id: wf.id, name: wf.name, steps: wf.steps },
+        result.confidence,
+      );
+      output.autoTracking = {
+        workflowId: wf.id,
+        note: 'Server auto-tracks this workflow and records the outcome when its steps complete; an explicit context-recordOutcome call takes precedence.',
+      };
+    }
+
+    // Zero known matches → surface emerging workflow candidates mined from the
+    // developer's own recent tool usage, so they can formalize new patterns.
+    if (result.matches.length === 0) {
+      const candidates = mineWorkflowCandidates(getUsageTracker().getAllEvents(), { maxResults: 3 });
+      if (candidates.length > 0) {
+        output.workflowCandidates = candidates.map((c) => ({
+          sequence: c.sequence,
+          occurrences: c.occurrences,
+          successRate: c.successRate,
+          suggestedId: c.suggestedId,
+          suggestedName: c.suggestedName,
+          suggestedDomain: c.suggestedDomain,
+        }));
+        output.candidatesNote = 'No known workflow matched, but these frequently observed tool sequences may be emerging workflows — formalize one with context-learnWorkflow.';
+      }
+    }
 
     return {
       content: [{ type: 'text', text: JSON.stringify(output) }],
@@ -168,6 +204,10 @@ export async function contextRecordOutcome(
         }],
       };
     }
+
+    // Explicit outcome wins over auto-tracking: cancel any active auto-tracking
+    // for this workflow BEFORE recording so the outcome is not double-counted.
+    getWorkflowTracker().notifyExplicitOutcome(params.workflowId);
 
     const outcome: WorkflowOutcome = {
       workflowId: params.workflowId,
@@ -233,6 +273,9 @@ export async function contextLearnFromDocs(
     for (const wf of workflows) {
       addLearnedWorkflow(wf);
     }
+    // Workflow set changed — keep the semantic intent index consistent even for
+    // same-id replacements, matching contextLearnWorkflow and importWorkflow.
+    invalidateIntentIndex();
 
     return {
       content: [{

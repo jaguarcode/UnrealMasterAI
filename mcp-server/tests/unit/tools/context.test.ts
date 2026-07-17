@@ -215,11 +215,14 @@ describe('workflow-knowledge', () => {
     expect(animWorkflows.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('every workflow has required fields', async () => {
-    const { getAllWorkflows } = await import(
+  it('every builtin workflow has required fields', async () => {
+    // Validate the curated builtin knowledge base only: getAllWorkflows() merges the
+    // learned store, which other test files mutate concurrently (shared UMA_DATA_DIR),
+    // so asserting over learned entries here is inherently racy.
+    const { getBuiltinWorkflows } = await import(
       '../../../src/tools/context/workflow-knowledge.js'
     );
-    for (const w of getAllWorkflows()) {
+    for (const w of getBuiltinWorkflows()) {
       expect(w.id).toBeTruthy();
       expect(w.name).toBeTruthy();
       expect(w.domain).toBeTruthy();

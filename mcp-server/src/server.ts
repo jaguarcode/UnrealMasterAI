@@ -19,6 +19,7 @@ import { SlateTemplateLoader } from './rag/slate-templates.js';
 import type { ToolContext } from './tools/tool-module.js';
 import { ToolHookManager } from './tools/tool-hooks.js';
 import { autoRegisterTools } from './tools/auto-register.js';
+import { registerIntelligenceHooks } from './tools/context/intelligence-hooks.js';
 
 /**
  * Server instructions embedded into the MCP initialization handshake.
@@ -85,6 +86,15 @@ Developer Request
 5. Python scripts follow standard pattern — @execute_wrapper, execute(params), make_result()/make_error().
 6. Spawn actors by full class path — e.g., /Script/Engine.TargetPoint, not just TargetPoint.
 7. Actor mobility — StaticMeshActors default to Static, set to Movable before runtime movement.
+
+## Living Intelligence (Automatic)
+- Every tool call is journaled automatically for usage stats and observed tool-to-tool adjacency.
+- After a high-confidence \`context-matchIntent\` (>= 0.5), the server auto-tracks that workflow and records its outcome once all steps complete — no action needed. An explicit \`context-recordOutcome\` still takes precedence and prevents double-counting.
+- Tool results may include a \`_uma\` block:
+  - On errors: \`_uma.hint\` (type "known-resolution") points to a matching past fix — call \`context-matchError\` for the full recovery steps and actions to avoid.
+  - On success: \`_uma.workflow\` reports auto-tracked progress ("2/4", nextSuggested) or completion.
+- New tools: \`context-suggestWorkflows\` (mine emerging workflow candidates from your usage) and \`context-getUsageStats\` (recent tools, per-tool stats, active workflow).
+- Opt out of \`_uma\` hint injection by setting env \`UMA_HINTS=off\` (journaling and auto-tracking continue).
 `.trim();
 
 interface ServerOptions {
@@ -102,7 +112,7 @@ export function createServer(logger: Logger, bridge: WebSocketBridge, options: S
   const server = new McpServer(
     {
       name: 'unreal-master-agent',
-      version: '0.5.0',
+      version: '0.6.0',
     },
     {
       instructions: SERVER_INSTRUCTIONS,
@@ -138,6 +148,10 @@ export function createServer(logger: Logger, bridge: WebSocketBridge, options: S
 
   // Set up tool hooks
   const hookManager = new ToolHookManager();
+
+  // Wire the living-intelligence layer: usage journaling, auto workflow-outcome
+  // tracking, and proactive _uma hint injection. Must be registered before tools.
+  registerIntelligenceHooks(hookManager);
 
   // Custom tools directory (relative to mcp-server/)
   const customToolsDir = path.resolve(process.cwd(), 'custom-tools');

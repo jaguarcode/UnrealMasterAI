@@ -1,10 +1,27 @@
+/**
+ * Recommendation Engine (v2, usage-weighted).
+ * Suggests the next tool(s) to call given recent tool usage by blending two
+ * signals per candidate transition:
+ *   - STATIC workflow adjacency: how often "toolA → toolB" appears across the
+ *     known workflow knowledge base (unchanged from v1).
+ *   - OBSERVED session adjacency: how often the developer actually chained
+ *     "toolA → toolB" in their own recent sessions, weighted by success rate
+ *     and support (from the UsageTracker).
+ *
+ * When called with no `recentTools`, the engine reads the server's automatically
+ * tracked recent history from the UsageTracker; an explicit empty array still
+ * returns no recommendations.
+ */
 import { getAllWorkflows, type Workflow } from './workflow-knowledge.js';
+import { getUsageTracker } from './usage-tracker.js';
 
 export interface Recommendation {
   tool: string;
   reason: string;
   confidence: number;
   fromWorkflow: string;
+  /** Which signal(s) produced this recommendation. */
+  source?: 'workflow' | 'observed' | 'both';
 }
 
 interface AdjacencyEntry {
@@ -14,6 +31,11 @@ interface AdjacencyEntry {
 
 // Maps "toolA" -> "toolB" -> { count, workflows[] }
 type AdjacencyMap = Map<string, Map<string, AdjacencyEntry>>;
+
+/** Weight multiplier applied to observed (real-usage) transitions. */
+const OBSERVED_WEIGHT = 2.0;
+/** Observed support saturates (min(count/5, 1)) at this many occurrences. */
+const OBSERVED_SUPPORT_SATURATION = 5;
 
 function buildAdjacencyMap(workflows: Workflow[]): AdjacencyMap {
   const map: AdjacencyMap = new Map();
@@ -39,81 +61,154 @@ function buildAdjacencyMap(workflows: Workflow[]): AdjacencyMap {
   return map;
 }
 
+/** Internal accumulator for a candidate next-tool. */
+interface ScoreData {
+  score: number;
+  reason: string;
+  fromWorkflow: string;
+  hasStatic: boolean;
+  hasObserved: boolean;
+}
+
 export function getRecommendations(
-  recentTools: string[],
+  recentTools?: string[],
   domain?: string,
   maxResults: number = 5,
 ): Recommendation[] {
-  if (recentTools.length === 0) return [];
+  // No argument → use the server's automatically tracked recent history.
+  // An EXPLICIT empty array still short-circuits (preserves v1 contract).
+  const tools = recentTools === undefined ? getUsageTracker().getRecentTools(5) : recentTools;
+  if (tools.length === 0) return [];
 
   const workflows = getAllWorkflows();
   const adjacency = buildAdjacencyMap(workflows);
-  const recentSet = new Set(recentTools);
+  const observed = getUsageTracker().getObservedAdjacency();
+  const recentSet = new Set(tools);
 
-  // Count total adjacency entries per (from, to) pair to normalize confidence
-  let maxCount = 1;
+  // Count max static adjacency to normalize the static frequency score.
+  let maxStaticCount = 1;
   for (const neighbors of adjacency.values()) {
     for (const entry of neighbors.values()) {
-      if (entry.count > maxCount) maxCount = entry.count;
+      if (entry.count > maxStaticCount) maxStaticCount = entry.count;
     }
   }
 
-  // Accumulate scores: tool -> { score, reason, bestWorkflow }
-  const scores = new Map<string, { score: number; reason: string; fromWorkflow: string }>();
+  const scores = new Map<string, ScoreData>();
 
-  for (let i = 0; i < recentTools.length; i++) {
-    const tool = recentTools[i];
-    // More recent tools (higher index) get higher weight
-    const recencyWeight = (i + 1) / recentTools.length;
+  /** Merge a computed edge score into the running accumulator for `nextTool`. */
+  function contribute(
+    nextTool: string,
+    edgeScore: number,
+    reason: string,
+    fromWorkflow: string,
+    kind: 'static' | 'observed',
+  ): void {
+    const existing = scores.get(nextTool);
+    if (!existing) {
+      scores.set(nextTool, {
+        score: edgeScore,
+        reason,
+        fromWorkflow,
+        hasStatic: kind === 'static',
+        hasObserved: kind === 'observed',
+      });
+      return;
+    }
 
+    if (edgeScore > existing.score) {
+      // Higher-scoring edge wins the reason/source; matches v1 replace semantics.
+      existing.score = edgeScore;
+      existing.reason = reason;
+      existing.fromWorkflow = fromWorkflow;
+    } else {
+      existing.score += edgeScore * 0.5;
+    }
+    if (kind === 'static') existing.hasStatic = true;
+    else existing.hasObserved = true;
+  }
+
+  for (let i = 0; i < tools.length; i++) {
+    const tool = tools[i];
+    // More recent tools (higher index) get higher weight.
+    const recencyWeight = (i + 1) / tools.length;
+
+    // ── Static workflow adjacency ──
     const neighbors = adjacency.get(tool);
-    if (!neighbors) continue;
+    if (neighbors) {
+      for (const [nextTool, entry] of neighbors.entries()) {
+        if (recentSet.has(nextTool)) continue;
 
-    for (const [nextTool, entry] of neighbors.entries()) {
-      if (recentSet.has(nextTool)) continue;
-
-      const frequencyScore = entry.count / maxCount;
-      let domainBoost = 0;
-
-      if (domain) {
-        const matchingWorkflows = entry.workflows.filter((w) => w.domain === domain);
-        if (matchingWorkflows.length > 0) {
-          domainBoost = 0.2 * (matchingWorkflows.length / entry.workflows.length);
+        const frequencyScore = entry.count / maxStaticCount;
+        let domainBoost = 0;
+        if (domain) {
+          const matchingWorkflows = entry.workflows.filter((w) => w.domain === domain);
+          if (matchingWorkflows.length > 0) {
+            domainBoost = 0.2 * (matchingWorkflows.length / entry.workflows.length);
+          }
         }
-      }
 
-      const rawScore = frequencyScore * recencyWeight + domainBoost;
+        const edgeScore = frequencyScore * recencyWeight + domainBoost;
 
-      // Pick the best workflow name for the reason string
-      const bestWorkflow =
-        domain
+        const bestWorkflow = domain
           ? (entry.workflows.find((w) => w.domain === domain) ?? entry.workflows[0])
           : entry.workflows[0];
 
-      const existing = scores.get(nextTool);
-      if (!existing || rawScore > existing.score) {
-        scores.set(nextTool, {
-          score: rawScore,
-          reason: `Commonly follows '${tool}' in the '${bestWorkflow.name}' workflow`,
-          fromWorkflow: bestWorkflow.id,
-        });
-      } else {
-        // Accumulate score across multiple source tools
-        existing.score += rawScore * 0.5;
+        contribute(
+          nextTool,
+          edgeScore,
+          `Commonly follows '${tool}' in the '${bestWorkflow.name}' workflow`,
+          bestWorkflow.id,
+          'static',
+        );
+      }
+    }
+
+    // ── Observed (real-usage) adjacency ──
+    const observedNeighbors = observed.get(tool);
+    if (observedNeighbors) {
+      for (const [nextTool, stat] of observedNeighbors.entries()) {
+        if (recentSet.has(nextTool)) continue;
+        if (stat.count <= 0) continue;
+
+        const successRate = stat.successCount / stat.count;
+        const support = Math.min(stat.count / OBSERVED_SUPPORT_SATURATION, 1);
+        const edgeScore = OBSERVED_WEIGHT * successRate * support * recencyWeight;
+        if (edgeScore <= 0) continue;
+
+        const pct = Math.round(successRate * 100);
+        contribute(
+          nextTool,
+          edgeScore,
+          `Observed ${stat.count}× in your recent sessions (${pct}% success)`,
+          'observed',
+          'observed',
+        );
       }
     }
   }
 
-  // Normalise scores to [0, 1]
+  // Normalise scores to [0, 1].
   const allScores = Array.from(scores.values()).map((v) => v.score);
   const maxScore = allScores.length > 0 ? Math.max(...allScores) : 1;
 
-  const results: Recommendation[] = Array.from(scores.entries()).map(([tool, data]) => ({
-    tool,
-    reason: data.reason,
-    confidence: Math.min(1, data.score / maxScore),
-    fromWorkflow: data.fromWorkflow,
-  }));
+  const results: Recommendation[] = Array.from(scores.entries()).map(([tool, data]) => {
+    const source: Recommendation['source'] =
+      data.hasStatic && data.hasObserved ? 'both' : data.hasObserved ? 'observed' : 'workflow';
+
+    // For combined signals, phrase the reason to reflect both.
+    let reason = data.reason;
+    if (source === 'both' && !reason.startsWith('Observed')) {
+      reason = `${reason}; also observed in your recent sessions`;
+    }
+
+    return {
+      tool,
+      reason,
+      confidence: Math.min(1, data.score / maxScore),
+      fromWorkflow: data.fromWorkflow,
+      source,
+    };
+  });
 
   results.sort((a, b) => b.confidence - a.confidence);
   return results.slice(0, maxResults);
