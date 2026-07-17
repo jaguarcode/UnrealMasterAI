@@ -16,6 +16,7 @@
 #include "Dom/JsonValue.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "Misc/EngineVersion.h"
 
 #define LOCTEXT_NAMESPACE "FUnrealMasterAgentModule"
 
@@ -420,6 +421,10 @@ void FUnrealMasterAgentModule::StartupModule()
             Response.Id = Message.Id;
             TSharedPtr<FJsonObject> ResultObj = MakeShareable(new FJsonObject());
             ResultObj->SetStringField(TEXT("status"), TEXT("pong"));
+            // ueVersion is part of the documented ping contract (docs/websocket-protocol.md)
+            // and enables version-aware behavior on the MCP server side.
+            ResultObj->SetStringField(TEXT("ueVersion"),
+                FEngineVersion::Current().ToString(EVersionComponent::Patch));
             Response.Result = ResultObj;
             return Response;
         }));
