@@ -13,17 +13,17 @@
 | Layer | Component | Maturity | Notes |
 |-------|-----------|----------|-------|
 | L1 | Claude Code (MCP Host) | Stable | External — not our code |
-| L2 | MCP Bridge (Node.js/TS) | **High** | 188 tools registered via auto-registration architecture (37 domain index.ts modules), clean ToolRegistry with dynamic add/remove, Zod schemas |
+| L2 | MCP Bridge (Node.js/TS) | **High** | 190 tools registered via auto-registration architecture (37 domain index.ts modules), clean ToolRegistry with dynamic add/remove, Zod schemas |
 | L3 | UE Plugin (C++) | **High** | 18 source files (9 .cpp + 9 .h). WebSocket client, Blueprint serializer/manipulator, Live Coding, Python bridge, Approval gate. GameThread dispatch correctly enforced. |
 | L3.5 | Python Scripts | **High** | 166 scripts — 165/166 use `@execute_wrapper` consistently. But only 46/166 call `validate_path()` for input validation. |
 | L4 | Engine APIs | N/A | UE internals — consumed, not owned |
 | Cross | Context Intelligence | **High** | 10+ files with mature intent matching (36 synonym groups), multi-signal error similarity engine, recommendation engine, analytics dashboard. 89 workflows (21 builtin + 68 learned), 25 error resolutions seeded. |
-| Cross | Testing | **High** | 1228 TS tests across 73 files (69 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz + resilience tests. Test isolation ensures production data survives test runs. |
+| Cross | Testing | **High** | 1336 TS tests across 79 files (75 unit + 4 integration) + 58 Python tests. Vitest + v8 coverage with thresholds. Snapshot + fuzz + resilience tests. Test isolation ensures production data survives test runs. |
 | Cross | Documentation | **Medium-High** | Good architecture docs. Port/lint/trademark issues fixed (Phase 0). README has npx quick-start and troubleshooting (Phase 2). Analytics dashboard at docs/analytics.html. |
 
 ### 1.2 Strengths
 
-- **Massive tool coverage**: 188 MCP tools across 37 domains — the most comprehensive UE MCP integration available
+- **Massive tool coverage**: 190 MCP tools across 37 domains — the most comprehensive UE MCP integration available
 - **Clean codebase**: Zero TODO/FIXME/HACK markers in production code
 - **Consistent patterns**: All 166 Python scripts follow `@execute_wrapper` / `execute(params)` / `make_result()` pattern
 - **Self-healing architecture**: Compile error capture → parse → fix → retry loop (3 max)
@@ -32,7 +32,7 @@
 - **Minimal dependencies**: Only 4 runtime deps (MCP SDK, ws, zod, uuid) — small attack surface
 - **Solid test infrastructure**: Vitest with coverage support, unit + integration test separation
 - **Polished landing page**: SEO-optimized GitHub Pages site with professional design
-- **UE version range**: Supports 5.4 through 5.7
+- **UE version range**: Supports 5.4 through 5.8
 
 ### 1.3 Weaknesses & Gaps
 
@@ -44,7 +44,7 @@
 | ~~**Python Code Injection**~~ | ~~Fixed in Phase 0~~ — Base64 encoding in `UMAPythonBridge.cpp` | ~~High~~ **Fixed** |
 | ~~**Versioning**~~ | ~~Fixed in Phase 0~~ — All versions harmonized to `0.1.0` | ~~High~~ **Fixed** |
 | ~~**npm Publishing**~~ | ~~Fixed in Phase 2~~ — `"private"` removed, `bin`, `files`, `engines`, `keywords`, `repository` fields added | ~~High~~ **Fixed** |
-| **API Docs Stale** | `docs/api-reference/mcp-tools.md` references 85 tools (actual: 188) | High |
+| **API Docs Stale** | `docs/api-reference/mcp-tools.md` references 85 tools (actual: 190) | High |
 | **Path Validation Gap** | Only 46/166 Python scripts call `validate_path()` — 120 scripts skip input validation | High |
 | ~~**Safety Gap**~~ | ~~Fixed in Phase 0~~ — `actor-setArrayRef` added to `WARN_TOOLS` in `safety.ts` | ~~Medium~~ **Fixed** |
 | ~~**Learning System Cold**~~ | ~~`learned-workflows.json` is empty; `error-resolutions.json` has placeholder data~~ | ~~Medium~~ **Fixed** |
@@ -193,7 +193,7 @@
 > *Goal: Production release with active community*
 
 #### 5.1 v1.0 Release Criteria
-- [ ] All 188 tools have individual documentation with examples
+- [ ] All 190 tools have individual documentation with examples
 - [ ] E2E test suite passes on UE 5.4, 5.5, 5.6, 5.7
 - [ ] npm package published with stable API
 - [ ] UE plugin downloadable from GitHub Releases
@@ -262,12 +262,12 @@
 | Contributors | 1 | 5 | 20 |
 | Open issues | — | <30 | <50 |
 | Test coverage | ~80%* | 85% | 90% |
-| Tool count | 188 | 200 | 220+ |
+| Tool count | 190 | 200 | 220+ |
 | Python scripts | 166 | 180 | 200+ |
 | Learned workflows | 68 (seeded) | 80 | 100+ (organic) |
 | Error resolutions | 25 (seeded) | 40 | 60+ (organic) |
-| Documented tools | ~85 | 188 | 220+ |
-| Supported UE versions | 5.4-5.7 | 5.4-5.7 | 5.4-5.8 |
+| Documented tools | 190 | 188 | 220+ |
+| Supported UE versions | 5.4-5.8 | 5.4-5.7 | 5.4-5.8 |
 | Supported LLM hosts | 5 | 5 | 5+ |
 
 *estimated — no coverage reporting in CI yet
@@ -288,7 +288,7 @@
 | Competitor releases (Epic official AI tools) | Medium | High | Differentiate on openness, extensibility, multi-LLM support |
 | Doc-code drift worsening | High | Medium | Auto-generate API docs from source, CI doc tests |
 | PythonScriptPlugin not available | Medium | Medium | Graceful error message + doc requirement. Not default in all UE distributions. |
-| Stale learned data after codebase changes | Medium | Low | Add TTL/invalidation to `error-resolutions.json` and `workflow-outcomes.json` |
+| Stale learned data after codebase changes | Medium | Low | **Partially mitigated** in v0.6.0: outcome confidence now uses exponential time decay (90-day half-life weighting in `getWeightedOutcomeStats`) so stale outcomes lose influence automatically. Full TTL/invalidation for `error-resolutions.json` still open |
 | ~~Epic Games trademark claim~~ | ~~Low~~ | ~~High~~ | ~~**MITIGATED** in Phase 0: Disclaimer added to README footer~~ |
 
 ---

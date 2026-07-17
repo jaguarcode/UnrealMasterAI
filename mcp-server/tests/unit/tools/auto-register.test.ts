@@ -3,9 +3,9 @@ import { getAllBuiltinTools } from '../../../src/tools/auto-register.js';
 
 describe('auto-register', () => {
   describe('getAllBuiltinTools', () => {
-    it('returns all 188 built-in tools', () => {
+    it('returns all 190 built-in tools', () => {
       const tools = getAllBuiltinTools();
-      expect(tools.length).toBe(188);
+      expect(tools.length).toBe(190);
     });
 
     it('has no duplicate tool names', () => {

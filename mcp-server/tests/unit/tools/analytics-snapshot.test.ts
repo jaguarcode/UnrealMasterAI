@@ -1,11 +1,25 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
+import { join } from 'path';
 import { generateSnapshot, type AnalyticsSnapshot } from '../../../src/cli/analytics.js';
+import { getAllBuiltinTools } from '../../../src/tools/auto-register.js';
+import { getBuiltinWorkflowCount } from '../../../src/tools/context/workflow-knowledge.js';
+
+// vitest.config.ts forces UMA_DATA_DIR='./test-data' for the whole run, so
+// analytics.ts resolves BOTH its DATA_DIR (workflows/outcomes/error-resolutions)
+// and USAGE_DATA_DIR (tool-usage.json) to that same directory. test-data/ is
+// gitignored and shared across suites — we only ever touch tool-usage.json here
+// (no other suite writes that file) and always remove it afterwards so we never
+// pollute workflow-outcomes.json / learned-workflows.json / error-resolutions.json
+// used elsewhere.
+const USAGE_FIXTURE_PATH = join(process.cwd(), 'test-data', 'tool-usage.json');
 
 describe('generateSnapshot()', () => {
   let snapshot: AnalyticsSnapshot;
 
-  // Call once and reuse — generateSnapshot() reads from disk but has no side effects.
-  snapshot = generateSnapshot();
+  beforeAll(() => {
+    snapshot = generateSnapshot();
+  });
 
   it('returns an object with all required top-level keys', () => {
     expect(snapshot).toHaveProperty('generatedAt');
@@ -13,10 +27,11 @@ describe('generateSnapshot()', () => {
     expect(snapshot).toHaveProperty('tools');
     expect(snapshot).toHaveProperty('outcomes');
     expect(snapshot).toHaveProperty('errorResolutions');
+    expect(snapshot).toHaveProperty('usage');
   });
 
-  it('workflows.builtin equals 20 (hardcoded constant)', () => {
-    expect(snapshot.workflows.builtin).toBe(20);
+  it('workflows.builtin matches getBuiltinWorkflowCount() (derived, not hardcoded)', () => {
+    expect(snapshot.workflows.builtin).toBe(getBuiltinWorkflowCount());
   });
 
   it('workflows.total >= workflows.builtin', () => {
@@ -33,8 +48,8 @@ describe('generateSnapshot()', () => {
     }
   });
 
-  it('tools.totalRegistered equals 188', () => {
-    expect(snapshot.tools.totalRegistered).toBe(188);
+  it('tools.totalRegistered matches getAllBuiltinTools().length (derived, not hardcoded)', () => {
+    expect(snapshot.tools.totalRegistered).toBe(getAllBuiltinTools().length);
   });
 
   it('tools.topToolsByFrequency is an array', () => {
@@ -71,10 +86,70 @@ describe('generateSnapshot()', () => {
     }
   });
 
-  it('workflows.learned > 0 when learned-workflows.json has items', () => {
-    // learned-workflows.json currently has items: [] so learned === 0.
-    // This test asserts the relationship: learned equals total minus builtin.
+  it('workflows.learned equals total minus builtin', () => {
     expect(snapshot.workflows.learned).toBe(snapshot.workflows.total - snapshot.workflows.builtin);
     expect(snapshot.workflows.learned).toBeGreaterThanOrEqual(0);
+  });
+
+  it('usage is null when tool-usage.json does not exist', () => {
+    // No fixture written for this describe block — test-data/tool-usage.json
+    // is not created by any other suite.
+    expect(existsSync(USAGE_FIXTURE_PATH)).toBe(false);
+    expect(snapshot.usage).toBeNull();
+  });
+});
+
+describe('generateSnapshot() usage section with fixture data', () => {
+  let snapshot: AnalyticsSnapshot;
+
+  beforeAll(() => {
+    mkdirSync(join(process.cwd(), 'test-data'), { recursive: true });
+    const now = Date.now();
+    writeFileSync(
+      USAGE_FIXTURE_PATH,
+      JSON.stringify({
+        version: 1,
+        updatedAt: now,
+        items: [
+          { tool: 'actor-spawn', success: true, durationMs: 12, timestamp: now - 3000 },
+          { tool: 'actor-spawn', success: true, durationMs: 15, timestamp: now - 2000 },
+          { tool: 'actor-spawn', success: false, durationMs: 20, timestamp: now - 1000 },
+          { tool: 'blueprint-createNode', success: true, durationMs: 8, timestamp: now - 500 },
+        ],
+      }, null, 2),
+      'utf-8',
+    );
+    snapshot = generateSnapshot();
+  });
+
+  afterAll(() => {
+    rmSync(USAGE_FIXTURE_PATH, { force: true });
+  });
+
+  it('usage is not null when tool-usage.json exists with items', () => {
+    expect(snapshot.usage).not.toBeNull();
+  });
+
+  it('usage.totalCalls matches the number of fixture items', () => {
+    expect(snapshot.usage?.totalCalls).toBe(4);
+  });
+
+  it('usage.overallSuccessRate is 0.75 (3 of 4 succeeded)', () => {
+    expect(snapshot.usage?.overallSuccessRate).toBe(0.75);
+  });
+
+  it('usage.topByCalls ranks actor-spawn first with calls=3 and successRate=0.67', () => {
+    const top = snapshot.usage?.topByCalls ?? [];
+    expect(top.length).toBe(2);
+    expect(top[0].tool).toBe('actor-spawn');
+    expect(top[0].calls).toBe(3);
+    expect(top[0].successRate).toBeCloseTo(0.67, 2);
+    expect(top[1].tool).toBe('blueprint-createNode');
+    expect(top[1].calls).toBe(1);
+    expect(top[1].successRate).toBe(1);
+  });
+
+  it('usage.topByCalls is capped at 10 entries', () => {
+    expect((snapshot.usage?.topByCalls ?? []).length).toBeLessThanOrEqual(10);
   });
 });

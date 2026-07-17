@@ -11,7 +11,7 @@ Before starting, ensure you have the following installed:
 - **Node.js** 20 or later
 - **npm** 10 or later
 - **TypeScript** 5.5+ (installed automatically via devDependencies)
-- **Unreal Engine** 5.4, 5.5, 5.6, or 5.7
+- **Unreal Engine** 5.4, 5.5, 5.6, 5.7, or 5.8 (5.8 source builds on Windows require Visual Studio 2026 / MSVC v145)
 - **Claude Code** (latest version) with MCP support enabled
 
 Check your Node.js and npm versions:

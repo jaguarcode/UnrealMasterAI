@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<!-- v0.5.0 -->
+<!-- v0.6.0 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unreal Master Agent - AI-Powered Unreal Engine Automation</title>
-<meta name="description" content="Open-source MCP bridge giving Claude Code full control over Unreal Engine. 188 tools, 37 domains, 166 Python scripts.">
+<meta name="description" content="Open-source MCP bridge giving Claude Code full control over Unreal Engine. 190 tools, 37 domains, self-growing workflow intelligence, UE 5.4–5.8 support.">
 <link rel="canonical" href="https://jaguarcode.github.io/UnrealMasterAI/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jaguarcode.github.io/UnrealMasterAI/">
 <meta property="og:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
-<meta property="og:description" content="Open-source MCP bridge: 188 tools across 37 domains. Claude Code meets Unreal Engine.">
+<meta property="og:description" content="Open-source MCP bridge: 190 tools across 37 domains, self-growing workflow intelligence, UE 5.4–5.8 support.">
 <meta property="og:site_name" content="Unreal Master Agent">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Unreal Master Agent - AI-Powered Unreal Engine Automation">
-<meta name="twitter:description" content="Open-source MCP bridge: 188 tools across 37 domains. Claude Code meets Unreal Engine.">
-<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI agent, Blueprint automation, game development, open source, Model Context Protocol, UE5">
+<meta name="twitter:description" content="Open-source MCP bridge: 190 tools across 37 domains, self-growing workflow intelligence, UE 5.4–5.8 support.">
+<meta name="keywords" content="Unreal Engine, Claude Code, MCP, AI agent, Blueprint automation, game development, open source, Model Context Protocol, UE5, workflow intelligence">
 <meta name="author" content="JaguarCode">
 <meta name="robots" content="index, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -251,6 +251,63 @@ a{color:inherit;text-decoration:none}
 .feature-desc{
   font-size:0.9rem;color:var(--gray-light);
   line-height:1.65;
+}
+
+/* ─── COMPARISON TABLE ─── */
+.compare-table-wrap{
+  margin-top:3rem;
+  border:1px solid var(--border-subtle);
+  border-radius:12px;
+  overflow-x:auto;
+}
+.compare-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:640px;
+}
+.compare-table thead tr{
+  background:var(--card-bg);
+  border-bottom:1px solid var(--border-subtle);
+}
+.compare-table th{
+  text-align:left;
+  padding:1rem 1.5rem;
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gray-mid);
+}
+.compare-subnote{
+  display:block;
+  font-size:0.68rem;font-weight:500;
+  text-transform:none;letter-spacing:0;
+  color:var(--gray-dark);
+  margin-top:0.2rem;
+}
+.compare-table tbody tr{
+  background:var(--near-black);
+  border-bottom:1px solid var(--border-subtle);
+  transition:background 0.2s;
+}
+.compare-table tbody tr:last-child{border-bottom:none}
+.compare-table tbody tr:hover{background:var(--card-bg)}
+.compare-table td{
+  padding:1rem 1.5rem;
+  font-size:0.875rem;
+  line-height:1.55;
+  vertical-align:top;
+}
+.compare-table td:first-child{
+  color:var(--white);font-weight:600;
+  white-space:nowrap;
+}
+.compare-yes{color:var(--gray-light)}
+.compare-yes::before{content:'✓ ';color:#4ade80;font-weight:700}
+.compare-no{color:var(--gray-mid)}
+.compare-no::before{content:'– ';color:var(--gray-dark);font-weight:700}
+.compare-note{
+  margin-top:1.5rem;
+  font-size:0.85rem;color:var(--gray-mid);
+  line-height:1.6;max-width:720px;
 }
 
 /* ─── ARCHITECTURE ─── */
@@ -502,6 +559,8 @@ a{color:inherit;text-decoration:none}
     <a href="#" class="nav-logo">Unreal Master Agent</a>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
+      <li><a href="#intelligence">Intelligence</a></li>
+      <li><a href="#compare">Compare</a></li>
       <li><a href="#architecture">Architecture</a></li>
       <li><a href="#tools">Tools</a></li>
       <li><a href="#install">Install</a></li>
@@ -519,6 +578,8 @@ a{color:inherit;text-decoration:none}
 <div class="mobile-menu" id="mobileMenu" role="navigation">
   <ul>
     <li><a href="#features" onclick="closeMobile()">Features</a></li>
+    <li><a href="#intelligence" onclick="closeMobile()">Intelligence</a></li>
+    <li><a href="#compare" onclick="closeMobile()">Compare</a></li>
     <li><a href="#architecture" onclick="closeMobile()">Architecture</a></li>
     <li><a href="#tools" onclick="closeMobile()">Tools</a></li>
     <li><a href="#install" onclick="closeMobile()">Install</a></li>
@@ -534,7 +595,7 @@ a{color:inherit;text-decoration:none}
   <div class="hero-inner">
     <div class="hero-label fade-up">Open Source</div>
     <h1 class="hero-headline fade-up delay-1">AI-Powered Unreal<br>Engine Automation</h1>
-    <p class="hero-sub fade-up delay-2">188 tools across 37 domains. Give Claude full control over Blueprints, materials, levels, sequencer, AI, and more — through natural language.</p>
+    <p class="hero-sub fade-up delay-2">190 curated tools across 37 domains, with a self-growing workflow intelligence layer that learns from every session. Give Claude full control over Blueprints, materials, levels, sequencer, AI, and more — on Unreal Engine 5.4 through 5.8.</p>
     <div class="hero-actions fade-up delay-3">
       <a href="#install" class="btn-primary">Get Started</a>
       <a href="https://github.com/jaguarcode/UnrealMasterAI" target="_blank" rel="noopener" class="btn-outline">View on GitHub</a>
@@ -549,7 +610,7 @@ a{color:inherit;text-decoration:none}
 <div class="stats-bar" aria-label="Project statistics">
   <div class="stats-inner">
     <div class="stat-item fade-up">
-      <span class="stat-number">188</span>
+      <span class="stat-number">190</span>
       <span class="stat-label">Tools</span>
     </div>
     <div class="stat-item fade-up delay-1">
@@ -557,19 +618,23 @@ a{color:inherit;text-decoration:none}
       <span class="stat-label">Domains</span>
     </div>
     <div class="stat-item fade-up delay-2">
-      <span class="stat-number">1,156</span>
+      <span class="stat-number">1,336</span>
       <span class="stat-label">Tests</span>
     </div>
     <div class="stat-item fade-up delay-3">
+      <span class="stat-number">89</span>
+      <span class="stat-label">Workflows</span>
+    </div>
+    <div class="stat-item fade-up delay-4">
       <span class="stat-number">166</span>
       <span class="stat-label">Scripts</span>
     </div>
-    <div class="stat-item fade-up delay-4">
-      <span class="stat-number">v0.5.0</span>
+    <div class="stat-item fade-up delay-5">
+      <span class="stat-number">v0.6.0</span>
       <span class="stat-label">Version</span>
     </div>
-    <div class="stat-item fade-up delay-5">
-      <span class="stat-number">UE 5.4–5.7</span>
+    <div class="stat-item fade-up delay-1">
+      <span class="stat-number">UE 5.4–5.8</span>
       <span class="stat-label">Compatibility</span>
     </div>
   </div>
@@ -630,6 +695,121 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- LIVING INTELLIGENCE -->
+<section class="section section-alt section-border-top" id="intelligence" aria-labelledby="intelligence-heading">
+  <div class="container">
+    <div class="features-header fade-up">
+      <p class="section-label">New in v0.6.0</p>
+      <h2 class="section-headline" id="intelligence-heading">Living Intelligence</h2>
+      <p class="section-sub">The knowledge base no longer waits for you to teach it. Every tool call now feeds a loop that observes, tracks, learns, and assists — automatically.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="#666" stroke-width="1.5"/><path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z" stroke="#666" stroke-width="1.5"/></svg>
+        </div>
+        <h3 class="feature-title">Observe — Auto Journaling</h3>
+        <p class="feature-desc">Every tool call is journaled server-side automatically, with zero extra calls required from the AI.</p>
+      </div>
+      <div class="feature-card fade-up delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h3l2-5 2 10 2-5h3" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Track — Auto Outcome Recording</h3>
+        <p class="feature-desc">Workflow outcomes are recorded automatically once a high-confidence intent match completes its required steps.</p>
+      </div>
+      <div class="feature-card fade-up delay-2">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v3M8 12v3M1 8h3M12 8h3M3.5 3.5l2 2M10.5 10.5l2 2M12.5 3.5l-2 2M5.5 10.5l-2 2" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Learn — Sequence Mining</h3>
+        <p class="feature-desc">context-suggestWorkflows mines the usage journal for frequent tool sequences and surfaces them as candidates the AI can formalize into new workflows — a self-growing knowledge base.</p>
+      </div>
+      <div class="feature-card fade-up delay-3">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13l3.5-3.5M8 2l2 2-6 6-2.5.5.5-2.5L8 2z" stroke="#666" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Assist — Proactive Hints</h3>
+        <p class="feature-desc">Tool results carry an opt-out <code style="font-family:var(--mono);font-size:0.8rem">_uma</code> hint block: known-error fixes on failure, progress and next-step suggestions on success.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="#666" stroke-width="1.5"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="#666" stroke-width="1.5"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="#666" stroke-width="1.5"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="#666" stroke-width="1.5"/></svg>
+        </div>
+        <h3 class="feature-title">Hybrid Intent Matching</h3>
+        <p class="feature-desc">TF-IDF hybrid matching combined with 90-day time-decayed outcome confidence — recent successes weigh more than stale ones.</p>
+      </div>
+      <div class="feature-card fade-up delay-1">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12V4l4 3 4-3v8M14 4v8" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Usage-Weighted Recommendations</h3>
+        <p class="feature-desc">context-recommend and the new context-getUsageStats tool surface next-tool suggestions weighted by real usage, visible live on the analytics dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY UNREAL MASTER AGENT -->
+<section class="section section-border-top" id="compare" aria-labelledby="compare-heading">
+  <div class="container">
+    <div class="features-header fade-up">
+      <p class="section-label">Positioning</p>
+      <h2 class="section-headline" id="compare-heading">Why Unreal Master Agent?</h2>
+      <p class="section-sub">Epic now ships a first-party MCP plugin in UE 5.8 (Experimental). Here's how the two compare — and why they aren't mutually exclusive.</p>
+    </div>
+    <div class="compare-table-wrap fade-up delay-1">
+      <table class="compare-table" aria-label="Comparison between Unreal Master Agent and Epic's Unreal MCP plugin">
+        <thead>
+          <tr>
+            <th scope="col">Dimension</th>
+            <th scope="col">Unreal Master Agent</th>
+            <th scope="col">Epic Unreal MCP <span class="compare-subnote">(UE 5.8, Experimental)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Curated tools</td>
+            <td class="compare-yes">190 tools across 37 domains</td>
+            <td class="compare-no">Experimental toolset registry</td>
+          </tr>
+          <tr>
+            <td>Self-growing intelligence</td>
+            <td class="compare-yes">Yes — 89 workflows, auto-learning, error-resolution memory</td>
+            <td class="compare-no">Not provided</td>
+          </tr>
+          <tr>
+            <td>UE versions</td>
+            <td class="compare-yes">5.4 – 5.8</td>
+            <td class="compare-no">5.8 only</td>
+          </tr>
+          <tr>
+            <td>MCP hosts / transport</td>
+            <td class="compare-yes">All MCP hosts, incl. stdio — UE connects out over WebSocket</td>
+            <td class="compare-no">HTTP + SSE only</td>
+          </tr>
+          <tr>
+            <td>Self-healing compile loop</td>
+            <td class="compare-yes">Yes — automatic fix-and-retry, up to 3 attempts</td>
+            <td class="compare-no">Not provided</td>
+          </tr>
+          <tr>
+            <td>Community workflow marketplace</td>
+            <td class="compare-yes">Yes — importable workflow gallery</td>
+            <td class="compare-no">Not provided</td>
+          </tr>
+          <tr>
+            <td>Maturity</td>
+            <td class="compare-yes">1,336 tests, circuit breaker, safety gates</td>
+            <td class="compare-no">Experimental</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="compare-note fade-up delay-2">Epic shipping a first-party MCP plugin validates the category. Both can run side-by-side against the same UE instance — different ports and protocols, no conflict.</p>
+  </div>
+</section>
+
 <!-- ARCHITECTURE -->
 <section class="section section-alt section-border-top" id="architecture" aria-labelledby="arch-heading">
   <div class="container">
@@ -652,7 +832,7 @@ a{color:inherit;text-decoration:none}
       <div class="arch-layer fade-up delay-2">
         <p class="arch-layer-num">Layer 02</p>
         <h3 class="arch-layer-title">MCP Bridge Server — Node.js / TypeScript</h3>
-        <p class="arch-layer-desc">188 registered tools across 37 domains. Auto-registration architecture with domain index.ts modules, ToolHookManager, custom tool discovery, and extensible Python script support.</p>
+        <p class="arch-layer-desc">190 registered tools across 37 domains. Auto-registration architecture with domain index.ts modules, ToolHookManager, custom tool discovery, and extensible Python script support.</p>
       </div>
       <div class="arch-connector fade-up delay-2">
         <div class="arch-connector-line"></div>
@@ -671,7 +851,7 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="arch-layer fade-up delay-4">
         <p class="arch-layer-num">Layer 04</p>
-        <h3 class="arch-layer-title">Unreal Engine 5.4–5.7</h3>
+        <h3 class="arch-layer-title">Unreal Engine 5.4–5.8</h3>
         <p class="arch-layer-desc">Direct C++ and Python API calls into the engine. All editor API calls dispatched via GameThread to satisfy UE's thread-safety requirements.</p>
       </div>
     </div>
@@ -707,22 +887,22 @@ a{color:inherit;text-decoration:none}
       <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Debug</span><span class="tool-count">3 tools</span></div>
       <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Gameplay</span><span class="tool-count">4 tools</span></div>
       <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Source Control</span><span class="tool-count">3 tools</span></div>
-      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Editor</span><span class="tool-count">8 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">Editor</span><span class="tool-count">9 tools</span></div>
       <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Content</span><span class="tool-count">4 tools</span></div>
       <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">File</span><span class="tool-count">3 tools</span></div>
       <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Compilation</span><span class="tool-count">4 tools</span></div>
       <div class="tool-card fade-up" role="listitem"><span class="tool-name">Project</span><span class="tool-count">6 tools</span></div>
       <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Workflow</span><span class="tool-count">8 tools</span></div>
-      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Context</span><span class="tool-count">15 tools</span></div>
+      <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Context</span><span class="tool-count">18 tools</span></div>
       <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Python</span><span class="tool-count">3 tools</span></div>
       <div class="tool-card fade-up" role="listitem"><span class="tool-name">Slate</span><span class="tool-count">3 tools</span></div>
       <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Chat</span><span class="tool-count">1 tool</span></div>
       <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Refactor</span><span class="tool-count">1 tool</span></div>
       <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">Analyze</span><span class="tool-count">4 tools</span></div>
-      <div class="tool-card fade-up" role="listitem"><span class="tool-name">World Partition</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up" role="listitem"><span class="tool-name">World Partition</span><span class="tool-count">4 tools</span></div>
       <div class="tool-card fade-up delay-1" role="listitem"><span class="tool-name">Foliage</span><span class="tool-count">3 tools</span></div>
       <div class="tool-card fade-up delay-2" role="listitem"><span class="tool-name">Curve</span><span class="tool-count">3 tools</span></div>
-      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">PCG</span><span class="tool-count">3 tools</span></div>
+      <div class="tool-card fade-up delay-3" role="listitem"><span class="tool-name">PCG</span><span class="tool-count">4 tools</span></div>
       <div class="tool-card fade-up" role="listitem"><span class="tool-name">Geometry Script</span><span class="tool-count">3 tools</span></div>
     </div>
   </div>
@@ -738,6 +918,16 @@ a{color:inherit;text-decoration:none}
     <div class="changelog-list">
       <div class="changelog-entry fade-up delay-1">
         <div>
+          <span class="changelog-version">v0.6.0</span>
+        </div>
+        <div>
+          <p class="changelog-tag">Living Intelligence</p>
+          <h3 class="changelog-title">Self-Growing Workflow Knowledge Base, Hybrid Intent Matching, UE 5.8 Support</h3>
+          <p class="changelog-desc">New Living Intelligence layer: every tool call is auto-journaled, workflow outcomes are auto-recorded after high-confidence intent matches, and proactive <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">_uma</code> hints surface known-error fixes and next-step suggestions in tool results (opt out via <code style="font-family:var(--mono);font-size:0.8rem;color:var(--white);background:var(--border-subtle);padding:0.1rem 0.35rem;border-radius:3px">UMA_HINTS=off</code>). Sequence mining surfaces emerging workflow candidates for the AI to formalize into new workflows. Two new tools — context-suggestWorkflows and context-getUsageStats (190 total tools, 18 in the Context domain). Hybrid TF-IDF intent matching with 90-day time-decayed outcome confidence and usage-weighted next-tool recommendations. Analytics dashboard fixed and now shows live tool-usage stats. Declared support for Unreal Engine 5.8 following a full compatibility analysis (Windows source builds on 5.8 require Visual Studio 2026).</p>
+        </div>
+      </div>
+      <div class="changelog-entry fade-up delay-2">
+        <div>
           <span class="changelog-version">v0.5.0</span>
         </div>
         <div>
@@ -746,7 +936,7 @@ a{color:inherit;text-decoration:none}
           <p class="changelog-desc">server.ts refactored from 1490 to 158 lines. Tool registrations moved to 37 domain index.ts modules via auto-registration. ToolHookManager for pre/post execution hooks. Custom tool discovery from custom-tools/ directory. Custom Python scripts via Content/Python/uma_custom/. Two new tools: python-customExecute and python-listCustomScripts (188 total tools, 1228 tests).</p>
         </div>
       </div>
-      <div class="changelog-entry fade-up delay-2">
+      <div class="changelog-entry fade-up delay-3">
         <div>
           <span class="changelog-version">v0.4.3</span>
         </div>
@@ -756,7 +946,7 @@ a{color:inherit;text-decoration:none}
           <p class="changelog-desc">WebSocket authentication via shared secret with crypto.timingSafeEqual. Sliding-window rate limiting wrapping all 183 tools. Enhanced path traversal prevention blocking null bytes, encoded traversals, and UNC paths. Asset path validation in safety gate. Input validation audit across all tools.</p>
         </div>
       </div>
-      <div class="changelog-entry fade-up delay-3">
+      <div class="changelog-entry fade-up delay-4">
         <div>
           <span class="changelog-version">v0.4.2</span>
         </div>
@@ -766,7 +956,7 @@ a{color:inherit;text-decoration:none}
           <p class="changelog-desc">JSON structured logging with LOG_FORMAT env var and withContext(). OpenTelemetry-compatible tracing with W3C traceId/spanId and OTLP export. Performance dashboard with p50/p95/p99 latency percentiles. Error rate alerting via webhook with sliding window and cooldown.</p>
         </div>
       </div>
-      <div class="changelog-entry fade-up delay-4">
+      <div class="changelog-entry fade-up delay-5">
         <div>
           <span class="changelog-version">v0.4.1</span>
         </div>
@@ -802,7 +992,7 @@ a{color:inherit;text-decoration:none}
           </li>
           <li class="install-step">
             <span class="install-step-num" aria-hidden="true">3</span>
-            <span class="install-step-text">Open your project in UE 5.4–5.7, then start a Claude Code session and ask it anything</span>
+            <span class="install-step-text">Open your project in UE 5.4–5.8, then start a Claude Code session and ask it anything</span>
           </li>
         </ol>
       </div>

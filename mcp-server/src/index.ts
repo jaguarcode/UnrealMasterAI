@@ -74,6 +74,19 @@ async function main() {
   const rateLimiter = new RateLimiter();
   const mcpServer = createServer(logger, bridge, { rateLimiter });
 
+  // Best-effort: flush the usage journal on shutdown so tracked events survive.
+  const { getUsageTracker } = await import('./tools/context/usage-tracker.js');
+  const flushUsage = () => {
+    try {
+      getUsageTracker().flush();
+    } catch {
+      // Never block shutdown on a flush failure.
+    }
+  };
+  process.on('beforeExit', flushUsage);
+  process.once('SIGINT', () => { flushUsage(); process.exit(0); });
+  process.once('SIGTERM', () => { flushUsage(); process.exit(0); });
+
   await startTransport(mcpServer, transportType, { logger });
 }
 

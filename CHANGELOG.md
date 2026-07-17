@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-07-17
+
+### Added
+- **Automatic usage journaling**: post-hook on every tool call records success/failure/duration to `~/.unreal-master/data/tool-usage.json` (capped at 2000 events). New `src/tools/context/usage-tracker.ts`
+- **Automatic workflow outcome tracking**: after a high-confidence (>= 0.5) `context-matchIntent`, the server tracks the workflow and auto-records the outcome once its required steps complete (`src/tools/context/workflow-tracker.ts`). Explicit `context-recordOutcome` still takes precedence; idle 30-min tracking is silently discarded
+- **Proactive `_uma` hints in tool results**: on tool errors, a matching learned resolution (similarity >= 0.4) is surfaced inline; on success during a tracked workflow, progress and the next suggested tool are included. Opt out with `UMA_HINTS=off` (`src/tools/context/intelligence-hooks.ts`)
+- **Workflow candidate mining**: `src/tools/context/sequence-miner.ts` mines frequent tool sequences (n-grams, session-aware, deduped against known workflows) from the usage journal
+- **`context-suggestWorkflows`** tool: surfaces mined workflow candidates for formalization via `context-learnWorkflow`; also triggered automatically when `context-matchIntent` finds zero matches
+- **`context-getUsageStats`** tool: per-tool stats, recent tool sequence, and the currently active tracked workflow
+- **UE 5.8 compatibility analysis** (`docs/ue-5.8-compatibility.md`): full audit of the C++ plugin, all 166 Python scripts, and the Node server against UE 5.8 — Python API layer confirmed fully present in 5.8, migration checklist documented
+- **UE 5.8 support** (5.4 – 5.8): declared on the basis of the full compatibility analysis (docs/ue-5.8-compatibility.md); Windows source builds on 5.8 require VS2026
+- **"Why Unreal Master Agent?" comparison** vs Epic's built-in experimental Unreal MCP plugin (README + website)
+- `editor.ping` now emits `ueVersion` from the plugin (`FEngineVersion::Current()`), fulfilling the documented ping contract and enabling version-aware server behavior (pending in-editor compile verification)
+
+### Changed
+- **Hybrid intent matching**: TF-IDF index (reusing the RAG embedding store) blended additively with keyword scoring and UE synonyms
+- Outcome confidence now uses exponential time decay (90-day half-life) via new `getWeightedOutcomeStats` in `workflow-store.ts`
+- **Usage-weighted recommendations**: `context-recommend` blends observed tool transitions (success-weighted) with static workflow adjacency; `recentTools` is now optional and falls back to server-tracked history
+- Tool count: 188 → 190; tests: 1228 → 1336 across 79 files
+- Version bumped to 0.6.0
+
+### Fixed
+- Analytics dashboard (`docs/analytics.html`) previously read a schema the generator never produced, so charts always fell back to empty state; now aligned to the real nested schema and shows a live tool-usage section
+- `UMA_DATA_DIR` now respected by the CLI
+- Stale hardcoded builtin workflow count (20 → 21) corrected
+- Safety classification: `sequencer-exportFbx`, `sequencer-importFbx`, `ai-createEqs` were listed under wrong-cased names (`...FBX`/`EQS`) in `safety.ts`, so they silently fell through to the default level; corrected to the registered names (exportFbx is now classified Safe as intended)
+- API reference (`docs/api-reference/mcp-tools.md`) fully audited against the 190 registered tools: added missing entries (`python-customExecute`, `python-listCustomScripts`, `context-recommend`, `context-exportWorkflow`, `context-importWorkflow`) and corrected wrong-cased tool names
+
 ## [0.5.4] — 2026-03-18
 
 ### Fixed

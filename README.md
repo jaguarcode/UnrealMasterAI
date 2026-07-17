@@ -4,9 +4,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
-[![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![Tests](https://img.shields.io/badge/Tests-1228%20passed%20·%2073%20files-brightgreen.svg)](mcp-server/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-188-purple.svg)](docs/api-reference/mcp-tools.md)
+[![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.8-blue.svg)](https://www.unrealengine.com/)
+[![Tests](https://img.shields.io/badge/Tests-1336%20passed%20·%2079%20files-brightgreen.svg)](mcp-server/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-190-purple.svg)](docs/api-reference/mcp-tools.md)
 [![LLM Hosts](https://img.shields.io/badge/LLM%20Hosts-5-orange.svg)](#multi-llm-support)
 
 An autonomous AI agent that gives Claude Code bidirectional control over Unreal Engine internals — manipulating Blueprints at the graph level, generating Slate UI code, triggering Live Coding compilation, and self-healing from compile errors without manual intervention.
@@ -50,15 +50,40 @@ The agent serializes the Blueprint to JSON, creates the node, connects the exec 
 - Analysis tools (Blueprint complexity, asset health, performance, conventions)
 - Context intelligence (auto-gather project context, tool manifest, workflow chains)
 - Workflow learning system (learn from Epic docs, intent matching with UE synonym expansion)
+- Hybrid TF-IDF + keyword intent matching, with outcome confidence weighted by time-decayed success history
 - Error resolution learning (capture troubleshooting outcomes, replay fixes for similar errors)
 - Outcome-weighted recommendations (proven workflows rank higher automatically)
+- Automatic usage journaling and auto workflow-outcome tracking — no explicit recording required
+- Proactive `_uma` hints inline in tool results (known-error fixes, workflow progress)
+- Workflow candidate mining (`context-suggestWorkflows`) surfaces emerging patterns from real usage
+- Usage statistics (`context-getUsageStats`) — per-tool stats, recent tool sequence, active tracked workflow
 - 89 workflow patterns (21 builtin from Epic docs + 68 community-seeded), 25 error resolution patterns
-- Proactive tool recommendations based on workflow step adjacency analysis
+- Proactive tool recommendations based on workflow step adjacency analysis, blended with observed usage
 - [Analytics dashboard](docs/analytics.html) for workflow coverage, tool usage, and error resolution metrics
 
 **Multi-LLM Support:**
 
 Works with Claude Code, Claude Desktop, Cursor, Windsurf, and VS Code + GitHub Copilot — any MCP-compatible AI editor.
+
+---
+
+## Why Unreal Master Agent?
+
+UE 5.8 ships Epic's own experimental first-party MCP plugin ("Unreal MCP") — great validation that AI-driven UE control is a real category, not a niche experiment. Unreal Master Agent takes a different approach: a self-growing intelligence layer on top of a broad, safety-classified tool surface, built to work with whatever MCP host you already use.
+
+| Axis | Unreal Master Agent | Epic Unreal MCP (UE 5.8) |
+| --- | --- | --- |
+| Tools | 190 curated, safety-classified tools across 37 domains | Experimental toolset registry |
+| Self-growing intelligence | 89-workflow knowledge base, automatic outcome tracking, error-resolution learning, sequence mining → new workflows, proactive `_uma` hints | Not provided |
+| UE version coverage | 5.4 – 5.8 | 5.8 only |
+| Transport / hosts | UE connects out via WebSocket to a local Node MCP server; works with every MCP host incl. stdio (Claude Code/Desktop, Cursor, Windsurf, VS Code) | HTTP + SSE only; stdio not supported |
+| Self-healing | Compile-error fix loop (parse → fix → retry) | Not provided |
+| Community | Workflow marketplace + CLI import | Not provided |
+| Maturity | 1,336 automated tests, structured error codes, approval gate, rate limiting | Experimental |
+
+Both approaches execute tool calls on the GameThread — Epic's design independently validates this architecture — and the two can run side by side in the same project without conflict (different protocol, different connection direction, different port).
+
+See the full [UE 5.8 compatibility analysis](docs/ue-5.8-compatibility.md) for the audit behind our 5.8 support.
 
 ---
 
@@ -117,7 +142,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full architecture document incl
 - **Node.js** 20+
 - **npm** 10+
 - **TypeScript** 5.5+ (installed via devDependencies)
-- **Unreal Engine** 5.4 - 5.7
+- **Unreal Engine** 5.4 – 5.8 (5.8 support based on the full [compatibility analysis](docs/ue-5.8-compatibility.md); Windows source builds on 5.8 require Visual Studio 2026)
 - **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python automation (166 scripts)
 - **Claude Code** (latest) with MCP support
 
@@ -249,7 +274,7 @@ Unreal Master/
 │   ├── src/
 │   │   ├── index.ts         Entry point (McpServerBootstrap)
 │   │   ├── server.ts        McpServer configuration (auto-registers tools)
-│   │   ├── tools/           188 MCP tool handlers across 37 domains
+│   │   ├── tools/           190 MCP tool handlers across 37 domains
 │   │   │   ├── editor/      Editor queries (ping, list-actors, etc.)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
 │   │   │   ├── compilation/ Live Coding trigger and status
@@ -380,7 +405,7 @@ The MCP Bridge Server communicates with Claude Code over `stdout` using JSON-RPC
 | WebSocket     | `ws`                        | ^8.18.0           |
 | Validation    | `zod`                       | ^3.23.0           |
 | Test Runner   | `vitest`                    | ^2.0.0            |
-| UE Plugin     | C++                         | UE 5.4            |
+| UE Plugin     | C++                         | UE 5.4 – 5.8       |
 | Transport     | WebSocket                   | RFC 6455          |
 | Observability | LangSmith / Langfuse        | Latest            |
 

@@ -179,7 +179,7 @@ describe('classifyOperation', () => {
     'build-getMapCheck',
     'debug-getLog', 'debug-getPerformance',
     // Sequencer (read-only)
-    'sequencer-getInfo', 'sequencer-exportFBX',
+    'sequencer-getInfo', 'sequencer-exportFbx',
     // AI/Navigation (read-only)
     'ai-getBehaviorTreeInfo', 'ai-getBlackboardKeys', 'ai-getNavMeshInfo',
     // Widget (read-only)
@@ -235,10 +235,10 @@ describe('classifyOperation', () => {
     'build-lightmaps',
     // Sequencer (mutations)
     'sequencer-create', 'sequencer-open', 'sequencer-addTrack', 'sequencer-addBinding',
-    'sequencer-setKeyframe', 'sequencer-importFBX',
+    'sequencer-setKeyframe', 'sequencer-importFbx',
     // AI/Navigation (mutations)
     'ai-createBehaviorTree', 'ai-createBlackboard', 'ai-addBlackboardKey',
-    'ai-configureNavMesh', 'ai-createEQS',
+    'ai-configureNavMesh', 'ai-createEqs',
     // Widget (mutations)
     'widget-create', 'widget-addElement', 'widget-setProperty',
     // Editor utilities (mutations)

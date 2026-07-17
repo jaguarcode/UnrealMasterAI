@@ -1,8 +1,8 @@
 # Unreal Master Agent — Architecture
 
-**Version:** 0.5.0
-**Date:** 2026-02-25 (Updated: 2026-03-12)
-**Status:** Implementation Complete (Phase 0-16, 4.1-4.4 done, 188 MCP tools across 37 domains, 166 Python scripts)
+**Version:** 0.6.0
+**Date:** 2026-02-25 (Updated: 2026-07-17)
+**Status:** Implementation Complete (Phase 0-16, 4.1-4.5 done, 190 MCP tools across 37 domains, 166 Python scripts)
 
 ---
 
@@ -364,6 +364,26 @@ Two new tools (`python-customExecute`, `python-listCustomScripts`) allow users t
 
 ---
 
+## 5.2 Living Intelligence Loop (Phase 4.5 / v0.6.0)
+
+The context-intelligence layer (§5.1, `src/tools/context/`) was originally passive: it only learned when the AI explicitly called `context-recordOutcome` or `context-learnWorkflow`. As of v0.6.0 the server observes its own usage and grows without requiring explicit client action, closing the loop:
+
+```
+observe → track → learn → recommend
+```
+
+1. **Observe — tool-hook journaling.** `intelligence-hooks.ts` registers a single `ToolHookManager` post-hook that fires on every tool call. It extracts a success/failure signal from the JSON result and journals `{tool, success, durationMs, timestamp}` into the `UsageTracker` (`usage-tracker.ts`), a ring buffer capped at 2000 events and periodically flushed to `tool-usage.json`. This hook is defensive by design — any internal failure degrades to "return the original result untouched," so it can never corrupt a tool response.
+2. **Track — workflow auto-tracking and outcomes.** After a `context-matchIntent` call returns a match with confidence >= 0.5, the `WorkflowTracker` (`workflow-tracker.ts`) starts tracking that workflow's required (non-optional) steps. Each subsequent successful tool call is matched against the remaining steps; once all required steps complete, the outcome is auto-recorded via `recordOutcome()` — success is judged by the tracked call's error ratio (< 50% failures). Idle tracking (30+ minutes of inactivity) is abandoned silently, not recorded, since abandonment is too weak a signal. An explicit `context-recordOutcome` call still short-circuits and clears tracking for that workflow, so there is never a double-count.
+3. **Learn — sequence mining.** `sequence-miner.ts` mines the usage journal for frequently repeated tool n-grams, session-aware (adjacent calls within a gap window) and deduplicated against already-known workflows. Candidates are exposed via the new `context-suggestWorkflows` tool, and are also surfaced automatically when `context-matchIntent` finds zero matches — giving the AI a concrete next step instead of a dead end. The AI formalizes a promising candidate into a durable workflow with `context-learnWorkflow`.
+4. **Recommend — hybrid matching and usage-weighted suggestions.** `intent-matcher.ts` now blends keyword/UE-synonym scoring additively with a TF-IDF index (reusing the RAG embedding store already used for Slate templates). Outcome confidence for ranking uses `getWeightedOutcomeStats()` in `workflow-store.ts`, which applies exponential time decay to each recorded outcome (default 90-day half-life) so recent results matter more than stale ones. `context-recommend` similarly blends static workflow step-adjacency with observed, success-weighted tool transitions from `UsageTracker.getObservedAdjacency()`; its `recentTools` parameter is now optional and falls back to the server's own tracked call history.
+5. **Surface — proactive `_uma` hints.** The same post-hook that journals usage also injects an optional `_uma` block into successful JSON tool results: on failure, a matching learned resolution (similarity >= 0.4, via `matchError`) with a pointer to `context-matchError` for full steps; on success during a tracked workflow, `{progress, nextSuggested}` or a `completed: true` marker when the tracker just auto-recorded an outcome. Hints are opt-out via `UMA_HINTS=off` and are never attached to meta tools (`context-*`) or non-JSON results.
+
+**Data files** (all under `UMA_DATA_DIR`, default `~/.unreal-master/data/`): `tool-usage.json` (usage journal), `workflow-outcomes.json` (recorded/auto-recorded outcomes), `learned-workflows.json` (builtin + learned + formalized-candidate workflows), `error-resolutions.json` (troubleshooting resolutions matched by `context-matchError`).
+
+**New tool surface:** `context-suggestWorkflows` (mining candidates), `context-getUsageStats` (per-tool stats, recent tool sequence, active tracked workflow).
+
+---
+
 ## 6. Safety Architecture
 
 ### Operation Classification
@@ -476,7 +496,7 @@ Unreal Master/
 ├── mcp-server/              ← Layer 2: Node.js/TypeScript bridge
 │   ├── src/
 │   │   ├── index.ts         (McpServerBootstrap)
-│   │   ├── server.ts        (188 tools registered across 37 domains)
+│   │   ├── server.ts        (190 tools registered across 37 domains)
 │   │   ├── tools/           Tool handlers by domain
 │   │   │   ├── editor/      Editor queries (ping, list-actors, level-info)
 │   │   │   ├── blueprint/   Blueprint graph manipulation
@@ -556,7 +576,7 @@ Unreal Master/
 │
 └── docs/
     ├── api-reference/
-    │   └── mcp-tools.md              MCP tool API reference (188 tools)
+    │   └── mcp-tools.md              MCP tool API reference (190 tools)
     ├── coding-conventions/
     │   └── README.md                 TypeScript + C++ coding conventions
     ├── slate-templates/              7 Slate UI RAG templates

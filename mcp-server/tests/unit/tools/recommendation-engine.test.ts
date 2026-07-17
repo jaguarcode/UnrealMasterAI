@@ -1,5 +1,27 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// Mock the usage tracker so tests never read/write the shared test-data journal.
+// By default, observed adjacency and recent history are empty — this keeps the
+// original static-workflow-only behavior deterministic for the existing tests.
+const { getRecentToolsMock, getObservedAdjacencyMock } = vi.hoisted(() => ({
+  getRecentToolsMock: vi.fn(() => [] as string[]),
+  getObservedAdjacencyMock: vi.fn(() => new Map()),
+}));
+vi.mock('../../../src/tools/context/usage-tracker.js', () => ({
+  getUsageTracker: () => ({
+    getRecentTools: getRecentToolsMock,
+    getObservedAdjacency: getObservedAdjacencyMock,
+  }),
+}));
+
 import { getRecommendations } from '../../../src/tools/context/recommendation-engine.js';
+
+beforeEach(() => {
+  getRecentToolsMock.mockClear();
+  getObservedAdjacencyMock.mockClear();
+  getRecentToolsMock.mockReturnValue([]);
+  getObservedAdjacencyMock.mockReturnValue(new Map());
+});
 
 describe('getRecommendations', () => {
   it('returns empty array for empty recentTools', () => {
@@ -69,5 +91,53 @@ describe('getRecommendations', () => {
       expect(typeof rec.confidence).toBe('number');
       expect(typeof rec.fromWorkflow).toBe('string');
     }
+  });
+
+  // ── v2: usage-weighted behavior ──
+
+  it('falls back to the tracker recent history when recentTools is undefined', () => {
+    getRecentToolsMock.mockReturnValue(['actor-spawn']);
+    const result = getRecommendations();
+    expect(getRecentToolsMock).toHaveBeenCalled();
+    expect(result.length).toBeGreaterThan(0);
+    const tools = result.map((r) => r.tool);
+    const hasExpected = tools.some((t) => t === 'actor-addComponent' || t === 'actor-setProperty');
+    expect(hasExpected).toBe(true);
+  });
+
+  it('an explicit empty array still returns [] without consulting the tracker history', () => {
+    getRecentToolsMock.mockReturnValue(['actor-spawn']);
+    const result = getRecommendations([]);
+    expect(result).toEqual([]);
+    expect(getRecentToolsMock).not.toHaveBeenCalled();
+  });
+
+  it('observed adjacency boosts a transition no static workflow contains, with source "observed"', () => {
+    // zz-source → zz-observed-next is a purely observed edge (no known workflow has it).
+    const observed = new Map([
+      ['zz-source', new Map([['zz-observed-next', { count: 6, successCount: 5 }]])],
+    ]);
+    getObservedAdjacencyMock.mockReturnValue(observed);
+
+    const result = getRecommendations(['zz-source']);
+    const rec = result.find((r) => r.tool === 'zz-observed-next');
+    expect(rec).toBeDefined();
+    expect(rec!.source).toBe('observed');
+    expect(rec!.reason).toContain('Observed 6');
+    expect(rec!.reason).toContain('83% success'); // 5/6 ≈ 0.833 → 83%
+    expect(rec!.confidence).toBeGreaterThan(0);
+  });
+
+  it('marks a transition present in both static and observed signals as source "both"', () => {
+    // material-create → material-setParameter exists in the static workflow graph.
+    const observed = new Map([
+      ['material-create', new Map([['material-setParameter', { count: 5, successCount: 5 }]])],
+    ]);
+    getObservedAdjacencyMock.mockReturnValue(observed);
+
+    const result = getRecommendations(['material-create']);
+    const rec = result.find((r) => r.tool === 'material-setParameter');
+    expect(rec).toBeDefined();
+    expect(rec!.source).toBe('both');
   });
 });

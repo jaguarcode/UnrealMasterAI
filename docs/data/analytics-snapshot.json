@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-03-12T06:31:21.892Z",
+  "generatedAt": "2026-07-17T05:38:29.613Z",
   "workflows": {
-    "total": 88,
-    "builtin": 20,
+    "total": 89,
+    "builtin": 21,
     "learned": 68,
     "byDomain": {
       "actor": 3,
@@ -277,5 +277,6 @@
         "reuseCount": 0
       }
     ]
-  }
+  },
+  "usage": null
 }

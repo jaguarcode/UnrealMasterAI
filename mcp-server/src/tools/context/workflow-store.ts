@@ -145,6 +145,45 @@ export function getOutcomeStats(workflowId: string): OutcomeStats | null {
   };
 }
 
+export interface WeightedOutcomeStats extends OutcomeStats {
+  weightedSuccessRate: number;
+  effectiveExecutions: number;
+}
+
+/**
+ * Compute time-decayed outcome stats for a workflow.
+ * Each outcome's contribution decays exponentially with age, using a configurable half-life.
+ * More recent outcomes carry more weight than stale ones, addressing the "stale learned data" risk.
+ */
+export function getWeightedOutcomeStats(workflowId: string, halfLifeDays = 90): WeightedOutcomeStats | null {
+  const base = getOutcomeStats(workflowId);
+  if (!base) return null;
+
+  const outcomes = loadOutcomes().filter((o) => o.workflowId === workflowId);
+  const now = Date.now();
+
+  let weightedSuccessSum = 0;
+  let weightSum = 0;
+  for (const o of outcomes) {
+    // Clamp at 0 so clock skew / future-dated outcomes never get a weight > 1.
+    const ageDays = Math.max(0, (now - o.timestamp) / 86_400_000);
+    const weight = Math.pow(0.5, ageDays / halfLifeDays);
+    weightedSuccessSum += weight * (o.success ? 1 : 0);
+    weightSum += weight;
+  }
+
+  const weightedSuccessRate = weightSum > 0
+    ? Math.round((weightedSuccessSum / weightSum) * 100) / 100
+    : 0;
+  const effectiveExecutions = Math.round(weightSum * 100) / 100;
+
+  return {
+    ...base,
+    weightedSuccessRate,
+    effectiveExecutions,
+  };
+}
+
 export function getAllOutcomeStats(): OutcomeStats[] {
   const outcomes = loadOutcomes();
   const byId = new Map<string, WorkflowOutcome[]>();

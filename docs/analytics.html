@@ -474,7 +474,7 @@ a{color:inherit;text-decoration:none}
       <div class="hero-meta" role="list" aria-label="Analytics statistics">
         <span class="hero-meta-item" role="listitem">70+ workflows</span>
         <span class="hero-meta-dot" aria-hidden="true"></span>
-        <span class="hero-meta-item" role="listitem">187 tools</span>
+        <span class="hero-meta-item" role="listitem">190 tools</span>
         <span class="hero-meta-dot" aria-hidden="true"></span>
         <span class="hero-meta-item" role="listitem">25+ error resolutions</span>
       </div>
@@ -571,6 +571,41 @@ a{color:inherit;text-decoration:none}
       </div>
 
       <div class="fade-up delay-1" id="chart-errors" role="img" aria-label="Bar chart: error resolutions by type">
+        <!-- populated by JS -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── TOOL USAGE ─── -->
+  <section class="section section-alt section-border-top" aria-labelledby="usage-heading">
+    <div class="container">
+
+      <div class="fade-up" style="margin-bottom:2.5rem">
+        <p class="section-label">Telemetry</p>
+        <h2 class="section-headline" id="usage-heading">Top Tools by Live Call Volume</h2>
+        <p class="section-sub">Real invocation counts recorded automatically by the MCP server across all sessions, with per-tool success rate.</p>
+      </div>
+
+      <div id="fallback-usage" class="fallback-notice" role="status" aria-live="polite">
+        <p class="fallback-title">No usage data yet</p>
+        <p class="fallback-sub">Usage telemetry accumulates as MCP tools are called. Run the server, use some tools, then regenerate the snapshot.</p>
+      </div>
+
+      <div class="stat-grid fade-up delay-1" id="usage-stat-grid" style="margin-bottom:2.5rem" aria-label="Usage overview metrics">
+        <div class="stat-card" role="region" aria-labelledby="stat-label-usage-calls">
+          <p class="stat-value stat-value--loading" id="stat-usage-calls" aria-live="polite">—</p>
+          <p class="stat-label" id="stat-label-usage-calls">Total Tool Calls</p>
+          <p class="stat-sub">recorded invocations</p>
+        </div>
+        <div class="stat-card" role="region" aria-labelledby="stat-label-usage-success">
+          <p class="stat-value stat-value--loading" id="stat-usage-success" aria-live="polite">—</p>
+          <p class="stat-label" id="stat-label-usage-success">Overall Success Rate</p>
+          <p class="stat-sub">across all recorded calls</p>
+        </div>
+      </div>
+
+      <div class="fade-up delay-1" id="chart-usage" role="img" aria-label="Bar chart: top tools by call volume">
         <!-- populated by JS -->
       </div>
 
@@ -722,45 +757,91 @@ function showFallback() {
     msg.textContent = 'No data available. Run npx unreal-master-mcp-server analytics to generate a snapshot.';
     el.appendChild(msg);
   });
+  showUsageFallback();
+}
+
+// ─── Usage section fallback ───
+function showUsageFallback() {
+  var notice = document.getElementById('fallback-usage');
+  if (notice) notice.classList.add('visible');
+  ['stat-usage-calls','stat-usage-success'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = '—'; el.classList.add('stat-value--loading'); }
+  });
+  var chart = document.getElementById('chart-usage');
+  if (chart && !chart.hasChildNodes()) {
+    var msg = document.createElement('p');
+    msg.style.cssText = 'font-size:0.875rem;color:var(--gray-mid);padding:1.5rem 0';
+    msg.textContent = 'No usage data available yet. Usage telemetry accumulates as MCP tools are called.';
+    chart.appendChild(msg);
+  }
 }
 
 // ─── Main render ───
 function renderDashboard(data) {
-  var o = data.overview || {};
+  var workflows = data.workflows || {};
+  var tools = data.tools || {};
+  var outcomes = data.outcomes || {};
+  var errorResolutions = data.errorResolutions || {};
 
   // Stat cards
-  setStatValue('stat-workflows', o.totalWorkflows != null ? o.totalWorkflows : '—');
-  setStatValue('stat-tools',     o.toolsInWorkflows != null ? o.toolsInWorkflows : '—');
-  setStatValue('stat-errors',    o.errorResolutions != null ? o.errorResolutions : '—');
-  setStatValue('stat-success',   o.successRate != null ? o.successRate + '%' : '—');
+  setStatValue('stat-workflows', workflows.total != null ? workflows.total : '—');
+  setStatValue('stat-tools',     tools.usedInWorkflows != null ? tools.usedInWorkflows : '—');
+  setStatValue('stat-errors',    errorResolutions.total != null ? errorResolutions.total : '—');
+  setStatValue('stat-success',   outcomes.successRate != null ? Math.round(outcomes.successRate * 100) + '%' : '—');
+
+  // "of N registered" sub-label under Tools in Workflows
+  if (tools.totalRegistered != null) {
+    var toolsSub = document.querySelector('#stat-label-tools').nextElementSibling;
+    if (toolsSub) toolsSub.textContent = 'of ' + tools.totalRegistered + ' registered';
+  }
 
   // Domain coverage chart
-  if (data.workflowsByDomain && data.workflowsByDomain.length) {
-    buildChart('chart-domains',
-      data.workflowsByDomain.map(function(d) {
-        return { label: d.domain, count: d.count };
-      }),
-      '#d97706'  /* amber */
-    );
+  if (workflows.byDomain && Object.keys(workflows.byDomain).length) {
+    var domainRows = Object.keys(workflows.byDomain).map(function(domain) {
+      return { label: domain, count: workflows.byDomain[domain] };
+    }).sort(function(a, b) { return b.count - a.count; });
+    buildChart('chart-domains', domainRows, '#d97706'  /* amber */);
   }
 
   // Top tools chart
-  if (data.topTools && data.topTools.length) {
+  if (tools.topToolsByFrequency && tools.topToolsByFrequency.length) {
     buildChart('chart-tools',
-      data.topTools.map(function(d) {
-        return { label: d.tool, count: d.usage };
+      tools.topToolsByFrequency.map(function(d) {
+        return { label: d.tool, count: d.count };
       }),
       '#0d6efd'  /* blue */
     );
   }
 
   // Error resolutions chart
-  if (data.errorResolutionsByType && data.errorResolutionsByType.length) {
-    buildChart('chart-errors',
-      data.errorResolutionsByType.map(function(d) {
-        return { label: d.type, count: d.count };
+  if (errorResolutions.byErrorType && Object.keys(errorResolutions.byErrorType).length) {
+    var errorRows = Object.keys(errorResolutions.byErrorType).map(function(type) {
+      return { label: type, count: errorResolutions.byErrorType[type] };
+    }).sort(function(a, b) { return b.count - a.count; });
+    buildChart('chart-errors', errorRows, '#ef4444'  /* red */);
+  }
+
+  // Usage section
+  renderUsage(data.usage);
+}
+
+// ─── Usage section render ───
+function renderUsage(usage) {
+  if (!usage || !usage.totalCalls) {
+    showUsageFallback();
+    return;
+  }
+
+  setStatValue('stat-usage-calls', usage.totalCalls);
+  setStatValue('stat-usage-success', Math.round(usage.overallSuccessRate * 100) + '%');
+
+  if (usage.topByCalls && usage.topByCalls.length) {
+    buildChart('chart-usage',
+      usage.topByCalls.map(function(d) {
+        return { label: d.tool, count: d.calls };
       }),
-      '#ef4444'  /* red */
+      '#10b981'  /* green */
     );
   }
 }

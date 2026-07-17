@@ -741,3 +741,7 @@ export function clearLearnedWorkflows(): void {
 export function getBuiltinWorkflowCount(): number {
   return BUILTIN_WORKFLOWS.length;
 }
+
+export function getBuiltinWorkflows(): Workflow[] {
+  return [...BUILTIN_WORKFLOWS];
+}
