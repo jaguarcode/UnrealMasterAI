@@ -1,6 +1,6 @@
 # MCP Tools API Reference
 
-183 tools across 37 domains
+190 tools across 37 domains
 
 ## Domain Summary
 
@@ -12,7 +12,7 @@
 | [File](#file) | file-read, file-write, file-search | 3 |
 | [Slate](#slate) | slate-validate, slate-generate, slate-listTemplates | 3 |
 | [Chat](#chat) | chat-sendMessage | 1 |
-| [Python](#python) | python-execute | 1 |
+| [Python](#python) | python-execute, python-customExecute, python-listCustomScripts | 3 |
 | [Project](#project) | project-getStructure, project-getSettings, project-getPlugins, project-getDependencyGraph, project-getClassHierarchy, project-snapshot | 6 |
 | [Asset](#asset) | asset-create, asset-duplicate, asset-rename, asset-delete, asset-import, asset-export, asset-getReferences, asset-setMetadata | 8 |
 | [Content](#content) | content-listAssets, content-findAssets, content-getAssetDetails, content-validateAssets | 4 |
@@ -26,8 +26,8 @@
 | [SourceControl](#sourcecontrol) | sourcecontrol-getStatus, sourcecontrol-checkout, sourcecontrol-diff | 3 |
 | [Build](#build) | build-lightmaps, build-getMapCheck, build-cookContent | 3 |
 | [Debug](#debug) | debug-execConsole, debug-getLog, debug-getPerformance | 3 |
-| [AI](#ai) | ai-createBehaviorTree, ai-createBlackboard, ai-getBehaviorTreeInfo, ai-getBlackboardKeys, ai-addBlackboardKey, ai-configureNavMesh, ai-getNavMeshInfo, ai-createEQS | 8 |
-| [Sequencer](#sequencer) | sequencer-create, sequencer-open, sequencer-addTrack, sequencer-addBinding, sequencer-setKeyframe, sequencer-getInfo, sequencer-exportFBX, sequencer-importFBX | 8 |
+| [AI](#ai) | ai-createBehaviorTree, ai-createBlackboard, ai-getBehaviorTreeInfo, ai-getBlackboardKeys, ai-addBlackboardKey, ai-configureNavMesh, ai-getNavMeshInfo, ai-createEqs | 8 |
+| [Sequencer](#sequencer) | sequencer-create, sequencer-open, sequencer-addTrack, sequencer-addBinding, sequencer-setKeyframe, sequencer-getInfo, sequencer-exportFbx, sequencer-importFbx | 8 |
 | [Widget](#widget) | widget-create, widget-getInfo, widget-addElement, widget-setProperty, widget-getBindings, widget-listWidgets | 6 |
 | [Texture](#texture) | texture-import, texture-getInfo, texture-setCompression, texture-createRenderTarget, texture-resize, texture-listTextures | 6 |
 | [Niagara](#niagara) | niagara-createSystem, niagara-getInfo, niagara-addEmitter, niagara-setParameter, niagara-compile, niagara-listSystems | 6 |
@@ -42,7 +42,7 @@
 | [Workflow](#workflow) | workflow-createCharacter, workflow-createUIScreen, workflow-setupLevel, workflow-createInteractable, workflow-createProjectile, workflow-setupMultiplayer, workflow-createInventorySystem, workflow-createDialogueSystem | 8 |
 | [Analyze](#analyze) | analyze-blueprintComplexity, analyze-assetHealth, analyze-performanceHints, analyze-codeConventions | 4 |
 | [Refactor](#refactor) | refactor-renameChain | 1 |
-| [Context](#context) | context-autoGather, context-getManifest, context-getChains, context-learnWorkflow, context-matchIntent, context-getWorkflows, context-recordOutcome, context-learnFromDocs, context-getOutcomeStats, context-recordResolution, context-matchError, context-markResolutionReused, context-listResolutions | 13 |
+| [Context](#context) | context-autoGather, context-getManifest, context-getChains, context-learnWorkflow, context-matchIntent, context-getWorkflows, context-recordOutcome, context-learnFromDocs, context-getOutcomeStats, context-recordResolution, context-matchError, context-markResolutionReused, context-listResolutions, context-exportWorkflow, context-importWorkflow, context-recommend, context-suggestWorkflows, context-getUsageStats | 18 |
 
 ---
 
@@ -381,6 +381,29 @@ Execute a named Python script from the UMA plugin Content/Python/uma/ directory.
 |-----------|------|----------|-------------|
 | script | string | Yes | Script name without .py (e.g., "blueprint_setup_spinning_cube") |
 | args | object | No | Arguments to pass to the script |
+
+**Safety:** `Warning`
+
+---
+
+### python-customExecute
+
+Execute a custom Python script from the user's Content/Python/uma_custom/ directory. For user-created automation scripts.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| script | string | Yes | Script name (without .py) from uma_custom/ directory |
+| args | object | No | Arguments to pass to the script |
+
+**Safety:** `Warning`
+
+---
+
+### python-listCustomScripts
+
+List available custom Python scripts in the Content/Python/uma_custom/ directory.
+
+**Parameters:** none
 
 **Safety:** `Warning`
 
@@ -1314,7 +1337,7 @@ Get current RecastNavMesh configuration.
 
 ---
 
-### ai-createEQS
+### ai-createEqs
 
 Create a new Environment Query System asset.
 
@@ -1409,7 +1432,7 @@ Get Level Sequence metadata (tracks, bindings, frame range).
 
 ---
 
-### sequencer-exportFBX
+### sequencer-exportFbx
 
 Export Level Sequence animation to FBX.
 
@@ -1422,7 +1445,7 @@ Export Level Sequence animation to FBX.
 
 ---
 
-### sequencer-importFBX
+### sequencer-importFbx
 
 Import FBX animation into Level Sequence.
 
@@ -2503,5 +2526,68 @@ List all stored error resolutions. Optionally filter by error type or source too
 |-----------|------|----------|-------------|
 | errorType | string | No | Filter by error type |
 | sourceTool | string | No | Filter by source tool |
+
+**Safety:** `Safe`
+
+---
+
+### context-exportWorkflow
+
+Export a workflow in the standardized shareable JSON format. Use this to share workflows with the community or save them as files.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| workflowId | string | Yes | ID of the workflow to export (built-in or learned) |
+| authorName | string | No | Author name for the export (default: "unknown") |
+| authorUrl | string | No | Author URL (e.g., GitHub profile) |
+
+**Safety:** `Safe`
+
+---
+
+### context-importWorkflow
+
+Import a workflow from the standardized shareable JSON format. Validates the workflow and adds it to the persistent learned-workflows store.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| workflow | object | Yes | The complete workflow share JSON object (with version, workflow, author, createdAt fields) |
+
+**Safety:** `Warning`
+
+---
+
+### context-recommend
+
+Get proactive tool recommendations based on recent tool usage. Blends known-workflow adjacency with your own observed session transitions. Omit recentTools to use the server's automatically tracked recent history.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| recentTools | string[] | No | Tools used recently in the current session (most recent last). Omit to use the server's automatically tracked history. |
+| domain | string | No | Optionally filter recommendations to a specific UE domain |
+| maxResults | number | No | Maximum recommendations to return (default 5) |
+
+**Safety:** `Safe`
+
+---
+
+### context-suggestWorkflows
+
+Mine your recent tool usage for frequently repeated sequences that are not yet known workflows. Surfaces emerging workflow candidates you can formalize with `context-learnWorkflow`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| minSupport | number | No | Minimum number of occurrences required to surface a candidate (default 3) |
+| maxResults | number | No | Maximum candidates to return (default 10) |
+
+**Safety:** `Safe`
+
+---
+
+### context-getUsageStats
+
+Get automatically tracked usage statistics: total events, recent tools, per-tool call/success stats, and the currently active auto-tracked workflow (if any).
+
+**Parameters:** none
 
 **Safety:** `Safe`

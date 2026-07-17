@@ -397,7 +397,7 @@ The MCP server supports optional shared-secret authentication for incoming WebSo
 
 The `RateLimiter` class enforces a configurable per-minute cap on tool calls using a sliding-window algorithm.
 
-- **Env var:** `RATE_LIMIT_PER_MINUTE` — global limit applied to all 183 tools (default: `0` = disabled)
+- **Env var:** `RATE_LIMIT_PER_MINUTE` — global limit applied to all 190 tools (default: `0` = disabled)
 - **Mechanism:** Sliding window — counts calls in the trailing 60-second window
 - **Application:** Injected via `server.tool` monkey-patch at startup; no per-tool changes required
 - **File:** `src/state/rate-limiter.ts`

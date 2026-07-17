@@ -24,6 +24,7 @@ After successfully completing a developer request that matched a workflow, call 
 - Set `success: false` if the task failed or produced unexpected results.
 - Include `toolsUsed` with the actual tools called during execution.
 - This builds the outcome history that improves future recommendations.
+- Note: the server now auto-tracks outcomes after a high-confidence `context-matchIntent` and records them once required steps complete, so explicit `context-recordOutcome` remains preferred but missing it no longer loses the data. Tool results may also carry a `_uma` hint block (known-error fixes, workflow progress) worth heeding.
 
 ### 4. Error Resolution Learning (AFTER fixing an error)
 When you resolve an error through troubleshooting, call `context-recordResolution`.
@@ -77,11 +78,13 @@ context-matchIntent(request)
 5. **Python scripts follow standard pattern.** `@execute_wrapper`, `execute(params)`, `make_result()`/`make_error()`.
 
 ## Project Stats
-- **188 MCP tools** across 37 domains
-- **1228 tests** across 73 test files
+- **190 MCP tools** across 37 domains
+- **1336 tests** across 79 test files
 - **166 Python scripts** in `UnrealMasterAgent/Content/Python/uma/`
 - **21 built-in workflows** + 68 learned workflows (89 total)
 - **25 error resolution patterns** for common UE errors
 - **36 UE synonym groups** for intent matching
 - **Proactive recommendation engine** (`context-recommend`) based on workflow step adjacency
+- **Automatic usage tracking + outcome recording** — the server journals every tool call and auto-records workflow outcomes server-side, no explicit calls required
+- **`context-suggestWorkflows`** mines the usage journal for frequent tool sequences not yet known as workflows
 - **Analytics dashboard** at `docs/analytics.html` with CLI snapshot generation

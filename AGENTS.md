@@ -12,7 +12,7 @@ UE Agent Plugin (C++) → Engine APIs (UEdGraph, Slate, ILiveCodingModule).
 
 | Path | Layer | Description |
 |------|-------|-------------|
-| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (188 tools, 1228 tests) |
+| `mcp-server/` | Layer 2 | Node.js/TypeScript MCP bridge server (190 tools, 1336 tests) |
 | `UnrealMasterAgent/` | Layer 3 | C++ Unreal Engine plugin + 166 Python automation scripts |
 | `TestProject/` | — | UE5 test project with gameplay classes (PatrollingActor, etc.) |
 | `docs/` | — | API reference, protocol spec, schemas, Slate RAG templates, guides |
@@ -74,7 +74,7 @@ Response (UE → MCP):
 { "id": "<uuid>", "result": { ... }, "duration_ms": 42 }
 ```
 
-### MCP Tools (183 registered across 37 domains)
+### MCP Tools (190 registered across 37 domains)
 
 | Domain | Tools |
 |--------|-------|

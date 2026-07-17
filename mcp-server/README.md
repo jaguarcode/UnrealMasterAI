@@ -3,10 +3,10 @@
 [![npm version](https://img.shields.io/npm/v/unreal-master-mcp-server.svg)](https://www.npmjs.com/package/unreal-master-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
-[![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.7-blue.svg)](https://www.unrealengine.com/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-188-purple.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
+[![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.4--5.8-blue.svg)](https://www.unrealengine.com/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-190-purple.svg)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
 
-MCP server that gives Claude AI bidirectional control over Unreal Engine — **188 tools across 37 domains** for Blueprints, materials, actors, levels, sequencer, AI, and more.
+MCP server that gives Claude AI bidirectional control over Unreal Engine — **190 tools across 37 domains** for Blueprints, materials, actors, levels, sequencer, AI, and more.
 
 ## Quick Start
 
@@ -71,7 +71,7 @@ Generates the MCP config snippet, validates Node.js version, and detects your UE
 | **Context** | 15 | Intent matching, workflow learning, error recovery |
 | + 23 more | ... | Texture, audio, PCG, foliage, curves, debug, build... |
 
-[Full API Reference (188 tools)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
+[Full API Reference (190 tools)](https://github.com/jaguarcode/UnrealMasterAI/blob/main/docs/api-reference/mcp-tools.md)
 
 ## Architecture
 
@@ -82,7 +82,7 @@ MCP Bridge Server (this package)
     | WebSocket (port 9877)
 UE Agent Plugin (C++)
     | Direct C++ / Python API calls
-Unreal Engine 5.4-5.7
+Unreal Engine 5.4-5.8
 ```
 
 - **UE is the WebSocket client** — this server listens, UE connects
@@ -99,7 +99,7 @@ Unreal Engine 5.4-5.7
 ## Requirements
 
 - **Node.js** >= 20.0.0
-- **Unreal Engine** 5.4 - 5.7
+- **Unreal Engine** 5.4 - 5.8
 - **Python Editor Script Plugin** enabled in UE (Edit → Plugins → Scripting) — required for Python-based automation
 - **UE Plugin**: [UnrealMasterAgent](https://github.com/jaguarcode/UnrealMasterAI/tree/main/UnrealMasterAgent) installed in your project
 

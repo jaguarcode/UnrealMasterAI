@@ -974,8 +974,8 @@ a{color:inherit;text-decoration:none}
           <div class="req-card-icon" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L1.5 4.5v5L7 12.5l5.5-3v-5L7 1.5z" stroke="#666" stroke-width="1.4" stroke-linejoin="round"/></svg>
           </div>
-          <h3 class="req-card-title">Unreal Engine 5.4–5.7</h3>
-          <p class="req-card-desc">The UnrealMasterAgent plugin requires UE 5.4 or later. Open your project, go to <strong>Edit &rarr; Plugins</strong>, and enable both <strong>UnrealMasterAgent</strong> and the built-in <strong>Python Editor Script Plugin</strong>.</p>
+          <h3 class="req-card-title">Unreal Engine 5.4–5.8</h3>
+          <p class="req-card-desc">The UnrealMasterAgent plugin supports UE 5.4 through 5.8. Open your project, go to <strong>Edit &rarr; Plugins</strong>, and enable both <strong>UnrealMasterAgent</strong> and the built-in <strong>Python Editor Script Plugin</strong>.</p>
         </div>
         <div class="req-card fade-up delay-2" role="listitem">
           <div class="req-card-icon" aria-hidden="true">
@@ -1001,6 +1001,12 @@ a{color:inherit;text-decoration:none}
           <strong style="color:var(--white)">To switch hosts:</strong> Close or disconnect the current AI host first, then start the new one.<br>
           <strong style="color:var(--white)">To use a different port for testing:</strong> Set <code style="color:var(--white)">"UE_WS_PORT": "9878"</code> in the <code style="color:var(--white)">env</code> block of your host config &mdash; but note the UE plugin must also connect to that same port.
         </p>
+      </div>
+
+      <!-- EPIC UNREAL MCP CALLOUT -->
+      <div class="fade-up" style="margin:0 0 2rem;padding:1.5rem 2rem;border:1px solid var(--blue);border-radius:8px;background:rgba(13,110,253,0.06)">
+        <h3 style="color:var(--blue);font-size:1rem;font-weight:700;margin-bottom:0.5rem">Using UE 5.8? No Conflict With Epic's Unreal MCP</h3>
+        <p style="color:var(--gray-light);font-size:0.9rem;line-height:1.6;margin-bottom:0">Epic's built-in <strong style="color:var(--white)">Unreal MCP</strong> plugin (Experimental, HTTP + SSE transport, <code style="color:var(--white)">127.0.0.1:8000</code>) can run alongside Unreal Master Agent on the same UE 5.8 instance &mdash; different port, different protocol, different connection direction. No conflict, no port clash. See <a href="https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:underline">Epic's documentation</a> for details.</p>
       </div>
 
       <!-- TROUBLESHOOTING -->
