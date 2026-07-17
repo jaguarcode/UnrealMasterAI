@@ -79,7 +79,7 @@ const SAFE_TOOLS = new Set([
   'chat-sendMessage',
   // Sequencer (read-only)
   'sequencer-getInfo',
-  'sequencer-exportFBX',
+  'sequencer-exportFbx',
   // AI/Navigation (read-only)
   'ai-getBehaviorTreeInfo',
   'ai-getBlackboardKeys',
@@ -183,13 +183,13 @@ const WARN_TOOLS = new Set([
   'sequencer-addTrack',
   'sequencer-addBinding',
   'sequencer-setKeyframe',
-  'sequencer-importFBX',
+  'sequencer-importFbx',
   // AI/Navigation (mutations)
   'ai-createBehaviorTree',
   'ai-createBlackboard',
   'ai-addBlackboardKey',
   'ai-configureNavMesh',
-  'ai-createEQS',
+  'ai-createEqs',
   // Widget (mutations)
   'widget-create',
   'widget-addElement',

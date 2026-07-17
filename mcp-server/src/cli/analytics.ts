@@ -8,9 +8,17 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { homedir } from 'os';
+import { getAllBuiltinTools } from '../tools/auto-register.js';
+import { getBuiltinWorkflowCount } from '../tools/context/workflow-knowledge.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '..', '..', 'data');
+// Read from the SAME data dir the runtime writes to (workflow-store.ts,
+// error-learning.ts, usage-tracker.ts all resolve UMA_DATA_DIR || user-global),
+// so a default `analytics` run reflects the live learning state rather than the
+// committed package seeds. To snapshot the seeds, pass UMA_DATA_DIR=mcp-server/data.
+const DATA_DIR = process.env.UMA_DATA_DIR || join(homedir(), '.unreal-master', 'data');
+const USAGE_DATA_DIR = DATA_DIR;
 const DOCS_DATA_DIR = join(__dirname, '..', '..', '..', 'docs', 'data');
 
 interface WorkflowItem {
@@ -36,6 +44,20 @@ interface ResolutionItem {
   sourceTool: string;
   reuseCount: number;
   tags: string[];
+}
+
+interface ToolUsageEvent {
+  tool: string;
+  success: boolean;
+  durationMs: number;
+  timestamp: number;
+}
+
+export interface UsageSnapshot {
+  totalCalls: number;
+  /** 0-1, rounded to 2 decimals */
+  overallSuccessRate: number;
+  topByCalls: Array<{ tool: string; calls: number; successRate: number }>;
 }
 
 export interface AnalyticsSnapshot {
@@ -66,6 +88,7 @@ export interface AnalyticsSnapshot {
     byErrorType: Record<string, number>;
     topReused: Array<{ id: string; errorType: string; reuseCount: number }>;
   };
+  usage: UsageSnapshot | null;
 }
 
 function loadJsonFile<T>(filePath: string, fallback: T): T {
@@ -78,9 +101,12 @@ function loadJsonFile<T>(filePath: string, fallback: T): T {
 }
 
 export function generateSnapshot(): AnalyticsSnapshot {
-  // Load builtin workflows by importing the knowledge base source
-  // We can't dynamically import TS at runtime, so we count from data files + a hardcoded builtin count
-  const BUILTIN_COUNT = 20; // From workflow-knowledge.ts
+  // Builtin workflow count comes directly from the knowledge base source of truth.
+  const BUILTIN_COUNT = getBuiltinWorkflowCount();
+  // Total registered tool count comes directly from the auto-register source of truth
+  // (statically imports all domain modules and flattens their tool definitions — no
+  // network/WS side effects, safe to call at snapshot-generation time).
+  const TOTAL_REGISTERED_TOOLS = getAllBuiltinTools().length;
 
   const learnedData = loadJsonFile<{ items: WorkflowItem[] }>(
     join(DATA_DIR, 'learned-workflows.json'),
@@ -153,6 +179,14 @@ export function generateSnapshot(): AnalyticsSnapshot {
     .slice(0, 10)
     .map((r) => ({ id: r.id, errorType: r.errorType, reuseCount: r.reuseCount ?? 0 }));
 
+  // Tool usage stats — tool-usage.json may not exist yet (introduced by a
+  // separate usage-tracking work stream), so handle absence gracefully.
+  const usageData = loadJsonFile<{ items: ToolUsageEvent[] } | null>(
+    join(USAGE_DATA_DIR, 'tool-usage.json'),
+    null,
+  );
+  const usage = buildUsageSnapshot(usageData?.items ?? null);
+
   return {
     generatedAt: new Date().toISOString(),
     workflows: {
@@ -164,7 +198,7 @@ export function generateSnapshot(): AnalyticsSnapshot {
       topDomains,
     },
     tools: {
-      totalRegistered: 188,
+      totalRegistered: TOTAL_REGISTERED_TOOLS,
       usedInWorkflows: Object.keys(toolFrequency).length,
       topToolsByFrequency: topTools,
     },
@@ -181,6 +215,46 @@ export function generateSnapshot(): AnalyticsSnapshot {
       byErrorType,
       topReused,
     },
+    usage,
+  };
+}
+
+/**
+ * Build the usage snapshot section from raw tool-call events.
+ * Returns null when there is no usage data yet (file absent, corrupted, or empty).
+ */
+function buildUsageSnapshot(items: ToolUsageEvent[] | null): UsageSnapshot | null {
+  if (!items || items.length === 0) return null;
+
+  const byTool = new Map<string, { calls: number; successes: number }>();
+  let totalSuccesses = 0;
+
+  for (const item of items) {
+    let agg = byTool.get(item.tool);
+    if (!agg) {
+      agg = { calls: 0, successes: 0 };
+      byTool.set(item.tool, agg);
+    }
+    agg.calls += 1;
+    if (item.success) {
+      agg.successes += 1;
+      totalSuccesses += 1;
+    }
+  }
+
+  const topByCalls = Array.from(byTool.entries())
+    .map(([tool, stats]) => ({
+      tool,
+      calls: stats.calls,
+      successRate: Math.round((stats.successes / stats.calls) * 100) / 100,
+    }))
+    .sort((a, b) => b.calls - a.calls)
+    .slice(0, 10);
+
+  return {
+    totalCalls: items.length,
+    overallSuccessRate: Math.round((totalSuccesses / items.length) * 100) / 100,
+    topByCalls,
   };
 }
 
@@ -203,4 +277,9 @@ export async function runAnalytics(): Promise<void> {
   console.log(`  Tools used in workflows: ${snapshot.tools.usedInWorkflows}/${snapshot.tools.totalRegistered}`);
   console.log(`  Outcome executions: ${snapshot.outcomes.totalExecutions}`);
   console.log(`  Error resolutions: ${snapshot.errorResolutions.total} (${snapshot.errorResolutions.totalReuses} reuses)`);
+  console.log(
+    snapshot.usage
+      ? `  Tool usage: ${snapshot.usage.totalCalls} calls (${Math.round(snapshot.usage.overallSuccessRate * 100)}% success)`
+      : '  Tool usage: no data yet',
+  );
 }
